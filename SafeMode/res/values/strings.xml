@@ -9,8 +9,8 @@
     <string name="add_button">Add</string>
     <string name="remove_button">Remove</string>
     <string name="select_all_button">Add All</string>
-    <string name="locked_message">This phone was locked by SafeMode</string>
+    <string name="locked_message">This phone was locked by SAFEMODE</string>
     <string name="edit_blacklist">Edit Blacklist</string>
     <string name="view_blacklist">View Blacklist</string>
-    <string name="math_question">&quot;What is &quot;</string>
+    <string name="math_question">What is </string>
 </resources>
