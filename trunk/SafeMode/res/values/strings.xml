@@ -4,5 +4,12 @@
     <string name="app_name">SAFEMODE</string>
     <string name="start_button">Start SAFEMODE</string>
     <string name="end_button">End SAFEMODE</string>
-    <string name="submit_button">&quot;Submit&quot;</string>
+    <string name="submit_button">Submit</string>
+    <string name="blacklist_add">(Type a contact's name!)</string>
+    <string name="add_button">Add</string>
+    <string name="remove_button">Remove</string>
+    <string name="select_all_button">Add All</string>
+    <string name="locked_message">This phone was locked by SafeMode</string>
+    <string name="edit_blacklist">Edit Blacklist</string>
+    <string name="view_blacklist">View Blacklist</string>
 </resources>
