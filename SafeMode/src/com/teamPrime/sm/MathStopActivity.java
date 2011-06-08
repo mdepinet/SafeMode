@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 public class MathStopActivity extends Activity{
 	
+	private final int[] mult1Choices = {3, 4, 6, 7, 8, 9};
+	
 	private TextView question;
 	private TextView answer;
 	private int mult1, mult2, corAnswer;
@@ -22,8 +24,8 @@ public class MathStopActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.math_stop);
         Random r = new Random();
-        mult1 = r.nextInt(7);
-        mult1 += 3;
+        int  mult1Index = r.nextInt(6);
+        mult1 = mult1Choices[mult1Index];
         mult2 = r.nextInt(8);
         mult2 += 12;
         String mathQuestion = String.format("What is %d * %d?", mult1, mult2);
@@ -40,6 +42,7 @@ public class MathStopActivity extends Activity{
     
     @Override
    protected void onResume() {
+    	super.onResume();
     	Random r = new Random();
     	mult1 = r.nextInt(5);
     	mult1 += 3;
