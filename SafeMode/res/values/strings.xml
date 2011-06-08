@@ -13,4 +13,5 @@
     <string name="edit_blacklist">Edit Blacklist</string>
     <string name="view_blacklist">View Blacklist</string>
     <string name="math_question">What is </string>
+    <string name="options">Options</string>
 </resources>
