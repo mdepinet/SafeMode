@@ -4,4 +4,5 @@
     <string name="app_name">SAFEMODE</string>
     <string name="start_button">Start SAFEMODE</string>
     <string name="end_button">End SAFEMODE</string>
+    <string name="submit_button">&quot;Submit&quot;</string>
 </resources>
