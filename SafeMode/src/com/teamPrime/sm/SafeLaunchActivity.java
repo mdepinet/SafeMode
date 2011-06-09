@@ -124,6 +124,12 @@ public class SafeLaunchActivity extends Activity {
         	countdownTimer.setText("");
         	if (timer != null) timer.cancel();
         }
+        
+        if (mMenu != null){
+        	mMenu.clear();
+        	String blackString = onState ? view_blacklist : edit_blacklist;
+        	mMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, blackString);
+        }
     }
     
     @Override
