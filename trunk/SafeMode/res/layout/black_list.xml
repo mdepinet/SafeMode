@@ -55,6 +55,7 @@
     	android:layout_width="match_parent" 
     	android:id="@android:id/list"  
     	android:layout_height="wrap_content" 
-    	android:layout_above="@id/blacklist_text">
+    	android:layout_above="@id/blacklist_text"
+    	android:layout_alignParentTop="true">
     </ListView>  
 </RelativeLayout>
