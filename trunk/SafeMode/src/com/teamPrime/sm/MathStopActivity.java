@@ -59,13 +59,15 @@ public class MathStopActivity extends Activity{
     		try {
     			int drunkAns = Integer.parseInt(drunkAnsString);
     			if (drunkAns == corAnswer) {
-    				if (onState == true) {
+    				//if (onState == true) {
     					SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
     					SharedPreferences.Editor editor = data.edit();
     					editor.putBoolean("onState", false);
     					onState = false;
     					editor.commit();
-    				}
+    					Toast.makeText(getApplicationContext(), "SAFEMODE turned off", Toast.LENGTH_SHORT).show();
+    					this.finish();
+    				//}
     			}
     			else {
     				Toast.makeText(getApplicationContext(), "Wrong Answer", Toast.LENGTH_SHORT).show();
