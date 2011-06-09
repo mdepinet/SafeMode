@@ -1,6 +1,10 @@
 package com.teamPrime.sm;
 
-public class ContactDTO {
+import java.io.Serializable;
+
+public class ContactDTO implements Serializable{
+	private static final long serialVersionUID = 507225529375504029L;
+	
 	long id;
 	String name;
 	String[] phoneNums;
