@@ -157,7 +157,7 @@ public class BlackListActivity extends ListActivity {
     	contactNames.clear();
     	String phoneNumber = "";
     	Cursor people = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-
+    
     	while (people.moveToNext()){
 	    	String name = people.getString(people.getColumnIndex(
 	    	ContactsContract.Contacts.DISPLAY_NAME));
