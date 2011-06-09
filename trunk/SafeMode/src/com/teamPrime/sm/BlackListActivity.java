@@ -116,7 +116,7 @@ public class BlackListActivity extends ListActivity {
         mArrayAdapterAC = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,contactNames);
         mAutoComplete = (AutoCompleteTextView)findViewById(R.id.blacklist_text);
         mAutoComplete.setAdapter(mArrayAdapterAC);
-        mAutoComplete.setThreshold(3); 
+        mAutoComplete.setThreshold(2); 
     }
     
     public void populatePeopleList() {
