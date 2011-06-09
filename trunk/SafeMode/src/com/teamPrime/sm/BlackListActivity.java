@@ -1,6 +1,7 @@
 /** This is the main activity for the blacklist
  * 
  * @author Boris Treskunov
+ * 
  */
 
 
@@ -9,11 +10,10 @@
 package com.teamPrime.sm;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.Collections;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -22,7 +22,6 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 public class BlackListActivity extends ListActivity {
@@ -33,90 +32,124 @@ public class BlackListActivity extends ListActivity {
 	Button mRemoveAll;
 	Button mRemove;
 	ArrayAdapter<String> mArrayAdapterBL;
-	LinkedList<String> blacklistedContacts;
+	ArrayList<String> blacklistedContacts;
 	AutoCompleteTextView mAutoComplete;
 	ArrayAdapter<String> mArrayAdapterAC;
 	ArrayList<String> addedContacts;
 	ArrayList<Contact> contacts;
 	ArrayList<String> contactNames;
+	boolean readOnly = false;
+	boolean emptyList = true;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.black_list);
+        readOnly = getIntent().getBooleanExtra("readOnly", true);
+        if (readOnly){
+        	setContentView(R.layout.readonly);
+        	instantiateVariables();
+        }
+        else{
+        	setContentView(R.layout.black_list);
      
-        instantiateVariables();
-        populatePeopleList();    
+        	instantiateVariables();
+        	populatePeopleList();    
  
-        mAddButton.setOnClickListener(new OnClickListener(){    	 	
-        	public void onClick(View v){
-        		String name = mAutoComplete.getText().toString();
-        		if (!contactNames.contains(name))
-        			Toast.makeText(getApplicationContext(), "Incorrect Contact Name!", Toast.LENGTH_LONG).show();
-        		else if (addedContacts.contains(name))
-        			Toast.makeText(getApplicationContext(), "Contact is Already in Blacklist!", Toast.LENGTH_LONG).show();
-        		else{
-        			mArrayAdapterBL.add(name);
-        			addedContacts.add(name);
-        		}
-        		mAutoComplete.setText("");
-        		}
-        	});
-
-        mAddAll.setOnClickListener(new OnClickListener(){    	 	
-        	public void onClick(View v){	
-        		int initialSize = addedContacts.size();
-        		for(Contact contact: contacts) {
-        			if (!addedContacts.contains(contact.getName() + " (" + contact.getNumber() + ")")){
-        				mArrayAdapterBL.add(contact.getName() + " (" + contact.getNumber() + ")");
-        				addedContacts.add(contact.getName() + " (" + contact.getNumber() + ")");
-        				}
-        			if (addedContacts.size()==initialSize) 
-        				Toast.makeText(getApplicationContext(), "All Contacts are Already in Blacklist!", Toast.LENGTH_LONG).show();
-        			}
-        		mAutoComplete.setText("");
-        		}
-        	});
-
-       	mRemoveAll.setOnClickListener(new OnClickListener(){    	 	
-       		public void onClick(View v){
-        		mArrayAdapterBL.clear();
-        		addedContacts.clear();
-        		Toast.makeText(getApplicationContext(), "All Contacts Removed from Blacklist!", Toast.LENGTH_LONG).show();
-        		mAutoComplete.setText("");
-        		}
-        	});
-        	
-       	mRemove.setOnClickListener(new OnClickListener(){    	 	
-       		public void onClick(View v){
-       			String name = mAutoComplete.getText().toString();
-        		if (!addedContacts.contains(name))
-        			Toast.makeText(getApplicationContext(), "Contact is not in Blacklist!", Toast.LENGTH_LONG).show();
-        		else {
-       				mArrayAdapterBL.remove(name);
-       				addedContacts.remove(name);
-       			}
-        		mAutoComplete.setText("");
-        		}
-        	});
-
+	        mAddButton.setOnClickListener(new OnClickListener(){    	 	
+	        	public void onClick(View v){
+	        		if(emptyList){
+	        			mArrayAdapterBL.remove("Your Blacklist is Currently Empty...");
+	        			emptyList = false;
+	        		}
+	        		String name = mAutoComplete.getText().toString();
+	        		if (!contactNames.contains(name))
+	        			Toast.makeText(getApplicationContext(), "Incorrect Contact Name!", Toast.LENGTH_SHORT).show();
+	        		else if (addedContacts.contains(name))
+	        			Toast.makeText(getApplicationContext(), "Contact is Already in Blacklist!", Toast.LENGTH_SHORT).show();
+	        		else{
+	        			mArrayAdapterBL.add(name);
+	        			addedContacts.add(name);
+	        		}
+	        		Collections.sort(blacklistedContacts);
+	        		mAutoComplete.setText("");
+	        		}
+	        	});
+	
+	        mAddAll.setOnClickListener(new OnClickListener(){    	 	
+	        	public void onClick(View v){	
+	        		if(emptyList){
+	        			mArrayAdapterBL.remove("Your Blacklist is Currently Empty...");
+	        			emptyList = false;
+	        		}
+	        		int initialSize = addedContacts.size();
+	        		for(Contact contact: contacts) {
+	        			if (!addedContacts.contains(contact.getName() + " (" + contact.getNumber() + ")")){
+	        				mArrayAdapterBL.add(contact.getName() + " (" + contact.getNumber() + ")");
+	        				addedContacts.add(contact.getName() + " (" + contact.getNumber() + ")");
+	        				}
+	        			if (addedContacts.size()==initialSize) 
+	        				Toast.makeText(getApplicationContext(), "All Contacts are Already in Blacklist!", Toast.LENGTH_SHORT).show();
+	        			}
+	        		Collections.sort(blacklistedContacts);
+	        		mAutoComplete.setText("");
+	        		}
+	        	});
+	
+	       	mRemoveAll.setOnClickListener(new OnClickListener(){    	 	
+	       		public void onClick(View v){
+	        		mArrayAdapterBL.clear();
+	        		addedContacts.clear();
+	        		Toast.makeText(getApplicationContext(), "All Contacts Removed from Blacklist!", Toast.LENGTH_SHORT).show();
+	        		Collections.sort(blacklistedContacts);
+	                if(mArrayAdapterBL.isEmpty()){
+	                	mArrayAdapterBL.add("Your Blacklist is Currently Empty...");
+	                	emptyList = true;
+	                }
+	        		mAutoComplete.setText("");
+	        		}
+	        	});
+	        	
+	       	mRemove.setOnClickListener(new OnClickListener(){    	 	
+	       		public void onClick(View v){
+	       			String name = mAutoComplete.getText().toString();
+	        		if (!addedContacts.contains(name))
+	        			Toast.makeText(getApplicationContext(), "Contact is not in Blacklist!", Toast.LENGTH_SHORT).show();
+	        		else { 
+	       				mArrayAdapterBL.remove(name);
+	       				addedContacts.remove(name);
+	       			}
+	        		Collections.sort(blacklistedContacts);
+	                if(mArrayAdapterBL.isEmpty()){
+	                	mArrayAdapterBL.add("Your Blacklist is Currently Empty...");
+	                	emptyList = true;
+	                }
+	        		mAutoComplete.setText("");
+	        		}
+	        	});
+	        }
 }
     
     private void instantiateVariables(){
-        mAddButton = (Button) findViewById(R.id.add);
+        if (!readOnly){
+    	mAddButton = (Button) findViewById(R.id.add);
         mAddAll = (Button) findViewById(R.id.add_all_button);
         mRemoveAll = (Button) findViewById(R.id.remove_all_button);
-        mRemove = (Button) findViewById(R.id.remove);
+        mRemove = (Button) findViewById(R.id.remove);        
         addedContacts = new ArrayList<String>();
-        blacklistedContacts = new LinkedList<String>();
         contacts = new ArrayList<Contact>();
         contactNames = new ArrayList<String>();
-        mArrayAdapterBL = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, blacklistedContacts);
-        this.setListAdapter(mArrayAdapterBL);
         mArrayAdapterAC = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,contactNames);
         mAutoComplete = (AutoCompleteTextView)findViewById(R.id.blacklist_text);
         mAutoComplete.setAdapter(mArrayAdapterAC);
-        mAutoComplete.setThreshold(2); 
+        mAutoComplete.setThreshold(2);
+        }
+        blacklistedContacts = new ArrayList<String>();
+        mArrayAdapterBL = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, blacklistedContacts);
+        this.setListAdapter(mArrayAdapterBL);
+        if(mArrayAdapterBL.isEmpty()){
+        	mArrayAdapterBL.add("Your Blacklist is Currently Empty...");
+        	emptyList = true;
+        }
     }
     
     public void populatePeopleList() {
@@ -150,10 +183,11 @@ public class BlackListActivity extends ListActivity {
     	//startManagingCursor(people);
     }
     
-/**	@Override 
+/**	
  * this was the code for a popupWindow that may be revived one day...
  * but for now it shall live in comments.
  *
+	@Override 
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		keyword = this.getListAdapter().getItem(position).toString();		
