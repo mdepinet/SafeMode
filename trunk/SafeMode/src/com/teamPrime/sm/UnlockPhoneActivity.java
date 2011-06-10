@@ -2,6 +2,7 @@ package com.teamPrime.sm;
 
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -64,10 +65,16 @@ public class UnlockPhoneActivity extends Activity {
         	   // correct answer was given
         	   if(ans == inp) {
         		   Toast.makeText(getApplicationContext(), "Correct Answer. Contacts unprotected.", Toast.LENGTH_SHORT).show();
-					SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
-					SharedPreferences.Editor editor = data.edit();
-					editor.putBoolean("onState", false);
-					editor.commit();
+					//SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
+					//SharedPreferences.Editor editor = data.edit();
+					//editor.putBoolean("onState", false);
+					//editor.commit();
+					
+					// get rid of notifications
+					String ns = Context.NOTIFICATION_SERVICE;
+					NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+					mNotificationManager.cancelAll();
+					
 				   this.finish();
 
         	   }
