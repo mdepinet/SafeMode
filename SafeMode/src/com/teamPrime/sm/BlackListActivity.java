@@ -42,13 +42,14 @@ public class BlackListActivity extends ListActivity {
 	ArrayList<Contact> contacts = new ArrayList<Contact>();
 	ArrayList<String> contactNames = new ArrayList<String>(); 
 	Map<Long, Triple<String,Integer,String>[]> iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
+	Map<Long, Triple<String,Integer,String>[]> iDmapPrev = new TreeMap<Long, Triple <String,Integer,String>[]>();
 	Map<Long, Triple<String,Integer,String>[]> iDmapFull = new TreeMap<Long, Triple <String,Integer,String>[]>();
 	boolean readOnly = false;
 	boolean emptyList = true;
 	boolean savedNull = true;
 	ArrayList<String> tempContacts = new ArrayList<String>();
 	
-    @Override
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState!=null){savedNull = false;}
@@ -165,6 +166,7 @@ public class BlackListActivity extends ListActivity {
         	iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
             mArrayAdapterBL = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, blacklistedContacts);
             this.setListAdapter(mArrayAdapterBL);
+            iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
     	if (!readOnly){
 	    	mAddButton = (Button) findViewById(R.id.add);
 	        mAddAll = (Button) findViewById(R.id.add_all_button);
@@ -177,7 +179,6 @@ public class BlackListActivity extends ListActivity {
         }
     }
 
-    
     public void populatePeopleList() {
     	contacts.clear();
     	contactNames.clear();
@@ -203,7 +204,7 @@ public class BlackListActivity extends ListActivity {
 	  				phoneLabel = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.LABEL));
 	  				phoneType = Integer.parseInt(numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.TYPE)));
 	  				nums.add(new Triple<String,Integer,String>(phoneNumber,phoneType,phoneLabel));
-	  			}
+	  			} 
 	  			contacts.add(new Contact(iD, name, nums));
 	  		}
     	}
@@ -240,7 +241,7 @@ public class BlackListActivity extends ListActivity {
     public void onPause(){
         super.onPause();
         int x = 0;
-        BlackListIOTask dbTask = new BlackListIOTask(this, iDmapFull,iDmap,false);
+        BlackListIOTask dbTask = new BlackListIOTask(this, iDmapPrev,iDmap,0);
     	dbTask.execute((Void[])(null));       
         SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
         SharedPreferences.Editor editor = data.edit();
@@ -265,7 +266,7 @@ public class BlackListActivity extends ListActivity {
         for (int i = 0; i < savedInt;i++){
         	for(int j = 0; j < contacts.toArray().length; j++){
 				if(contacts.get(j).match(data.getString("name" + i, "")))
-					iDmap.put(Long.parseLong(contacts.get(j).getID()), contacts.get(j).getNumber());
+					iDmapPrev.put(Long.parseLong(contacts.get(j).getID()), contacts.get(j).getNumber());
 				}
         	mArrayAdapterBL.add(data.getString("name"+i, ""));
         	addedContacts.add(data.getString("name"+i, ""));
