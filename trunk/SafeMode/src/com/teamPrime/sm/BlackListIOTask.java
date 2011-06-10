@@ -58,9 +58,9 @@ public class BlackListIOTask extends AsyncTask<Void, Void, Void> {
 					oos = new ObjectOutputStream(mActivity.openFileOutput(BL_FILENAME, Context.MODE_PRIVATE));
 					oos.writeObject(blackMap);
 				} catch (FileNotFoundException e) {
-					Log.e(null, "SAFEMODE", e);
+					Log.e("SAFEMODE", null, e);
 				} catch (IOException e) {
-					Log.e(null, "SAFEMODE", e);
+					Log.e("SAFEMODE", null, e);
 				}
 				finally{
 					try{oos.close();}catch(Throwable t){}
@@ -71,9 +71,9 @@ public class BlackListIOTask extends AsyncTask<Void, Void, Void> {
 					oos = new ObjectOutputStream(mActivity.openFileOutput(FULL_FILENAME, Context.MODE_PRIVATE));
 					oos.writeObject(fullMap);
 				} catch (FileNotFoundException e) {
-					Log.e(null, "SAFEMODE", e);
+					Log.e("SAFEMODE", null, e);
 				} catch (IOException e) {
-					Log.e(null, "SAFEMODE", e);
+					Log.e("SAFEMODE", null, e);
 				}
 				finally{
 					try{oos.close();}catch(Throwable t){}
@@ -87,9 +87,9 @@ public class BlackListIOTask extends AsyncTask<Void, Void, Void> {
 					ois = new ObjectInputStream(mActivity.openFileInput(BL_FILENAME));
 					blackMap = (Map<Long, Triple<String,Integer,String>[]>) ois.readObject();
 				} catch(IOException e) {
-					Log.e(null, "SAFEMODE", e);
+					Log.e("SAFEMODE", null, e);
 				} catch (ClassNotFoundException e) {
-					Log.e(null, "SAFEMODE", e);
+					Log.e("SAFEMODE", null, e);
 				}
 				finally{
 					try{ois.close();}catch(Throwable t){}
@@ -100,9 +100,9 @@ public class BlackListIOTask extends AsyncTask<Void, Void, Void> {
 					ois = new ObjectInputStream(mActivity.openFileInput(FULL_FILENAME));
 					fullMap = (Map<Long, Triple<String,Integer,String>[]>) ois.readObject();
 				} catch(IOException e) {
-					Log.e(null, "SAFEMODE", e);
+					Log.e("SAFEMODE", null, e);
 				} catch (ClassNotFoundException e) {
-					Log.e(null, "SAFEMODE", e);
+					Log.e("SAFEMODE", null, e);
 				}
 				finally{
 					try{ois.close();}catch(Throwable t){}
@@ -110,8 +110,11 @@ public class BlackListIOTask extends AsyncTask<Void, Void, Void> {
 			}
 			
 			if (updateDB){ //Update DB
-				ContactDAO.revealNumbers(fullMap, mActivity.getContentResolver());
-				ContactDAO.hideNumbers(blackMap, mActivity.getContentResolver());
+				if (fullMap != null){
+					ContactDAO.revealNumbers(fullMap, mActivity.getContentResolver());
+					ContactDAO.hideNumbers(blackMap, mActivity.getContentResolver());
+				}
+				else Log.w("SAFEMODE", "fullMap was null, so DB update was skipped");
 			}
 		}
 		return null;

@@ -53,6 +53,8 @@ public class SafeLaunchActivity extends Activity {
 	private final String edit_blacklist = "Edit Blacklist";
 	private final String view_blacklist = "View Blacklist";
 	
+	private BlackListIOTask ioTask;
+	
 	private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -195,6 +197,7 @@ public class SafeLaunchActivity extends Activity {
     public void onDestroy(){
     	super.onDestroy();
     	if (mTask != null) mTask.cancel(true);
+    	if (ioTask != null) ioTask.cancel(true);
     }
     
     @Override
@@ -227,6 +230,8 @@ public class SafeLaunchActivity extends Activity {
 		Log.v("registeredReceiver", "finishedregistration");
     }
     public void finishTurnOn(){
+    	ioTask = new BlackListIOTask(this,null,null,true);
+    	ioTask.execute((Void[])(null));
     	Calendar c = Calendar.getInstance(TimeZone.getDefault(),Locale.getDefault());
 //		c.add(Calendar.YEAR, year-1900);
 //		c.add(Calendar.MONTH, month);
