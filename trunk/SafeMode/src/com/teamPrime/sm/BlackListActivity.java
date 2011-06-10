@@ -66,9 +66,9 @@ public class BlackListActivity extends ListActivity {
         	setContentView(R.layout.black_list);
      
         	instantiateVariables();
-        	mTask = new PopulateTask(this);
-        	mTask.execute((Void[])(null));
-        	//populatePeopleList();    
+        	//mTask = new PopulateTask(this);
+        	//mTask.execute((Void[])(null));
+        	populatePeopleList();    
  
 	        mAddButton.setOnClickListener(new OnClickListener(){    	 	
 	        	public void onClick(View v){
@@ -174,11 +174,10 @@ public class BlackListActivity extends ListActivity {
 	        mAddAll = (Button) findViewById(R.id.add_all_button);
 	        mRemoveAll = (Button) findViewById(R.id.remove_all_button);
 	        mRemove = (Button) findViewById(R.id.remove);
-		       // mArrayAdapterAC = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,contactNames);
+		      	mArrayAdapterAC = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,contactNames);
 		        mAutoComplete = (AutoCompleteTextView)findViewById(R.id.blacklist_text);
-		        //mAutoComplete.setAdapter(mArrayAdapterAC);
-		        //mAutoComplete.setThreshold(2);
-		        
+		        mAutoComplete.setAdapter(mArrayAdapterAC);
+		        mAutoComplete.setThreshold(2);		        
         }
     	
 
