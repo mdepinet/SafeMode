@@ -1,11 +1,12 @@
 package com.teamPrime.sm;
 
-public class Triple<K,V,L> {
+import java.io.Serializable;
+
+public class Triple<K,V,L> implements Serializable {
 
 	private K first;
 	private V second;
 	private L third;
-	
 	
 	public Triple(K f, V s, L t) { 
 	    first = f;
