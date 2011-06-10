@@ -216,6 +216,7 @@ public class SafeLaunchActivity extends Activity {
     	else super.onBackPressed();
     }
     
+    
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.onOffButton:
@@ -236,6 +237,7 @@ public class SafeLaunchActivity extends Activity {
         // Register the Receiver to call the Unlock Page when phone unlocks
         IntentFilter mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Intent.ACTION_USER_PRESENT);
+     //   mIntentFilter.addAction(Intent.A)
     	registerReceiver(mIntentReceiver, mIntentFilter);
 		Log.v("registeredReceiver", "finishedregistration");
     }
@@ -270,6 +272,19 @@ public class SafeLaunchActivity extends Activity {
     	timer = new SimpleTimer(timeLeft,1000);
         timer.start();
         timeUpdated = dateUpdated = false;
+		int icon = R.drawable.locked;
+		CharSequence tickerText = "SAFEMODE Locked";
+		long when = System.currentTimeMillis();
+		
+		Notification not = new Notification(icon, tickerText, when);
+		not.setLatestEventInfo(getApplicationContext(), 
+							  "Contacts protected by SAFEMODE", 
+							  "Click here to unlock SAFEMODE", 
+							  PendingIntent.getActivity(getApplicationContext(), 0, new Intent(getApplicationContext(), UnlockPhoneActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK)
+							  );
+		String ns = Context.NOTIFICATION_SERVICE;
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+		mNotificationManager.notify(1, not);
     }
     
     private void turnOff(){
@@ -288,6 +303,10 @@ public class SafeLaunchActivity extends Activity {
 	        mMenu.clear();
 	        mMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, edit_blacklist);
         }
+
+		String ns = Context.NOTIFICATION_SERVICE;
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+		mNotificationManager.cancelAll();
     }
     
     public int getHour() {
