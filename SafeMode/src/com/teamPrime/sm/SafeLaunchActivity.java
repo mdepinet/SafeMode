@@ -59,7 +59,7 @@ public class SafeLaunchActivity extends Activity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			int icon = R.drawable.icon;
+			int icon = R.drawable.locked;
 			CharSequence tickerText = "SAFEMODE Locked";
 			long when = System.currentTimeMillis();
 			
