@@ -3,6 +3,8 @@ package com.teamPrime.sm;
 import java.util.Random;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -68,8 +70,15 @@ public class MathStopActivity extends Activity{
     					editor.putBoolean("onState", false);
     					onState = false;
     					editor.commit();
+    					
+    					// get rid of notifications
+    					String ns = Context.NOTIFICATION_SERVICE;
+    					NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+    					mNotificationManager.cancelAll();
+    					
     					Toast.makeText(getApplicationContext(), "SAFEMODE turned off", Toast.LENGTH_SHORT).show();
     					this.finish();
+  
     				}
     			}
     			else {
