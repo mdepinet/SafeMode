@@ -17,6 +17,7 @@ public class MathStopActivity extends Activity{
 	private TextView question;
 	private TextView answer;
 	private int mult1, mult2, corAnswer;
+	@SuppressWarnings("unused")
 	private boolean onState;
     /** Called when the activity is first created. */
     @Override
