@@ -194,7 +194,7 @@ public class SafeLaunchActivity extends Activity {
     @Override
     public void onDestroy(){
     	super.onDestroy();
-    	mTask.cancel(true);
+    	if (mTask != null) mTask.cancel(true);
     }
     
     @Override
