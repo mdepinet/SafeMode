@@ -8,11 +8,18 @@ import java.util.TimeZone;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,6 +52,28 @@ public class SafeLaunchActivity extends Activity {
 	private Menu mMenu;
 	private final String edit_blacklist = "Edit Blacklist";
 	private final String view_blacklist = "View Blacklist";
+	
+	private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			int icon = R.drawable.icon;
+			CharSequence tickerText = "SAFEMODE Locked";
+			long when = System.currentTimeMillis();
+			
+			Notification not = new Notification(icon, tickerText, when);
+			not.setLatestEventInfo(context, 
+								  "Your contacts have been protected by SAFEMODE", 
+								  "Click here to unlock SAFEMODE", 
+								  PendingIntent.getActivity(context, 0, new Intent(getApplicationContext(), UnlockPhoneActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK)
+								  );
+			String ns = Context.NOTIFICATION_SERVICE;
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+			
+			mNotificationManager.notify(1, not);
+			
+		}
+	};
 	
     /** Called when the activity is first created. */
     @Override
@@ -185,6 +214,13 @@ public class SafeLaunchActivity extends Activity {
     	countdownTimer.setText("Waiting for user input...");
     	mTask = new DateWaitTask(this);
     	mTask.execute((Void[])(null));
+    	
+    	// Make notification here
+        // Register the Receiver to call the Unlock Page when phone unlocks
+        IntentFilter mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Intent.ACTION_USER_PRESENT);
+    	registerReceiver(mIntentReceiver, mIntentFilter);
+		Log.v("registeredReceiver", "finishedregistration");
     }
     public void finishTurnOn(){
     	Calendar c = Calendar.getInstance(TimeZone.getDefault(),Locale.getDefault());
