@@ -38,7 +38,6 @@ public class PopulateTask extends AsyncTask<Void, Integer, Void> {
     	mActivity.mAutoComplete = (AutoCompleteTextView)mActivity.findViewById(R.id.blacklist_text);
         mActivity.mAutoComplete.setAdapter(mActivity.mArrayAdapterAC);
         mActivity.mAutoComplete.setThreshold(2);
-    	
     }
 	
 	@Override
