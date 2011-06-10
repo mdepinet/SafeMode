@@ -6,12 +6,12 @@ public class Contact {
 	
 	private String iD;
 	private String name;
-	private String[] numbers;
+	private Triple<String,Integer, String>[] numbers;
 	
-	public Contact (String iD, String name, List<String> numbers){
+	public Contact (String iD, String name, List<Triple<String,Integer,String>> numbers){
 		this.iD = iD;
 		this.name = name;
-		String[] nums = new String[numbers.size()];
+		Triple<String,Integer, String>[] nums = new Triple[numbers.size()];
 		for (int i = 0; i<nums.length; i++){
 			nums[i] = numbers.get(i);
 		}
@@ -30,7 +30,7 @@ public class Contact {
 		return name;
 	}
 	
-	public String[] getNumber(){
+	public Triple<String,Integer,String>[] getNumber(){
 		return numbers;
 	}
 
