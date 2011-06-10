@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Map;
 
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -207,28 +209,67 @@ public class ContactDAO {
     
     public static int hideNumbers(Map<Long,Triple<String,Integer,String>[]> nums, ContentResolver cr){
     	int hidden = 0;
-    	ContentValues values = new ContentValues();
-    	values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, "555-555-5555");
+//    	ContentValues values = new ContentValues();
+//    	values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, "555-555-5555");
+		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+		int i = 0;
     	for (Map.Entry<Long, Triple<String,Integer,String>[]> pair : nums.entrySet()){
-    		hidden += cr.update(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-    				ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ pair.getKey(), null);
+    		if (i >= 10){
+    			try {
+    	  	        hidden += cr.applyBatch(ContactsContract.AUTHORITY, ops).length;
+    	  	    }
+    	  	     catch(Exception ex){
+    	  	    	 Log.e("SAFEMODE",null, ex);
+    	  	     }
+    	  	     i = 0;
+    		}
+//    		hidden += cr.update(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, values,
+//    				ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ pair.getKey(), null);
+    	    ops.add(ContentProviderOperation.newDelete(ContactsContract.Data.CONTENT_URI)
+    	            .withSelection(ContactsContract.Data.RAW_CONTACT_ID, new String[]{pair.getKey().toString()})
+    	            .withSelection(ContactsContract.Data.MIMETYPE,new String[]{ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE})
+    	            .withExpectedCount(pair.getValue().length).build());
+    	    i++;
     	}
+    	 try {
+  	        hidden += cr.applyBatch(ContactsContract.AUTHORITY, ops).length;
+  	    }
+  	     catch(Exception ex){
+  	    	 Log.e("SAFEMODE",null, ex);
+  	     }
     	return hidden;
     }
     
     public static int revealNumbers(Map<Long,Triple<String,Integer,String>[]> nums, ContentResolver cr){
     	int hidden = 0;
+		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
     	for (Map.Entry<Long, Triple<String,Integer,String>[]> pair : nums.entrySet()){
     		for (Triple<String,Integer,String> trip : pair.getValue()){
-	    		ContentValues values = new ContentValues();
-	        	values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, trip.getFirst());
-	        	values.put(ContactsContract.CommonDataKinds.Phone.TYPE, trip.getSecond());
-	        	values.put(ContactsContract.CommonDataKinds.Phone.LABEL, trip.getThird());
-	    		hidden += cr.update(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-	    				ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ pair.getKey() +
-	    				" AND "+ContactsContract.CommonDataKinds.Phone.TYPE + " = "+trip.getSecond() +
-	    				" AND "+ContactsContract.CommonDataKinds.Phone.LABEL + " = "+trip.getThird(), null);
+//	    		ContentValues values = new ContentValues();
+//	        	values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, trip.getFirst());
+//	        	values.put(ContactsContract.CommonDataKinds.Phone.TYPE, trip.getSecond());
+//	        	values.put(ContactsContract.CommonDataKinds.Phone.LABEL, trip.getThird());
+//	        	String[] selectionArgs = { pair.getKey().toString(), trip.getSecond().toString(), trip.getThird()  };
+//	    		hidden += cr.update(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, values,
+//	    				ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?" +
+//	    				" AND "+ContactsContract.CommonDataKinds.Phone.TYPE + " = ?" +
+//	    				" AND ("+ContactsContract.CommonDataKinds.Phone.LABEL + "IS NULL OR " +
+//	    				ContactsContract.CommonDataKinds.Phone.LABEL + " = ?"+")", selectionArgs);
+        	    ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+        	            .withValue(ContactsContract.Data.RAW_CONTACT_ID, pair.getKey())
+        	            .withValue(ContactsContract.Data.MIMETYPE,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+        	            if (trip.getSecond() != null) builder = builder.withValue(ContactsContract.CommonDataKinds.Phone.TYPE,trip.getSecond());
+        	              else builder = builder.withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE);
+        	            builder = builder.withValue(ContactsContract.CommonDataKinds.Phone.LABEL,trip.getThird())
+        	            .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER,trip.getFirst());
+        	    ops.add(builder.build());
     		}
+    		try {
+     	        hidden += cr.applyBatch(ContactsContract.AUTHORITY, ops).length;
+     	    }
+     	     catch(Exception ex){
+     	    	 Log.e("SAFEMODE",null, ex);
+     	     }
     	}
     	return hidden;
     }
