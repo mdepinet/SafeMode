@@ -2,11 +2,23 @@ package com.teamPrime.sm;
 
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class UnlockPhoneActivity extends Activity {
+
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -17,20 +29,19 @@ public class UnlockPhoneActivity extends Activity {
 	        TextView hView = (TextView)findViewById(R.id.hidden_answer);
 	        
 	        int a, b, answer;
-	        a = generateRand(10, 20);
-	        b = generateRand(10, 20);
+	        a = MathUtils.genSmallRandom();
+	        b = MathUtils.genLargeRandom();
 	        
 	        answer = a*b;
 	        
 	        rView.setText("What is " + a + " x " + b + "?");
 	        hView.setText(Integer.toString(answer));
+
+
+	        	
     	} catch(Exception e) {
-    		
+    		Log.i("onCreate_error", "e: " + e);
     	}
-    }
-    
-    public int generateRand(int lower, int upper) {
-		return 2;
     }
     
     /** Handler to receive onClick events from buttons.
@@ -52,12 +63,19 @@ public class UnlockPhoneActivity extends Activity {
         	   
         	   // correct answer was given
         	   if(ans == inp) {
-        		   inputAns.setText("Correct answer was given.");
+        		   Toast.makeText(getApplicationContext(), "Correct Answer. Contacts unprotected.", Toast.LENGTH_SHORT).show();
+					SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
+					SharedPreferences.Editor editor = data.edit();
+					editor.putBoolean("onState", false);
+					editor.commit();
+				   this.finish();
+
         	   }
         	   
         	   // incorrect answer was given
         	   else {
-        		   inputAns.setText("Incorrect answer was given.");
+        		   Toast.makeText(getApplicationContext(), "Incorrect Answer.", Toast.LENGTH_SHORT).show();
+        		   this.finish();
         	   }
            break;
        }
