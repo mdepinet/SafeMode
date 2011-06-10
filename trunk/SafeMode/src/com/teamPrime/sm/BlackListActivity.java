@@ -48,14 +48,14 @@ public class BlackListActivity extends ListActivity {
 	boolean emptyList = true;
 	boolean savedNull = true;
 	ArrayList<String> tempContacts = new ArrayList<String>();
-	int x = 0;
+
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         if(savedInstanceState!=null){savedNull = false;}
-        else x++;
+    
         readOnly = getIntent().getBooleanExtra("readOnly", true);
         if (readOnly){
         	setContentView(R.layout.readonly);
@@ -167,6 +167,7 @@ public class BlackListActivity extends ListActivity {
         	contacts = new ArrayList<Contact>();
         	contactNames = new ArrayList<String>(); 
         	iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
+        	iDmapPrev = new TreeMap<Long, Triple <String,Integer,String>[]>();
             mArrayAdapterBL = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, blacklistedContacts);
             this.setListAdapter(mArrayAdapterBL);
             iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
@@ -251,7 +252,7 @@ public class BlackListActivity extends ListActivity {
     public void onDestroy(){
         super.onDestroy();
         saveState();       
-    }
+    } 
     
     @Override
     public void onResume(){
