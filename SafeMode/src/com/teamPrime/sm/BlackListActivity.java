@@ -48,11 +48,14 @@ public class BlackListActivity extends ListActivity {
 	boolean emptyList = true;
 	boolean savedNull = true;
 	ArrayList<String> tempContacts = new ArrayList<String>();
+	int x = 0;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         if(savedInstanceState!=null){savedNull = false;}
+        else x++;
         readOnly = getIntent().getBooleanExtra("readOnly", true);
         if (readOnly){
         	setContentView(R.layout.readonly);
@@ -115,7 +118,7 @@ public class BlackListActivity extends ListActivity {
 	        	});
 	
 	       	mRemoveAll.setOnClickListener(new OnClickListener(){    	 	
-	       		public void onClick(View v){
+	       		public void onClick(View v){ 
 	        		mArrayAdapterBL.clear();
 	        		for (String name:addedContacts){
 	        			for(int i = 0; i < contacts.toArray().length; i++){
@@ -241,27 +244,29 @@ public class BlackListActivity extends ListActivity {
     @Override
     public void onPause(){
         super.onPause();
-        int x = 0;
-        BlackListIOTask dbTask = new BlackListIOTask(this, iDmapPrev,iDmap,0);
-    	dbTask.execute((Void[])(null));       
-        SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
-        SharedPreferences.Editor editor = data.edit();
-        for(String name:addedContacts){
-        	editor.putString("name" + x,name);
-        	x++;
-        }
-        editor.putInt("length", addedContacts.size());
-        editor.commit();
-         
+        saveState();       
+    }
+    
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        saveState();       
     }
     
     @Override
     public void onResume(){
     	super.onResume();
     }
+    
+    @Override
+    public void onBackPressed(){
+    	saveState();
+    	//onPause();
+    	super.onBackPressed();
+    }
 
     public void restore(){
-    	if(!savedNull){
+    	//if(!savedNull){
     	SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
         int savedInt = data.getInt("length", 0);
         for (int i = 0; i < savedInt;i++){
@@ -272,12 +277,26 @@ public class BlackListActivity extends ListActivity {
         	mArrayAdapterBL.add(data.getString("name"+i, ""));
         	addedContacts.add(data.getString("name"+i, ""));
     }
-    	}   
+    	//}    
         if(mArrayAdapterBL.isEmpty()){
         	mArrayAdapterBL.add("Your Blacklist is Currently Empty...");
         	emptyList = true;
         }
 }
+    
+    public void saveState(){
+    	int x = 0;
+    	BlackListIOTask dbTask = new BlackListIOTask(this, iDmapPrev,iDmap,0);
+    	dbTask.execute((Void[])(null));       
+        SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
+        SharedPreferences.Editor editor = data.edit();
+        for(String name:addedContacts){
+        	editor.putString("name" + x,name);
+        	x++;
+        }
+        editor.putInt("length", addedContacts.size());
+        editor.commit();
+    }
     
 }
 
