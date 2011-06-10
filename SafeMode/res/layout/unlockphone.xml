@@ -6,6 +6,7 @@
     <TextView android:layout_width="wrap_content" android:id="@+id/textView1" android:layout_height="wrap_content" android:text="@string/locked_message" android:layout_gravity="center|fill" android:gravity="center|center_vertical|center_horizontal"></TextView>
     <TextView android:layout_width="wrap_content" android:id="@+id/random" android:layout_height="wrap_content" android:layout_gravity="center|fill" android:gravity="center|center_vertical|center_horizontal"></TextView>
     <EditText android:layout_width="match_parent" android:hint="Type your answer here" android:layout_height="wrap_content" android:id="@+id/input_answer" android:numeric="integer"></EditText>
-    <EditText android:layout_width="wrap_content" android:text="@string/submit_button" android:layout_height="wrap_content" android:id="@+id/submit_button" android:editable="false" android:onClick="onClick"></EditText>
+    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/submit_button" android:text="@string/submit_button"
+        android:onClick="onClick" ></Button>
     <TextView android:layout_width="wrap_content" android:id="@+id/hidden_answer" android:layout_height="wrap_content" android:visibility="invisible" android:text="hidden_answer"></TextView>
 </LinearLayout>
