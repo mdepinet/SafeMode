@@ -59,19 +59,21 @@ public class SafeLaunchActivity extends Activity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			int icon = R.drawable.locked;
-			CharSequence tickerText = "SAFEMODE Locked";
-			long when = System.currentTimeMillis();
-			
-			Notification not = new Notification(icon, tickerText, when);
-			not.setLatestEventInfo(context, 
-								  "Contacts protected by SAFEMODE", 
-								  "Click here to unlock SAFEMODE", 
-								  PendingIntent.getActivity(context, 0, new Intent(getApplicationContext(), UnlockPhoneActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK)
-								  );
-			String ns = Context.NOTIFICATION_SERVICE;
-			NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-			mNotificationManager.notify(1, not);
+			if(onState) {
+				int icon = R.drawable.locked;
+				CharSequence tickerText = "SAFEMODE Locked";
+				long when = System.currentTimeMillis();
+				
+				Notification not = new Notification(icon, tickerText, when);
+				not.setLatestEventInfo(context, 
+									  "Contacts protected by SAFEMODE", 
+									  "Click here to unlock SAFEMODE", 
+									  PendingIntent.getActivity(context, 0, new Intent(getApplicationContext(), UnlockPhoneActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK)
+									  );
+				String ns = Context.NOTIFICATION_SERVICE;
+				NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+				mNotificationManager.notify(1, not);
+			}
 		}
 	};
 	
