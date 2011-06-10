@@ -37,6 +37,8 @@ public class MathStopActivity extends Activity{
         SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
         onState = data.getBoolean("onState", true);
         
+ 
+  
     }
 
     /** Called upon subsequent calls to Activity **/
@@ -60,7 +62,7 @@ public class MathStopActivity extends Activity{
     		try {
     			int drunkAns = Integer.parseInt(drunkAnsString);
     			if (drunkAns == corAnswer) {
-    				//if (onState == true) {
+    				if (onState == true) {
     					SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
     					SharedPreferences.Editor editor = data.edit();
     					editor.putBoolean("onState", false);
@@ -68,7 +70,7 @@ public class MathStopActivity extends Activity{
     					editor.commit();
     					Toast.makeText(getApplicationContext(), "SAFEMODE turned off", Toast.LENGTH_SHORT).show();
     					this.finish();
-    				//}
+    				}
     			}
     			else {
     				Toast.makeText(getApplicationContext(), "Wrong Answer", Toast.LENGTH_SHORT).show();
