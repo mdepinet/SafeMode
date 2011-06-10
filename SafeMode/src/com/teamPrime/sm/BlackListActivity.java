@@ -1,7 +1,7 @@
 /** This is the main activity for the blacklist
  * 
  * @author Boris Treskunov
- * 
+ *  
  */
 
 //onSavedInstanceState()
@@ -12,17 +12,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import android.app.ListActivity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 public class BlackListActivity extends ListActivity {
@@ -34,19 +35,28 @@ public class BlackListActivity extends ListActivity {
 	Button mRemove;
     
 	ArrayAdapter<String> mArrayAdapterBL;
-	ArrayList<String> blacklistedContacts;
+	ArrayList<String> blacklistedContacts = new ArrayList<String>();
 	AutoCompleteTextView mAutoComplete;
 	ArrayAdapter<String> mArrayAdapterAC;
 	ArrayList<String> addedContacts = new ArrayList<String>();
 	ArrayList<Contact> contacts = new ArrayList<Contact>();
 	ArrayList<String> contactNames = new ArrayList<String>(); 
-	Map<Long, Triple<String,Integer,String>[]> iDmap = new HashMap<Long, Triple <String,Integer,String>[]>();
+	Map<Long, Triple<String,Integer,String>[]> iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
+	Map<Long, Triple<String,Integer,String>[]> iDmapFull = new TreeMap<Long, Triple <String,Integer,String>[]>();
 	boolean readOnly = false;
 	boolean emptyList = true;
+	boolean onSIS = false;
+	private PopulateTask mTask;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //if(savedInstanceState!=null){onSIS=true;}
+       // SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
+        //boolean savedBoolean = data.getBoolean("state", false);
+        //onSIS=savedBoolean;
+
+    	
         readOnly = getIntent().getBooleanExtra("readOnly", true);
         if (readOnly){
         	setContentView(R.layout.readonly);
@@ -56,7 +66,9 @@ public class BlackListActivity extends ListActivity {
         	setContentView(R.layout.black_list);
      
         	instantiateVariables();
-        	populatePeopleList();    
+        	mTask = new PopulateTask(this);
+        	mTask.execute((Void[])(null));
+        	//populatePeopleList();    
  
 	        mAddButton.setOnClickListener(new OnClickListener(){    	 	
 	        	public void onClick(View v){
@@ -76,7 +88,7 @@ public class BlackListActivity extends ListActivity {
 	        				if(contacts.get(i).match(name))
 	        					iDmap.put(Long.parseLong(contacts.get(i).getID()), contacts.get(i).getNumber());
 	        			}
-	        			Log.i("safemode", iDmap.toString());
+	        			//Log.i("safemode", iDmap.toString());
 	        		}
 	        		Collections.sort(blacklistedContacts);
 	        		mAutoComplete.setText("");
@@ -108,6 +120,12 @@ public class BlackListActivity extends ListActivity {
 	       	mRemoveAll.setOnClickListener(new OnClickListener(){    	 	
 	       		public void onClick(View v){
 	        		mArrayAdapterBL.clear();
+	        		for (String name:addedContacts){
+	        			for(int i = 0; i < contacts.toArray().length; i++){
+	        				if(contacts.get(i).match(name))
+	        					iDmap.remove(Long.parseLong(contacts.get(i).getID()));
+	        			}
+	        		}
 	        		addedContacts.clear();
 	        		Toast.makeText(getApplicationContext(), "All Contacts Removed from Blacklist!", Toast.LENGTH_SHORT).show();
 	        		Collections.sort(blacklistedContacts);
@@ -127,6 +145,10 @@ public class BlackListActivity extends ListActivity {
 	        		else { 
 	       				mArrayAdapterBL.remove(name);
 	       				addedContacts.remove(name);
+	        			for(int i = 0; i < contacts.toArray().length; i++){
+	        				if(contacts.get(i).match(name))
+	        					iDmap.remove(Long.parseLong(contacts.get(i).getID()));
+	        			}
 	       			}
 	        		Collections.sort(blacklistedContacts);
 	                if(mArrayAdapterBL.isEmpty()){
@@ -140,24 +162,32 @@ public class BlackListActivity extends ListActivity {
 }
     
     private void instantiateVariables(){
-        if (!readOnly){
-    	mAddButton = (Button) findViewById(R.id.add);
-        mAddAll = (Button) findViewById(R.id.add_all_button);
-        mRemoveAll = (Button) findViewById(R.id.remove_all_button);
-        mRemove = (Button) findViewById(R.id.remove);        
-        mArrayAdapterAC = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,contactNames);
-        mAutoComplete = (AutoCompleteTextView)findViewById(R.id.blacklist_text);
-        mAutoComplete.setAdapter(mArrayAdapterAC);
-        mAutoComplete.setThreshold(2);
+        	blacklistedContacts = new ArrayList<String>();
+        	addedContacts = new ArrayList<String>();
+        	contacts = new ArrayList<Contact>();
+        	contactNames = new ArrayList<String>(); 
+        	iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
+            mArrayAdapterBL = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, blacklistedContacts);
+            this.setListAdapter(mArrayAdapterBL);
+    	if (!readOnly){
+	    	mAddButton = (Button) findViewById(R.id.add);
+	        mAddAll = (Button) findViewById(R.id.add_all_button);
+	        mRemoveAll = (Button) findViewById(R.id.remove_all_button);
+	        mRemove = (Button) findViewById(R.id.remove);
+		       // mArrayAdapterAC = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,contactNames);
+		        mAutoComplete = (AutoCompleteTextView)findViewById(R.id.blacklist_text);
+		        //mAutoComplete.setAdapter(mArrayAdapterAC);
+		        //mAutoComplete.setThreshold(2);
+		        
         }
-        blacklistedContacts = new ArrayList<String>();
-        mArrayAdapterBL = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, blacklistedContacts);
-        this.setListAdapter(mArrayAdapterBL);
+    	
+
         if(mArrayAdapterBL.isEmpty()){
         	mArrayAdapterBL.add("Your Blacklist is Currently Empty...");
         	emptyList = true;
         }
     }
+
     
     public void populatePeopleList() {
     	contacts.clear();
@@ -192,26 +222,61 @@ public class BlackListActivity extends ListActivity {
     	
     	for (Contact contact: contacts){
     		contactNames.add(contact.getName());
+    		iDmapFull.put(Long.parseLong(contact.getID()), contact.getNumber());
     	}
     	//startManagingCursor(people);
     }
     
+    @Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		if(!readOnly){
+    	super.onListItemClick(l, v, position, id);
+		Object o = this.getListAdapter().getItem(position);
+		String keyword = o.toString();
+		if(keyword.equals("Your Blacklist is Currently Empty...")) return;
+		mAutoComplete.setText("");
+		mAutoComplete.setText(keyword);
+		}
+	}
+    
     /**
     @Override
-    public void onPause()
-    {
+    public void onSaveInstanceState(Bundle bundle){
+    	super.onSaveInstanceState(bundle);
+    	bundle.putBoolean("state", true);
+    }
+    */    
+    
+    @Override
+    public void onPause(){
         super.onPause();
+        BlackListIOTask dbTask = new BlackListIOTask(this, iDmapFull,iDmap,false);
+    	dbTask.execute((Void[])(null));
+       /** onRetainNonConfigurationInstance();
         SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
         SharedPreferences.Editor editor = data.edit();
+        editor.putBoolean("state",true);
+        editor.commit();*/
         
-        editor.commit();
-    }*/
+    }
     
+    @Override
+    public void onResume(){
+    	super.onResume();
+    }
+    
+    
+}
+
 /**	
  * this was the code for a popupWindow that may be revived one day...
  * but for now it shall live in comments.
  *
-	@Override 
+ *SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
+        SharedPreferences.Editor editor = data.edit();
+        
+        editor.commit();
+	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		keyword = this.getListAdapter().getItem(position).toString();		
@@ -231,5 +296,5 @@ public class BlackListActivity extends ListActivity {
 	}
  *
  */
-        
-}
+
+
