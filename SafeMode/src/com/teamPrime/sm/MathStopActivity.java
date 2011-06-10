@@ -27,10 +27,12 @@ public class MathStopActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.math_stop);
         Random r = new Random();
-        int  mult1Index = r.nextInt(6);
-        mult1 = mult1Choices[mult1Index];
-        mult2 = r.nextInt(8);
-        mult2 += 12;
+//        int  mult1Index = r.nextInt(6);
+//        mult1 = mult1Choices[mult1Index];
+//        mult2 = r.nextInt(8);
+//        mult2 += 12;
+        int mult1 = MathUtils.genSmallRandom();
+        int mult2 = MathUtils.genLargeRandom();
         String mathQuestion = String.format("What is %d * %d?", mult1, mult2);
         question = (TextView) findViewById(R.id.questionStopText);
         question.setText(mathQuestion);
