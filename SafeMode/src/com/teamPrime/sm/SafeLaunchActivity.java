@@ -92,7 +92,7 @@ public class SafeLaunchActivity extends Activity {
         
         long timeLeft = 0;
         if (onState){
-        	timeLeft = System.currentTimeMillis() - offTime;
+        	timeLeft = offTime - System.currentTimeMillis();
         	allowTimer = true;
         	if (timer != null) timer.cancel();
         	timer = new SimpleTimer(timeLeft,1000);
@@ -159,6 +159,16 @@ public class SafeLaunchActivity extends Activity {
         	String blackString = onState ? view_blacklist : edit_blacklist;
         	mMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, blackString);
         }
+    }
+    
+    @Override
+    public void onPause(){
+    	super.onPause();
+    	SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
+        SharedPreferences.Editor editor = data.edit();
+        editor.putBoolean("onState", onState);
+        editor.putLong("offTime", offTime);
+        editor.commit();
     }
     
     @Override

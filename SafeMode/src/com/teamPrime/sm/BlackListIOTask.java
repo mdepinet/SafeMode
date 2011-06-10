@@ -7,12 +7,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 public class BlackListIOTask extends AsyncTask<Void, Void, Void> {
-	private SafeLaunchActivity mActivity;
+	private Activity mActivity;
 	private Map<Long, Triple<String,Integer,String>[]> blackMap;
 	private Map<Long, Triple<String,Integer,String>[]> fullMap;
 	private boolean updateDB;
@@ -20,7 +21,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, Void> {
 	private static final String BL_FILENAME = "Blacklist.bin";
 	private static final String FULL_FILENAME = "Contacts.bin";
 
-    public BlackListIOTask(SafeLaunchActivity activity, Map<Long, Triple<String,Integer,String>[]> fullMap, Map<Long, Triple<String,Integer,String>[]> blackMap, boolean updateDB) {
+    public BlackListIOTask(Activity activity, Map<Long, Triple<String,Integer,String>[]> fullMap, Map<Long, Triple<String,Integer,String>[]> blackMap, boolean updateDB) {
         mActivity = activity;
         this.blackMap = blackMap;
         this.fullMap = fullMap;
@@ -29,7 +30,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, Void> {
 
     // Can change activity this task points to.
     // e.g. when activity recreated after orientation change.
-    public void setActivity(SafeLaunchActivity activity) {
+    public void setActivity(Activity activity) {
         mActivity = activity;
     }
 
