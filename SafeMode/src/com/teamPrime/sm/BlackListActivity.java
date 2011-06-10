@@ -202,9 +202,10 @@ public class BlackListActivity extends ListActivity {
 	  			while (numbers.moveToNext()) {
 	  				phoneNumber = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.NUMBER));
 	  				phoneLabel = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.LABEL));
-	  				phoneType = Integer.parseInt(numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.TYPE)));
+	  				String str = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.TYPE));
+	  				phoneType = str == null ? null : Integer.parseInt(str);
 	  				nums.add(new Triple<String,Integer,String>(phoneNumber,phoneType,phoneLabel));
-	  			} 
+	  			}
 	  			contacts.add(new Contact(iD, name, nums));
 	  		}
     	}
