@@ -8,5 +8,6 @@
     <EditText android:layout_width="match_parent" android:hint="Type your answer here" android:layout_height="wrap_content" android:id="@+id/input_answer" android:numeric="integer"></EditText>
     <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/submit_button" android:text="@string/submit_button"
         android:onClick="onClick" ></Button>
-    <TextView android:layout_width="wrap_content" android:id="@+id/hidden_answer" android:layout_height="wrap_content" android:visibility="invisible" android:text="hidden_answer"></TextView>
+    <TextView android:layout_width="wrap_content" android:id="@+id/hidden_answer" android:layout_height="wrap_content" android:visibility="invisible" android:text="hidden_answer"
+    		android:textSize="40px"></TextView>
 </LinearLayout>
