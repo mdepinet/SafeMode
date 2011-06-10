@@ -63,15 +63,13 @@ public class SafeLaunchActivity extends Activity {
 			
 			Notification not = new Notification(icon, tickerText, when);
 			not.setLatestEventInfo(context, 
-								  "Your contacts have been protected by SAFEMODE", 
+								  "Contacts protected by SAFEMODE", 
 								  "Click here to unlock SAFEMODE", 
 								  PendingIntent.getActivity(context, 0, new Intent(getApplicationContext(), UnlockPhoneActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK)
 								  );
 			String ns = Context.NOTIFICATION_SERVICE;
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-			
 			mNotificationManager.notify(1, not);
-			
 		}
 	};
 	
@@ -197,6 +195,12 @@ public class SafeLaunchActivity extends Activity {
     public void onDestroy(){
     	super.onDestroy();
     	mTask.cancel(true);
+    }
+    
+    @Override
+    public void onBackPressed(){
+    	if(isTaskRoot()) moveTaskToBack(!isTaskRoot());
+    	else super.onBackPressed();
     }
     
     public void onClick(View v) {
