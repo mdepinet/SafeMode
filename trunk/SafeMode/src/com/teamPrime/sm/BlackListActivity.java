@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.ListActivity;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -42,7 +43,7 @@ public class BlackListActivity extends ListActivity {
 	ArrayList<String> addedContacts = new ArrayList<String>();
 	ArrayList<Contact> contacts = new ArrayList<Contact>();
 	ArrayList<String> contactNames = new ArrayList<String>(); 
-	Map<Long, String[]> iDmap = new HashMap<Long, String[]>();
+	Map<Long, Triple<String,Integer,String>[]> iDmap = new HashMap<Long, Triple <String,Integer,String>[]>();
 	boolean readOnly = false;
 	boolean emptyList = true;
 	
@@ -165,6 +166,8 @@ public class BlackListActivity extends ListActivity {
     	contacts.clear();
     	contactNames.clear();
     	String phoneNumber = "";
+    	String phoneLabel = "";
+    	Integer phoneType = 0;
     	Cursor people = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
     
     	while (people.moveToNext()){
@@ -178,10 +181,12 @@ public class BlackListActivity extends ListActivity {
 	  		if ((Integer.parseInt(hasPhone) > 0)) {
 	  			Cursor numbers = getContentResolver().query(
 	  					ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ iD, null, null);
-	  			ArrayList<String> nums = new ArrayList<String>();
+	  			ArrayList<Triple<String,Integer,String>> nums = new ArrayList<Triple<String,Integer,String>>();
 	  			while (numbers.moveToNext()) {
 	  				phoneNumber = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.NUMBER));
-	  				nums.add(phoneNumber);
+	  				phoneLabel = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.LABEL));
+	  				phoneType = Integer.parseInt(numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.TYPE)));
+	  				nums.add(new Triple<String,Integer,String>(phoneNumber,phoneType,phoneLabel));
 	  			}
 	  			contacts.add(new Contact(iD, name, nums));
 	  		}
@@ -193,6 +198,17 @@ public class BlackListActivity extends ListActivity {
     	}
     	//startManagingCursor(people);
     }
+    
+    /**
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
+        SharedPreferences.Editor editor = data.edit();
+        
+        editor.commit();
+    }*/
     
 /**	
  * this was the code for a popupWindow that may be revived one day...
