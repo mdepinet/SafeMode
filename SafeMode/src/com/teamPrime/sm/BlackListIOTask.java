@@ -16,12 +16,12 @@ public class BlackListIOTask extends AsyncTask<Void, Void, Void> {
 	private Activity mActivity;
 	private Map<Long, Triple<String,Integer,String>[]> blackMap;
 	private Map<Long, Triple<String,Integer,String>[]> fullMap;
-	private boolean updateDB;
+	private int updateDB;
 	
 	private static final String BL_FILENAME = "Blacklist.bin";
 	private static final String FULL_FILENAME = "Contacts.bin";
 
-    public BlackListIOTask(Activity activity, Map<Long, Triple<String,Integer,String>[]> fullMap, Map<Long, Triple<String,Integer,String>[]> blackMap, boolean updateDB) {
+    public BlackListIOTask(Activity activity, Map<Long, Triple<String,Integer,String>[]> fullMap, Map<Long, Triple<String,Integer,String>[]> blackMap, int updateDB) {
         mActivity = activity;
         this.blackMap = blackMap;
         this.fullMap = fullMap;
@@ -110,12 +110,25 @@ public class BlackListIOTask extends AsyncTask<Void, Void, Void> {
 				}
 			}
 			
-			if (updateDB){ //Update DB
-				if (fullMap != null){
-					ContactDAO.revealNumbers(fullMap, mActivity.getContentResolver());
-					ContactDAO.hideNumbers(blackMap, mActivity.getContentResolver());
-				}
-				else Log.w("SAFEMODE", "fullMap was null, so DB update was skipped");
+			switch (updateDB){
+			case 0:
+				return null;
+			case 1:
+				ContactDAO.revealNumbers(fullMap, mActivity.getContentResolver());
+				ContactDAO.hideNumbers(blackMap, mActivity.getContentResolver());
+				return null;
+			case 2:
+				ContactDAO.revealNumbers(blackMap, mActivity.getContentResolver());
+				ContactDAO.hideNumbers(fullMap, mActivity.getContentResolver());
+				return null;
+			case 3:
+				ContactDAO.revealNumbers(fullMap, mActivity.getContentResolver());
+				return null;
+			case 4:
+				ContactDAO.revealNumbers(blackMap, mActivity.getContentResolver());
+				return null;
+			default:
+				return null;
 			}
 		}
 		return null;

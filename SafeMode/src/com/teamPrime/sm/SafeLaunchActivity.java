@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.TreeMap;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -244,7 +245,7 @@ public class SafeLaunchActivity extends Activity {
 		Log.v("registeredReceiver", "finishedregistration");
     }
     public void finishTurnOn(){
-    	ioTask = new BlackListIOTask(this,null,null,true);
+    	ioTask = new BlackListIOTask(this,null,null,1);
     	ioTask.execute((Void[])(null));
     	Calendar c = Calendar.getInstance(TimeZone.getDefault(),Locale.getDefault());
 //		c.add(Calendar.YEAR, year-1900);
@@ -290,6 +291,8 @@ public class SafeLaunchActivity extends Activity {
     }
     
     private void turnOff(){
+    	ioTask = new BlackListIOTask(this,new TreeMap<Long, Triple<String,Integer,String>[]>(),null,4);
+    	ioTask.execute((Void[])(null));
     	SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
         SharedPreferences.Editor editor = data.edit();
         onState = false;
