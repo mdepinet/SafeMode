@@ -10,11 +10,11 @@ package com.teamPrime.sm;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
 import android.app.ListActivity;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -45,30 +45,26 @@ public class BlackListActivity extends ListActivity {
 	Map<Long, Triple<String,Integer,String>[]> iDmapFull = new TreeMap<Long, Triple <String,Integer,String>[]>();
 	boolean readOnly = false;
 	boolean emptyList = true;
-	boolean onSIS = false;
-	private PopulateTask mTask;
+	boolean savedNull = true;
+	ArrayList<String> tempContacts = new ArrayList<String>();
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //if(savedInstanceState!=null){onSIS=true;}
-       // SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
-        //boolean savedBoolean = data.getBoolean("state", false);
-        //onSIS=savedBoolean;
-
-    	
+        if(savedInstanceState!=null){savedNull = false;}
         readOnly = getIntent().getBooleanExtra("readOnly", true);
         if (readOnly){
         	setContentView(R.layout.readonly);
         	instantiateVariables();
+        	restore();
         }
         else{
         	setContentView(R.layout.black_list);
-     
         	instantiateVariables();
         	//mTask = new PopulateTask(this);
         	//mTask.execute((Void[])(null));
         	populatePeopleList();    
+        	restore();
  
 	        mAddButton.setOnClickListener(new OnClickListener(){    	 	
 	        	public void onClick(View v){
@@ -179,12 +175,6 @@ public class BlackListActivity extends ListActivity {
 		        mAutoComplete.setAdapter(mArrayAdapterAC);
 		        mAutoComplete.setThreshold(2);		        
         }
-    	
-
-        if(mArrayAdapterBL.isEmpty()){
-        	mArrayAdapterBL.add("Your Blacklist is Currently Empty...");
-        	emptyList = true;
-        }
     }
 
     
@@ -249,13 +239,17 @@ public class BlackListActivity extends ListActivity {
     @Override
     public void onPause(){
         super.onPause();
+        int x = 0;
         BlackListIOTask dbTask = new BlackListIOTask(this, iDmapFull,iDmap,false);
-    	dbTask.execute((Void[])(null));
-       /** onRetainNonConfigurationInstance();
+    	dbTask.execute((Void[])(null));       
         SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
         SharedPreferences.Editor editor = data.edit();
-        editor.putBoolean("state",true);
-        editor.commit();*/
+        for(String name:addedContacts){
+        	editor.putString("name" + x,name);
+        	x++;
+        }
+        editor.putInt("length", addedContacts.size());
+        editor.commit();
         
     }
     
@@ -263,9 +257,28 @@ public class BlackListActivity extends ListActivity {
     public void onResume(){
     	super.onResume();
     }
-    
+
+    public void restore(){
+    	if(!savedNull){
+    	SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
+        int savedInt = data.getInt("length", 0);
+        for (int i = 0; i < savedInt;i++){
+        	for(int j = 0; j < contacts.toArray().length; j++){
+				if(contacts.get(j).match(data.getString("name" + i, "")))
+					iDmap.put(Long.parseLong(contacts.get(j).getID()), contacts.get(j).getNumber());
+				}
+        	mArrayAdapterBL.add(data.getString("name"+i, ""));
+        	addedContacts.add(data.getString("name"+i, ""));
+    }
+    	}   
+        if(mArrayAdapterBL.isEmpty()){
+        	mArrayAdapterBL.add("Your Blacklist is Currently Empty...");
+        	emptyList = true;
+        }
+}
     
 }
+
 
 /**	
  * this was the code for a popupWindow that may be revived one day...
