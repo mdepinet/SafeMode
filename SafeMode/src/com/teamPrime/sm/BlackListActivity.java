@@ -250,7 +250,7 @@ public class BlackListActivity extends ListActivity {
         }
         editor.putInt("length", addedContacts.size());
         editor.commit();
-        
+         
     }
     
     @Override
