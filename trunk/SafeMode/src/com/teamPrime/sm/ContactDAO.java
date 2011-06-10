@@ -6,13 +6,16 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Map;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 public class ContactDAO {
@@ -198,5 +201,35 @@ public class ContactDAO {
 	      } catch (Exception x) {
 	            throw new IOException ("Failed to convert bytes to Object.");
 	      }
+    }
+    
+    
+    
+    public static int hideNumbers(Map<Long,Triple<String,Integer,String>[]> nums, ContentResolver cr){
+    	int hidden = 0;
+    	ContentValues values = new ContentValues();
+    	values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, "555-555-5555");
+    	for (Map.Entry<Long, Triple<String,Integer,String>[]> pair : nums.entrySet()){
+    		hidden += cr.update(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+    				ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ pair.getKey(), null);
+    	}
+    	return hidden;
+    }
+    
+    public static int revealNumbers(Map<Long,Triple<String,Integer,String>[]> nums, ContentResolver cr){
+    	int hidden = 0;
+    	for (Map.Entry<Long, Triple<String,Integer,String>[]> pair : nums.entrySet()){
+    		for (Triple<String,Integer,String> trip : pair.getValue()){
+	    		ContentValues values = new ContentValues();
+	        	values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, trip.getFirst());
+	        	values.put(ContactsContract.CommonDataKinds.Phone.TYPE, trip.getSecond());
+	        	values.put(ContactsContract.CommonDataKinds.Phone.LABEL, trip.getThird());
+	    		hidden += cr.update(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+	    				ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ pair.getKey() +
+	    				" AND "+ContactsContract.CommonDataKinds.Phone.TYPE + " = "+trip.getSecond() +
+	    				" AND "+ContactsContract.CommonDataKinds.Phone.LABEL + " = "+trip.getThird(), null);
+    		}
+    	}
+    	return hidden;
     }
 }
