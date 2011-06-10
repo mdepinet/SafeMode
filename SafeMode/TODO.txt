@@ -1,7 +1,0 @@
-Alphabetize blacklist - Boris
-Make blacklist read only when in on state - Boris
-Fix button size for small screens - Boris
-
-Broadcast receiver to run on unlock when in on state - Edward
-
-Manage contact database - Mike/Hendrik
