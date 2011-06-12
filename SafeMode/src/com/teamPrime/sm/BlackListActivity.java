@@ -48,6 +48,7 @@ public class BlackListActivity extends ListActivity {
 	boolean emptyList = true;
 	boolean savedNull = true;
 	ArrayList<String> tempContacts = new ArrayList<String>();
+	PopulateTask mTask;
 
 	
 	@Override
@@ -65,9 +66,9 @@ public class BlackListActivity extends ListActivity {
         else{
         	setContentView(R.layout.black_list);
         	instantiateVariables();
-        	//mTask = new PopulateTask(this);
-        	//mTask.execute((Void[])(null));
-        	populatePeopleList();    
+        	mTask = new PopulateTask(this);
+        	mTask.execute((Void[])(null));
+        	//populatePeopleList();    
         	restore();
  
 	        mAddButton.setOnClickListener(new OnClickListener(){    	 	
@@ -176,10 +177,10 @@ public class BlackListActivity extends ListActivity {
 	        mAddAll = (Button) findViewById(R.id.add_all_button);
 	        mRemoveAll = (Button) findViewById(R.id.remove_all_button);
 	        mRemove = (Button) findViewById(R.id.remove);
-		      	mArrayAdapterAC = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,contactNames);
+		     /** 	mArrayAdapterAC = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,contactNames);
 		        mAutoComplete = (AutoCompleteTextView)findViewById(R.id.blacklist_text);
 		        mAutoComplete.setAdapter(mArrayAdapterAC);
-		        mAutoComplete.setThreshold(2);		        
+		        mAutoComplete.setThreshold(2);*/		        
         }
     }
 
@@ -232,15 +233,7 @@ public class BlackListActivity extends ListActivity {
 		mAutoComplete.setText("");
 		mAutoComplete.setText(keyword);
 		}
-	}
-    
-    /**
-    @Override
-    public void onSaveInstanceState(Bundle bundle){
-    	super.onSaveInstanceState(bundle);
-    	bundle.putBoolean("state", true);
-    }
-    */    
+	}   
     
     @Override
     public void onPause(){
