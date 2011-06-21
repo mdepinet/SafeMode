@@ -73,6 +73,7 @@ public class BlackListActivity extends ListActivity {
  
 	        mAddButton.setOnClickListener(new OnClickListener(){    	 	
 	        	public void onClick(View v){
+	        		if (mArrayAdapterAC!=null){
 	        		String name = mAutoComplete.getText().toString();
 	        		if (!contactNames.contains(name))
 	        			Toast.makeText(getApplicationContext(), "Incorrect Contact Name!", Toast.LENGTH_SHORT).show();
@@ -94,10 +95,12 @@ public class BlackListActivity extends ListActivity {
 	        		Collections.sort(blacklistedContacts);
 	        		mAutoComplete.setText("");
 	        		}
+	        	}
 	        	});
 	
 	        mAddAll.setOnClickListener(new OnClickListener(){    	 	
 	        	public void onClick(View v){	
+	        		if (mArrayAdapterAC!=null){
 	        		if(emptyList){
 	        			mArrayAdapterBL.remove("Your Blacklist is Currently Empty...");
 	        			emptyList = false;
@@ -116,11 +119,13 @@ public class BlackListActivity extends ListActivity {
 	        		Collections.sort(blacklistedContacts);
 	        		mAutoComplete.setText("");
 	        		}
+	        	}
 	        	});
 	
 	       	mRemoveAll.setOnClickListener(new OnClickListener(){    	 	
 	       		public void onClick(View v){ 
-	        		mArrayAdapterBL.clear();
+	       			if (mArrayAdapterAC!=null){
+	       			mArrayAdapterBL.clear();
 	        		for (String name:addedContacts){
 	        			for(int i = 0; i < contacts.toArray().length; i++){
 	        				if(contacts.get(i).match(name))
@@ -136,10 +141,12 @@ public class BlackListActivity extends ListActivity {
 	                }
 	        		mAutoComplete.setText("");
 	        		}
+	       		}
 	        	});
 	        	
 	       	mRemove.setOnClickListener(new OnClickListener(){    	 	
 	       		public void onClick(View v){
+	       			if (mArrayAdapterAC!=null){
 	       			String name = mAutoComplete.getText().toString();
 	        		if (!addedContacts.contains(name))
 	        			Toast.makeText(getApplicationContext(), "Contact is not in Blacklist!", Toast.LENGTH_SHORT).show();
@@ -158,6 +165,7 @@ public class BlackListActivity extends ListActivity {
 	                }
 	        		mAutoComplete.setText("");
 	        		}
+	       		}
 	        	});
 	        }
 }
