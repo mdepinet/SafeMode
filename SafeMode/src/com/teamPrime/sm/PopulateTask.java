@@ -1,14 +1,14 @@
 package com.teamPrime.sm;
 
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
 public class PopulateTask extends AsyncTask<Void, Integer, Void> {
 	private BlackListActivity mActivity;
-	private boolean listPopulated = false;
+	ProgressDialog loading;
 
     public PopulateTask(BlackListActivity activity) {
         mActivity = activity;
@@ -23,7 +23,7 @@ public class PopulateTask extends AsyncTask<Void, Integer, Void> {
     // Runs on main thread.
     @Override
     protected void onPreExecute() {
-    	//listPopulated = false;
+    	loading = ProgressDialog.show(mActivity, "","Loading Contacts...", true); 
     }
 
     // Runs on main thread.
@@ -38,6 +38,7 @@ public class PopulateTask extends AsyncTask<Void, Integer, Void> {
     	mActivity.mAutoComplete = (AutoCompleteTextView)mActivity.findViewById(R.id.blacklist_text);
         mActivity.mAutoComplete.setAdapter(mActivity.mArrayAdapterAC);
         mActivity.mAutoComplete.setThreshold(2);
+        loading.dismiss();
     }
 	
 	@Override
