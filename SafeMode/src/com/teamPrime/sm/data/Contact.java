@@ -1,6 +1,7 @@
-package com.teamPrime.sm;
+package com.teamPrime.sm.data;
 
 import java.util.List;
+
 
 public class Contact {
 	

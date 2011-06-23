@@ -7,6 +7,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
+import com.teamPrime.sm.data.ContactDAO;
+import com.teamPrime.sm.data.Triple;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
