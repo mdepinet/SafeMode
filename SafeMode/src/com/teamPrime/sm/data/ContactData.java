@@ -10,8 +10,7 @@ public interface ContactData extends Serializable{
 	int isSuperPrimary();
 	int getDataVersion();
 	
-	enum MimeType{ PHONE, EMAIL, IM};
-	MimeType getMimeType();
+	String getMimeType();
 	String getData1();
 	int getData2();
 	String getData3();
@@ -48,19 +47,19 @@ abstract class ContactDataGeneric implements ContactData{
 	
 	public static ContactDataGeneric getData(String mimeType, long rawContactId, int isPrimary, int isSuperPrimary,
 			int dataVersion, Object data1, Object data2, Object data3, Object data4, Object data5) throws DataCreationException{
-		if (mimeType.toUpperCase().contains("PHONE")){
+		if (mimeType.equals(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)){
 			if (!(data1 instanceof String && data2 instanceof Integer && data3 instanceof String))
 				throw new DataCreationException("Failed to create Phone data object due to data argument types: "
 						+data1.getClass().getName()+", "+data2.getClass().getName()+", "+data3.getClass().getName());
 			return new ContactDataPhone(rawContactId, isPrimary, isSuperPrimary, dataVersion, (String)data2, (Integer)data2, (String)data3);
 		}
-		else if (mimeType.toUpperCase().contains("EMAIL")){
+		else if (mimeType.equals(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)){
 			if (!(data1 instanceof String && data2 instanceof Integer && data3 instanceof String))
 				throw new DataCreationException("Failed to create Email data object due to data argument types: "
 						+data1.getClass().getName()+", "+data2.getClass().getName()+", "+data3.getClass().getName());
 			return new ContactDataEmail(rawContactId, isPrimary, isSuperPrimary, dataVersion, (String)data2, (Integer)data2, (String)data3);
 		}
-		else if (mimeType.toUpperCase().contains("IM")){
+		else if (mimeType.equals(ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE)){
 			if (!(data1 instanceof String && data2 instanceof Integer && data3 instanceof String && data4 instanceof String && data5 instanceof String))
 				throw new DataCreationException("Failed to create IM data object due to data argument types: "
 						+data1.getClass().getName()+", "+data2.getClass().getName()+", "+data3.getClass().getName()
@@ -87,8 +86,8 @@ class ContactDataPhone extends ContactDataGeneric{
 		this.label = (type == ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM ? label : "");
 	}
 	
-	public MimeType getMimeType(){
-		return MimeType.PHONE;
+	public String getMimeType(){
+		return ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE;
 	}
 	public String getData1(){
 		return number;
@@ -130,8 +129,8 @@ class ContactDataEmail extends ContactDataGeneric{
 		this.label = (type == ContactsContract.CommonDataKinds.Email.TYPE_CUSTOM ? label : "");
 	}
 	
-	public MimeType getMimeType(){
-		return MimeType.EMAIL;
+	public String getMimeType(){
+		return ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE;
 	}
 	public String getData1(){
 		return address;
@@ -177,8 +176,8 @@ class ContactDataIM extends ContactDataGeneric{
 		this.customProtocol = (protocol.equals(""+ContactsContract.CommonDataKinds.Im.TYPE_CUSTOM) ? customProtocol : "");
 	}
 	
-	public MimeType getMimeType(){
-		return MimeType.IM;
+	public String getMimeType(){
+		return ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE;
 	}
 	public String getData1(){
 		return data;
