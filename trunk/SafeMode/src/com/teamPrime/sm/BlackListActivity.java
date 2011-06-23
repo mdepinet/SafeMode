@@ -13,6 +13,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.teamPrime.sm.data.Contact;
+import com.teamPrime.sm.data.Triple;
+
 import android.app.ListActivity;
 import android.content.SharedPreferences;
 import android.database.Cursor;

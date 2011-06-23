@@ -1,4 +1,4 @@
-package com.teamPrime.sm;
+package com.teamPrime.sm.data;
 
 import java.io.Serializable;
 
