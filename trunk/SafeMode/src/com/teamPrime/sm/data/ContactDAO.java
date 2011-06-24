@@ -1,15 +1,29 @@
 package com.teamPrime.sm.data;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
+import android.app.Activity;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
+import android.content.OperationApplicationException;
+import android.database.Cursor;
+import android.os.RemoteException;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.Data;
+import android.provider.ContactsContract.RawContacts;
 import android.util.Log;
 
 public class ContactDAO {
-
 //	public static final String KEY_ID = "_id";
 //    public static final String KEY_EXT_ID = "ext_id";
 //    public static final String KEY_NAME = "name";
@@ -193,72 +207,248 @@ public class ContactDAO {
 //	      }
 //    }
     
+//    
+//    
+//    public static int hideNumbers(Map<Long,Triple<String,Integer,String>[]> nums, ContentResolver cr){
+//    	int hidden = 0;
+////    	ContentValues values = new ContentValues();
+////    	values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, "555-555-5555");
+//		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+//		int i = 0;
+//    	for (Map.Entry<Long, Triple<String,Integer,String>[]> pair : nums.entrySet()){
+//    		if (i >= 10){
+//    			try {
+//    	  	        hidden += cr.applyBatch(ContactsContract.AUTHORITY, ops).length;
+//    	  	    }
+//    	  	     catch(Exception ex){
+//    	  	    	 Log.e("SAFEMODE",null, ex);
+//    	  	     }
+//    	  	     i = 0;
+//    		}
+////    		hidden += cr.update(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, values,
+////    				ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ pair.getKey(), null);
+//    	    ops.add(ContentProviderOperation.newDelete(ContactsContract.Data.CONTENT_URI)
+//    	            .withSelection(ContactsContract.Data.RAW_CONTACT_ID, new String[]{pair.getKey().toString()})
+//    	            .withSelection(ContactsContract.Data.MIMETYPE,new String[]{ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE})
+//    	            .withExpectedCount(pair.getValue().length).build());
+//    	    i++;
+//    	}
+//    	 try {
+//  	        hidden += cr.applyBatch(ContactsContract.AUTHORITY, ops).length;
+//  	    }
+//  	     catch(Exception ex){
+//  	    	 Log.e("SAFEMODE",null, ex);
+//  	     }
+//    	return hidden;
+//    }
+//    
+//    public static int revealNumbers(Map<Long,Triple<String,Integer,String>[]> nums, ContentResolver cr){
+//    	int hidden = 0;
+//		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+//    	for (Map.Entry<Long, Triple<String,Integer,String>[]> pair : nums.entrySet()){
+//    		for (Triple<String,Integer,String> trip : pair.getValue()){
+////	    		ContentValues values = new ContentValues();
+////	        	values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, trip.getFirst());
+////	        	values.put(ContactsContract.CommonDataKinds.Phone.TYPE, trip.getSecond());
+////	        	values.put(ContactsContract.CommonDataKinds.Phone.LABEL, trip.getThird());
+////	        	String[] selectionArgs = { pair.getKey().toString(), trip.getSecond().toString(), trip.getThird()  };
+////	    		hidden += cr.update(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, values,
+////	    				ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?" +
+////	    				" AND "+ContactsContract.CommonDataKinds.Phone.TYPE + " = ?" +
+////	    				" AND ("+ContactsContract.CommonDataKinds.Phone.LABEL + "IS NULL OR " +
+////	    				ContactsContract.CommonDataKinds.Phone.LABEL + " = ?"+")", selectionArgs);
+//        	    ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+//        	            .withValue(ContactsContract.Data.RAW_CONTACT_ID, pair.getKey())
+//        	            .withValue(ContactsContract.Data.MIMETYPE,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+//        	            if (trip.getSecond() != null) builder = builder.withValue(ContactsContract.CommonDataKinds.Phone.TYPE,trip.getSecond());
+//        	              else builder = builder.withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE);
+//        	            builder = builder.withValue(ContactsContract.CommonDataKinds.Phone.LABEL,trip.getThird())
+//        	            .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER,trip.getFirst());
+//        	    ops.add(builder.build());
+//    		}
+//    		try {
+//     	        hidden += cr.applyBatch(ContactsContract.AUTHORITY, ops).length;
+//     	    }
+//     	     catch(Exception ex){
+//     	    	 Log.e("SAFEMODE",null, ex);
+//     	     }
+//    	}
+//    	return hidden;
+//    }
     
     
-    public static int hideNumbers(Map<Long,Triple<String,Integer,String>[]> nums, ContentResolver cr){
-    	int hidden = 0;
-//    	ContentValues values = new ContentValues();
-//    	values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, "555-555-5555");
-		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
-		int i = 0;
-    	for (Map.Entry<Long, Triple<String,Integer,String>[]> pair : nums.entrySet()){
-    		if (i >= 10){
-    			try {
-    	  	        hidden += cr.applyBatch(ContactsContract.AUTHORITY, ops).length;
-    	  	    }
-    	  	     catch(Exception ex){
-    	  	    	 Log.e("SAFEMODE",null, ex);
-    	  	     }
-    	  	     i = 0;
-    		}
-//    		hidden += cr.update(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, values,
-//    				ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ pair.getKey(), null);
-    	    ops.add(ContentProviderOperation.newDelete(ContactsContract.Data.CONTENT_URI)
-    	            .withSelection(ContactsContract.Data.RAW_CONTACT_ID, new String[]{pair.getKey().toString()})
-    	            .withSelection(ContactsContract.Data.MIMETYPE,new String[]{ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE})
-    	            .withExpectedCount(pair.getValue().length).build());
-    	    i++;
+	private static final String contactSaveLoc = "SAFEMODE_contactData.bin";
+	private static boolean lastHid = false;
+    
+    
+    private static List<ContactData> getDataForContacts(ContentResolver cr, List<Long> contactIds){
+    	List<ContactData> dataList = new LinkedList<ContactData>();
+    	 Cursor rawCursor = cr.query(RawContacts.CONTENT_URI, new String[]{RawContacts._ID},
+    	          RawContacts.CONTACT_ID + " IN ?", new String[]{formatListForSQLin(contactIds)}, null);
+    	 while (rawCursor.moveToNext()){
+    		 Cursor dataCursor =  cr.query(Data.CONTENT_URI,
+    				 new String[] {Data.MIMETYPE, Data.RAW_CONTACT_ID, Data.IS_PRIMARY, Data.IS_SUPER_PRIMARY, Data.DATA_VERSION,
+    				 	Data.DATA1, Data.DATA2, Data.DATA3, Data.DATA4, Data.DATA5, Data.DATA6},
+    		         Data.RAW_CONTACT_ID + "=?", new String[] {String.valueOf(rawCursor.getLong(0))}, null);
+    		 while (dataCursor.moveToNext()){
+    			 try {
+					ContactData dataRow = ContactDataGeneric.getData(dataCursor.getString(0), dataCursor.getLong(1),
+							 dataCursor.getInt(2), dataCursor.getInt(3), dataCursor.getInt(4), deserializeBlob(dataCursor.getBlob(5)),
+							 deserializeBlob(dataCursor.getBlob(6)), deserializeBlob(dataCursor.getBlob(7)),
+							 deserializeBlob(dataCursor.getBlob(8)), deserializeBlob(dataCursor.getBlob(9)));
+					dataList.add(dataRow);
+				} catch (DataCreationException e) {
+					Log.e("SAFEMODE - ContactDAO", "Failed to create data object", e);
+					e.printStackTrace();
+				}
+    		 }
+    	 }
+    	 return dataList;
+    }
+    private static int deleteData(ContentResolver cr, List<Long> contactIds){
+    	int numDeleted = 0;
+    	Cursor rawCursor = cr.query(RawContacts.CONTENT_URI, new String[]{RawContacts._ID},
+  	          RawContacts.CONTACT_ID + " IN ?", new String[]{formatListForSQLin(contactIds)}, null);
+    	while (rawCursor.moveToNext()){
+    		numDeleted += cr.delete(Data.CONTENT_URI, Data.RAW_CONTACT_ID + "=?", new String[]{String.valueOf(rawCursor.getLong(0))});
     	}
-    	 try {
-  	        hidden += cr.applyBatch(ContactsContract.AUTHORITY, ops).length;
-  	    }
-  	     catch(Exception ex){
-  	    	 Log.e("SAFEMODE",null, ex);
-  	     }
-    	return hidden;
+    	return numDeleted;
+    }
+    private static int insertData(ContentResolver cr, List<ContactData> data){
+    	ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+    	for (ContactData contact : data){
+    		ops.add(ContentProviderOperation.newInsert(Data.CONTENT_URI)
+   	             .withValue(Data.RAW_CONTACT_ID, contact.getRawContactId())
+   	             .withValue(Data.MIMETYPE, contact.getMimeType())
+   	             .withValue(Data.DATA1, contact.getData1())
+   	             .withValue(Data.DATA2, contact.getData2())
+   	             .withValue(Data.DATA3, contact.getData3())
+   	             .withValue(Data.DATA4, contact.getProtocol())
+   	             .withValue(Data.DATA5, contact.getCustomProtocol())
+   	             .build());
+    	}
+	    try {
+			cr.applyBatch(ContactsContract.AUTHORITY, ops);
+			return ops.size();
+		} catch (RemoteException e) {
+			Log.e("SAFEMODE - ContactDAO","Error inserting contacts",e);
+			e.printStackTrace();
+			return 0;
+		} catch (OperationApplicationException e) {
+			Log.e("SAFEMODE - ContactDAO","Error inserting contacts",e);
+			e.printStackTrace();
+			return 0;
+		}
+
     }
     
-    public static int revealNumbers(Map<Long,Triple<String,Integer,String>[]> nums, ContentResolver cr){
-    	int hidden = 0;
-		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
-    	for (Map.Entry<Long, Triple<String,Integer,String>[]> pair : nums.entrySet()){
-    		for (Triple<String,Integer,String> trip : pair.getValue()){
-//	    		ContentValues values = new ContentValues();
-//	        	values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, trip.getFirst());
-//	        	values.put(ContactsContract.CommonDataKinds.Phone.TYPE, trip.getSecond());
-//	        	values.put(ContactsContract.CommonDataKinds.Phone.LABEL, trip.getThird());
-//	        	String[] selectionArgs = { pair.getKey().toString(), trip.getSecond().toString(), trip.getThird()  };
-//	    		hidden += cr.update(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, values,
-//	    				ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?" +
-//	    				" AND "+ContactsContract.CommonDataKinds.Phone.TYPE + " = ?" +
-//	    				" AND ("+ContactsContract.CommonDataKinds.Phone.LABEL + "IS NULL OR " +
-//	    				ContactsContract.CommonDataKinds.Phone.LABEL + " = ?"+")", selectionArgs);
-        	    ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-        	            .withValue(ContactsContract.Data.RAW_CONTACT_ID, pair.getKey())
-        	            .withValue(ContactsContract.Data.MIMETYPE,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
-        	            if (trip.getSecond() != null) builder = builder.withValue(ContactsContract.CommonDataKinds.Phone.TYPE,trip.getSecond());
-        	              else builder = builder.withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE);
-        	            builder = builder.withValue(ContactsContract.CommonDataKinds.Phone.LABEL,trip.getThird())
-        	            .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER,trip.getFirst());
-        	    ops.add(builder.build());
-    		}
-    		try {
-     	        hidden += cr.applyBatch(ContactsContract.AUTHORITY, ops).length;
-     	    }
-     	     catch(Exception ex){
-     	    	 Log.e("SAFEMODE",null, ex);
-     	     }
+    private static String formatListForSQLin(List<?> list){
+    	StringBuffer buff = new StringBuffer();
+    	buff.append("(");
+    	for (Object obj : list){
+    		buff.append(obj.toString());
+    		buff.append(", ");
     	}
-    	return hidden;
+    	if (!list.isEmpty()){
+	    	int index = buff.lastIndexOf(",");
+	    	buff.replace(index,index+1,")");
+    	}
+    	else{
+    		buff.append(")");
+    	}
+    	return buff.toString();
+    }
+    private static Object deserializeBlob(byte[] blob){
+    	Object result = null;
+    	ByteArrayInputStream bais = null;
+    	ObjectInputStream ois = null;
+    	try {
+    		bais = new ByteArrayInputStream(blob);
+			ois = new ObjectInputStream(bais);
+			result = ois.readObject();
+		} catch (StreamCorruptedException e) {
+			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
+			e.printStackTrace();
+		} finally {
+			try{bais.close();ois.close();} catch(Throwable t){}
+		}
+		return result;
+    }
+    
+    private static void saveContacts(Activity activity, List<ContactData> contacts){
+    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	ObjectOutputStream oos = null;
+    	FileOutputStream fos = null;
+    	try {
+			oos = new ObjectOutputStream(baos);
+			oos.writeObject(contacts);
+			fos = activity.openFileOutput(contactSaveLoc, Activity.MODE_PRIVATE);
+			fos.write(baos.toByteArray());
+		} catch (IOException e) {
+			Log.e("SAFEMODE","Error writing contact list",e);
+			e.printStackTrace();
+		} finally{
+			try{fos.close();oos.close();} catch(Throwable t){}
+		}
+    }
+    
+    @SuppressWarnings("unchecked")
+	private static List<ContactData> readContacts(Activity activity){
+    	List<ContactData> result = null;
+    	ObjectInputStream ois = null;
+    	try {
+			ois = new ObjectInputStream(activity.openFileInput(contactSaveLoc));
+			result = (List<ContactData>) ois.readObject();
+		} catch (StreamCorruptedException e) {
+			Log.e("SAFEMODE","Error reading contact list",e);
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			Log.e("SAFEMODE","Error reading contact list",e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.e("SAFEMODE","Error reading contact list",e);
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			Log.e("SAFEMODE","Error reading contact list",e);
+			e.printStackTrace();
+		} finally{
+			try{ois.close();} catch(Throwable t){}
+		}
+		return result;
+    }
+    
+    public static int hideContacts(Activity activity, List<Long> contactIds) throws DataAccessException{
+    	if (lastHid) throw new DataAccessException("Last batch of contacts was not revealed.  Cannot hide more.");
+    	List<ContactData> dataList = getDataForContacts(activity.getContentResolver(), contactIds);
+    	saveContacts(activity, dataList);
+    	deleteData(activity.getContentResolver(), contactIds);
+    	return dataList.size();
+    }
+    public static int revealContacts(Activity activity){
+    	List<ContactData> dataList = readContacts(activity);
+    	return insertData(activity.getContentResolver(), dataList);
+    }
+    
+    
+    public static class DataAccessException extends Exception{
+    	private static final long serialVersionUID = 7824516446656553631L;
+    	public DataAccessException(){
+    		super();
+    	}
+    	public DataAccessException(String message){
+    		super(message);
+    	}
+    	public DataAccessException(String message, Throwable cause){
+    		super(message, cause);
+    	}
+    	public DataAccessException(Throwable cause){
+    		super(cause);
+    	}
     }
 }

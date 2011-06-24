@@ -1,5 +1,7 @@
-package com.teamPrime.sm;
+package com.teamPrime.sm.tasks;
 
+
+import com.teamPrime.sm.SafeLaunchActivity;
 
 import android.os.AsyncTask;
 import android.util.Log;

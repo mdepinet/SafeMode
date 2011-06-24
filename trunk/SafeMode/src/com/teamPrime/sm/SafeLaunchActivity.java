@@ -4,9 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.TreeMap;
-
-import com.teamPrime.sm.data.Triple;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -30,6 +27,9 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.teamPrime.sm.tasks.BlackListIOTask;
+import com.teamPrime.sm.tasks.DateWaitTask;
 
 /**
  * This is our main activity.  It allows the user to start and stop the app, as well as 
@@ -247,7 +247,7 @@ public class SafeLaunchActivity extends Activity {
 		Log.v("registeredReceiver", "finishedregistration");
     }
     public void finishTurnOn(){
-    	ioTask = new BlackListIOTask(this,null,null,1);
+    	ioTask = new BlackListIOTask(this,null,BlackListIOTask.HIDE_CONTACTS_MODE);
     	ioTask.execute((Void[])(null));
     	Calendar c = Calendar.getInstance(TimeZone.getDefault(),Locale.getDefault());
 //		c.add(Calendar.YEAR, year-1900);
@@ -293,7 +293,7 @@ public class SafeLaunchActivity extends Activity {
     }
     
     private void turnOff(){
-    	ioTask = new BlackListIOTask(this,new TreeMap<Long, Triple<String,Integer,String>[]>(),null,4);
+    	ioTask = new BlackListIOTask(this,null,BlackListIOTask.REVEAL_CONTACTS_MODE);
     	ioTask.execute((Void[])(null));
     	SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
         SharedPreferences.Editor editor = data.edit();
