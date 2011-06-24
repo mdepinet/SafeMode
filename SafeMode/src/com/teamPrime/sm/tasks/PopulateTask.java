@@ -1,10 +1,13 @@
-package com.teamPrime.sm;
+package com.teamPrime.sm.tasks;
 
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+
+import com.teamPrime.sm.BlackListActivity;
+import com.teamPrime.sm.R;
 
 public class PopulateTask extends AsyncTask<Void, Integer, Void> {
 	private BlackListActivity mActivity;
@@ -34,10 +37,10 @@ public class PopulateTask extends AsyncTask<Void, Integer, Void> {
     // Runs on main thread.
     @Override
     protected void onPostExecute(Void result) {
-    	mActivity.mArrayAdapterAC = new ArrayAdapter<String>(mActivity,android.R.layout.simple_dropdown_item_1line,mActivity.contactNames);
-    	mActivity.mAutoComplete = (AutoCompleteTextView)mActivity.findViewById(R.id.blacklist_text);
-        mActivity.mAutoComplete.setAdapter(mActivity.mArrayAdapterAC);
-        mActivity.mAutoComplete.setThreshold(2);
+    	mActivity.setArrayAdapter(new ArrayAdapter<String>(mActivity,android.R.layout.simple_dropdown_item_1line,mActivity.getContactNames()));
+    	mActivity.setAutoComplete((AutoCompleteTextView)mActivity.findViewById(R.id.blacklist_text));
+        mActivity.getAutoComplete().setAdapter(mActivity.getArrayAdapter());
+        mActivity.getAutoComplete().setThreshold(2);
         loading.dismiss();
     }
 	

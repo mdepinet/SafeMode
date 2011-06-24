@@ -99,10 +99,10 @@ class ContactDataPhone extends ContactDataGeneric{
 		return label;
 	}
 	public String getProtocol(){
-		return "";
+		return null;
 	}
 	public String getCustomProtocol(){
-		return "";
+		return null;
 	}
 	public String getNumber(){
 		return number;
@@ -142,10 +142,10 @@ class ContactDataEmail extends ContactDataGeneric{
 		return label;
 	}
 	public String getProtocol(){
-		return "";
+		return null;
 	}
 	public String getCustomProtocol(){
-		return "";
+		return null;
 	}
 	public String getAddress(){
 		return address;
