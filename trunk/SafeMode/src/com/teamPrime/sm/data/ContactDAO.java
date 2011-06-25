@@ -302,7 +302,9 @@ public class ContactDAO {
 					e.printStackTrace();
 				}
     		 }
+    		 dataCursor.close();
     	 }
+    	 rawCursor.close();
     	 return dataList;
     }
     private static int deleteData(ContentResolver cr, List<Long> contactIds){
@@ -312,6 +314,7 @@ public class ContactDAO {
     	while (rawCursor.moveToNext()){
     		numDeleted += cr.delete(Data.CONTENT_URI, Data.RAW_CONTACT_ID + "=?", new String[]{String.valueOf(rawCursor.getLong(0))});
     	}
+    	rawCursor.close();
     	return numDeleted;
     }
     private static int insertData(ContentResolver cr, List<ContactData> data){
