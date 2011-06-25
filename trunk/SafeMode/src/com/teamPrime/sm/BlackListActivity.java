@@ -227,29 +227,27 @@ public class BlackListActivity extends ListActivity {
     	String phoneNumber = "";
     	String phoneLabel = "";
     	Integer phoneType = 0;
-    	Cursor people = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+    	Cursor people = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,
+    			new String[]{ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts._ID, ContactsContract.Contacts.HAS_PHONE_NUMBER},
+    			ContactsContract.Contacts.HAS_PHONE_NUMBER + " = 1 AND " + ContactsContract.Contacts.IN_VISIBLE_GROUP + " = 1",
+    			null, ContactsContract.Contacts.DISPLAY_NAME + " DESC");
     
     	while (people.moveToNext()){
-	    	String name = people.getString(people.getColumnIndex(
-	    	ContactsContract.Contacts.DISPLAY_NAME));
-	    	String iD = people.getString(people.getColumnIndex(
-	    	ContactsContract.Contacts._ID));
-	    	String hasPhone = people.getString(people.getColumnIndex(
-	    	ContactsContract.Contacts.HAS_PHONE_NUMBER));
+	    	String name = people.getString(0);
+	    	String iD = people.getString(1);
 
-	  		if ((Integer.parseInt(hasPhone) > 0)) {
-	  			Cursor numbers = getContentResolver().query(
-	  					ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ iD, null, null);
-	  			ArrayList<Triple<String,Integer,String>> nums = new ArrayList<Triple<String,Integer,String>>();
-	  			while (numbers.moveToNext()) {
-	  				phoneNumber = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.NUMBER));
-	  				phoneLabel = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.LABEL));
-	  				String str = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.TYPE));
-	  				phoneType = str == null ? null : Integer.parseInt(str);
-	  				nums.add(new Triple<String,Integer,String>(phoneNumber,phoneType,phoneLabel));
-	  			}
-	  			contacts.add(new Contact(iD, name, nums));
-	  		}
+  			Cursor numbers = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+  					new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.LABEL},
+  					ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" =?", new String[]{String.valueOf(people.getLong(1))}, null);
+  			ArrayList<Triple<String,Integer,String>> nums = new ArrayList<Triple<String,Integer,String>>();
+  			while (numbers.moveToNext()) {
+  				phoneNumber = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.NUMBER));
+  				phoneLabel = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.LABEL));
+  				String str = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.TYPE));
+  				phoneType = str == null ? null : Integer.parseInt(str);
+  				nums.add(new Triple<String,Integer,String>(phoneNumber,phoneType,phoneLabel));
+  			}
+  			contacts.add(new Contact(iD, name, nums));
     	}
     	people.close();
     	
