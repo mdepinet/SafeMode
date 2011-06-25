@@ -10,13 +10,10 @@ package com.teamPrime.sm;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import com.teamPrime.sm.data.Contact;
-import com.teamPrime.sm.data.Triple;
-import com.teamPrime.sm.tasks.BlackListIOTask;
-import com.teamPrime.sm.tasks.PopulateTask;
 
 import android.app.ListActivity;
 import android.content.SharedPreferences;
@@ -31,36 +28,48 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.teamPrime.sm.data.Contact;
+import com.teamPrime.sm.tasks.BlackListIOTask;
+import com.teamPrime.sm.tasks.PopulateTask;
+
 public class BlackListActivity extends ListActivity {
     /** Called when the activity is first created. */
 	
-	Button mAddButton;	
-	Button mAddAll;
-	Button mRemoveAll;
-	Button mRemove;
+	private Button mAddButton;	
+	private Button mAddAll;
+	private Button mRemoveAll;
+	private Button mRemove;
     
-	ArrayAdapter<String> mArrayAdapterBL;
-	ArrayList<String> blacklistedContacts = new ArrayList<String>();
+	private ArrayAdapter<String> mArrayAdapterBL;
+	
+	private List<String> blacklistedContacts = new LinkedList<String>();
+	private List<String> addedContacts = new LinkedList<String>();
+	private List<Long> addedContactIds = new LinkedList<Long>();
+	private List<Contact> contacts = new LinkedList<Contact>();
+	
 	private AutoCompleteTextView mAutoComplete;
 	private ArrayAdapter<String> mArrayAdapterAC;
-	ArrayList<String> addedContacts = new ArrayList<String>();
-	ArrayList<Contact> contacts = new ArrayList<Contact>();
-	private ArrayList<String> contactNames = new ArrayList<String>(); 
-	Map<Long, Triple<String,Integer,String>[]> iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
-	Map<Long, Triple<String,Integer,String>[]> iDmapPrev = new TreeMap<Long, Triple <String,Integer,String>[]>();
-	Map<Long, Triple<String,Integer,String>[]> iDmapFull = new TreeMap<Long, Triple <String,Integer,String>[]>();
+	
+//	private ArrayList<String> contactNames = new ArrayList<String>(); 
+//	Map<Long, Triple<String,Integer,String>[]> iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
+//	Map<Long, Triple<String,Integer,String>[]> iDmapPrev = new TreeMap<Long, Triple <String,Integer,String>[]>();
+//	Map<Long, Triple<String,Integer,String>[]> iDmapFull = new TreeMap<Long, Triple <String,Integer,String>[]>();
+	
 	boolean readOnly = false;
 	boolean emptyList = true;
 	boolean savedNull = true;
-	ArrayList<String> tempContacts = new ArrayList<String>();
+	List<String> tempContacts = new LinkedList<String>();
 	PopulateTask mTask;
+	
+	private List<Long> contactIds = new LinkedList<Long>();
+	private List<String> contactNames = new LinkedList<String>();
+	private Map<String, Long> nameToIdMap = new TreeMap<String, Long>();
 
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        if(savedInstanceState!=null){savedNull = false;}
+        if(savedInstanceState!=null) savedNull = false;
     
         readOnly = getIntent().getBooleanExtra("readOnly", true);
         if (readOnly){
@@ -79,22 +88,23 @@ public class BlackListActivity extends ListActivity {
 	        mAddButton.setOnClickListener(new OnClickListener(){    	 	
 	        	public void onClick(View v){
 	        		if (getArrayAdapter()!=null){
-	        		String name = getAutoComplete().getText().toString();
-	        		if (!getContactNames().contains(name))
+	        		String name = mAutoComplete.getText().toString();
+	        		if (!contactNames.contains(name))
 	        			Toast.makeText(getApplicationContext(), "Incorrect Contact Name!", Toast.LENGTH_SHORT).show();
 	        		else if (addedContacts.contains(name))
 	        			Toast.makeText(getApplicationContext(), "Contact is Already in Blacklist!", Toast.LENGTH_SHORT).show();
 	        		else{
 	        			mArrayAdapterBL.add(name);
 	        			addedContacts.add(name);
+	        			addedContactIds.add(nameToIdMap.get(name));
 	        			if(emptyList){
 		        			mArrayAdapterBL.remove("Your Blacklist is Currently Empty...");
 		        			emptyList = false;
 		        		}
-	        			for(int i = 0; i < contacts.toArray().length; i++){
-	        				if(contacts.get(i).match(name))
-	        					iDmap.put(Long.parseLong(contacts.get(i).getID()), contacts.get(i).getNumber());
-	        			}
+//	        			for(int i = 0; i < contacts.toArray().length; i++){
+//	        				if(contacts.get(i).match(name))
+//	        					iDmap.put(Long.parseLong(contacts.get(i).getID()), contacts.get(i).getNumber());
+//	        			}
 	        			//Log.i("safemode", iDmap.toString());
 	        		}
 	        		Collections.sort(blacklistedContacts);
@@ -111,14 +121,15 @@ public class BlackListActivity extends ListActivity {
 	        			emptyList = false;
 	        		}
 	        		int initialSize = addedContacts.size();
-	        		for(Contact contact: contacts) {
-	        			if (!addedContacts.contains(contact.getName())){
-	        				mArrayAdapterBL.add(contact.getName());
-	        				addedContacts.add(contact.getName());
+	        		for(String name: contactNames) {
+	        			if (!addedContacts.contains(name)){
+	        				mArrayAdapterBL.add(name);
+	        				addedContacts.add(name);
+	        				addedContactIds.add(nameToIdMap.get(name));
 	        				}
 	        			if (addedContacts.size()==initialSize) 
 	        				Toast.makeText(getApplicationContext(), "All Contacts are Already in Blacklist!", Toast.LENGTH_SHORT).show();
-	        			iDmap.put(Long.parseLong(contact.getID()), contact.getNumber());
+//	        			iDmap.put(Long.parseLong(contact.getID()), contact.getNumber());
 	        			}
 	        		//Log.i("safemode", iDmap.toString());
 	        		Collections.sort(blacklistedContacts);
@@ -131,15 +142,16 @@ public class BlackListActivity extends ListActivity {
 	       		public void onClick(View v){ 
 	       			if (getArrayAdapter()!=null){
 	       			mArrayAdapterBL.clear();
-	        		for (String name:addedContacts){
-	        			for(int i = 0; i < contacts.toArray().length; i++){
-	        				if(contacts.get(i).match(name))
-	        					iDmap.remove(Long.parseLong(contacts.get(i).getID()));
-	        			}
-	        		}
+//	        		for (String name:addedContacts){
+//	        			for(int i = 0; i < contacts.toArray().length; i++){
+//	        				if(contacts.get(i).match(name))
+//	        					iDmap.remove(Long.parseLong(contacts.get(i).getID()));
+//	        			}
+//	        		}
 	        		addedContacts.clear();
+	        		addedContactIds.clear();
 	        		Toast.makeText(getApplicationContext(), "All Contacts Removed from Blacklist!", Toast.LENGTH_SHORT).show();
-	        		Collections.sort(blacklistedContacts);
+//	        		Collections.sort(blacklistedContacts);
 	                if(mArrayAdapterBL.isEmpty()){
 	                	mArrayAdapterBL.add("Your Blacklist is Currently Empty...");
 	                	emptyList = true;
@@ -158,12 +170,13 @@ public class BlackListActivity extends ListActivity {
 	        		else { 
 	       				mArrayAdapterBL.remove(name);
 	       				addedContacts.remove(name);
-	        			for(int i = 0; i < contacts.toArray().length; i++){
-	        				if(contacts.get(i).match(name))
-	        					iDmap.remove(Long.parseLong(contacts.get(i).getID()));
-	        			}
+	       				addedContactIds.remove(nameToIdMap.get(name));
+//	        			for(int i = 0; i < contacts.toArray().length; i++){
+//	        				if(contacts.get(i).match(name))
+//	        					iDmap.remove(Long.parseLong(contacts.get(i).getID()));
+//	        			}
 	       			}
-	        		Collections.sort(blacklistedContacts);
+//	        		Collections.sort(blacklistedContacts);
 	                if(mArrayAdapterBL.isEmpty()){
 	                	mArrayAdapterBL.add("Your Blacklist is Currently Empty...");
 	                	emptyList = true;
@@ -179,18 +192,18 @@ public class BlackListActivity extends ListActivity {
         	blacklistedContacts = new ArrayList<String>();
         	addedContacts = new ArrayList<String>();
         	contacts = new ArrayList<Contact>();
-        	setContactNames(new ArrayList<String>()); 
-        	iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
-        	iDmapPrev = new TreeMap<Long, Triple <String,Integer,String>[]>();
+//        	contactNames = new ArrayList<String>(); 
+//        	iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
+//        	iDmapPrev = new TreeMap<Long, Triple <String,Integer,String>[]>();
             mArrayAdapterBL = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, blacklistedContacts);
             this.setListAdapter(mArrayAdapterBL);
-            iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
+//            iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
     	if (!readOnly){
 	    	mAddButton = (Button) findViewById(R.id.add);
 	        mAddAll = (Button) findViewById(R.id.add_all_button);
 	        mRemoveAll = (Button) findViewById(R.id.remove_all_button);
 	        mRemove = (Button) findViewById(R.id.remove);
-		     /** 	mArrayAdapterAC = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,contactNames);
+		     /** 	mArrayAdapterAC = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,contactNames_foo);
 		        mAutoComplete = (AutoCompleteTextView)findViewById(R.id.blacklist_text);
 		        mAutoComplete.setAdapter(mArrayAdapterAC);
 		        mAutoComplete.setThreshold(2);*/		        
@@ -205,11 +218,11 @@ public class BlackListActivity extends ListActivity {
 		return mArrayAdapterAC;
 	}
 
-	public void setContactNames(ArrayList<String> contactNames) {
+	public void setContactNames(List<String> contactNames) {
 		this.contactNames = contactNames;
 	}
 
-	public ArrayList<String> getContactNames() {
+	public List<String> getContactNames() {
 		return contactNames;
 	}
 
@@ -222,11 +235,13 @@ public class BlackListActivity extends ListActivity {
 	}
 
 	public void populatePeopleList() {
-    	contacts.clear();
-    	getContactNames().clear();
-    	String phoneNumber = "";
-    	String phoneLabel = "";
-    	Integer phoneType = 0;
+//    	contacts.clear();
+//    	getContactNames().clear();
+//    	String phoneNumber = "";
+//    	String phoneLabel = "";
+//    	Integer phoneType = 0;
+		contactIds.clear();
+		contactNames.clear();
     	Cursor people = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,
     			new String[]{ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts._ID, ContactsContract.Contacts.HAS_PHONE_NUMBER},
     			ContactsContract.Contacts.HAS_PHONE_NUMBER + " = 1 AND " + ContactsContract.Contacts.IN_VISIBLE_GROUP + " = 1",
@@ -234,39 +249,42 @@ public class BlackListActivity extends ListActivity {
     
     	while (people.moveToNext()){
 	    	String name = people.getString(0);
-	    	String iD = people.getString(1);
+	    	Long id = people.getLong(1);
 
-  			Cursor numbers = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-  					new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.LABEL},
-  					ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" =?", new String[]{String.valueOf(people.getLong(1))}, null);
-  			ArrayList<Triple<String,Integer,String>> nums = new ArrayList<Triple<String,Integer,String>>();
-  			while (numbers.moveToNext()) {
-  				phoneNumber = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.NUMBER));
-  				phoneLabel = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.LABEL));
-  				String str = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.TYPE));
-  				phoneType = str == null ? null : Integer.parseInt(str);
-  				nums.add(new Triple<String,Integer,String>(phoneNumber,phoneType,phoneLabel));
-  			}
-  			contacts.add(new Contact(iD, name, nums));
+//  			Cursor numbers = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+//  					new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.LABEL},
+//  					ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" =?", new String[]{String.valueOf(people.getLong(1))}, null);
+//  			ArrayList<Triple<String,Integer,String>> nums = new ArrayList<Triple<String,Integer,String>>();
+//  			while (numbers.moveToNext()) {
+//  				phoneNumber = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.NUMBER));
+//  				phoneLabel = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.LABEL));
+//  				String str = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.TYPE));
+//  				phoneType = str == null ? null : Integer.parseInt(str);
+//  				nums.add(new Triple<String,Integer,String>(phoneNumber,phoneType,phoneLabel));
+//  			}
+//  			contacts.add(new Contact(iD, name, nums));
+	    	contactNames.add(name);
+	    	contactIds.add(id);
+	    	nameToIdMap.put(name, id);
     	}
     	people.close();
     	
-    	for (Contact contact: contacts){
-    		getContactNames().add(contact.getName());
-    		iDmapFull.put(Long.parseLong(contact.getID()), contact.getNumber());
-    	}
+//    	for (Contact contact: contacts){
+//    		getContactNames().add(contact.getName());
+//    		iDmapFull.put(Long.parseLong(contact.getID()), contact.getNumber());
+//    	}
     	//startManagingCursor(people);
     }
     
     @Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		if(!readOnly){
-    	super.onListItemClick(l, v, position, id);
-		Object o = this.getListAdapter().getItem(position);
-		String keyword = o.toString();
-		if(keyword.equals("Your Blacklist is Currently Empty...")) return;
-		getAutoComplete().setText("");
-		getAutoComplete().setText(keyword);
+	    	super.onListItemClick(l, v, position, id);
+			Object o = this.getListAdapter().getItem(position);
+			String keyword = o.toString();
+			if(keyword.equals("Your Blacklist is Currently Empty...")) return;
+			getAutoComplete().setText("");
+			getAutoComplete().setText(keyword);
 		}
 	}   
     
@@ -299,12 +317,14 @@ public class BlackListActivity extends ListActivity {
     	SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
         int savedInt = data.getInt("length", 0);
         for (int i = 0; i < savedInt;i++){
-        	for(int j = 0; j < contacts.toArray().length; j++){
-				if(contacts.get(j).match(data.getString("name" + i, "")))
-					iDmapPrev.put(Long.parseLong(contacts.get(j).getID()), contacts.get(j).getNumber());
-				}
-        	mArrayAdapterBL.add(data.getString("name"+i, ""));
-        	addedContacts.add(data.getString("name"+i, ""));
+//        	for(int j = 0; j < contacts.toArray().length; j++){
+//				if(contacts.get(j).match(data.getString("name" + i, "")))
+//					iDmapPrev.put(Long.parseLong(contacts.get(j).getID()), contacts.get(j).getNumber());
+//				}
+        	String nextName = data.getString("name"+i, "");
+        	mArrayAdapterBL.add(nextName);
+        	addedContacts.add(nextName);
+        	addedContactIds.add(nameToIdMap.get(nextName));
     }
     	//}    
         if(mArrayAdapterBL.isEmpty()){
@@ -315,9 +335,8 @@ public class BlackListActivity extends ListActivity {
     
     public void saveState(){
     	int x = 0;
-    	//TODO This needs to write contactIds
-    	//BlackListIOTask dbTask = new BlackListIOTask(this, iDmapPrev,iDmap,0);
-    	//dbTask.execute((Void[])(null));       
+    	BlackListIOTask dbTask = new BlackListIOTask(this, addedContactIds , BlackListIOTask.WRITE_IDS_MODE);
+    	dbTask.execute((Void[])(null));       
         SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
         SharedPreferences.Editor editor = data.edit();
         for(String name:addedContacts){
