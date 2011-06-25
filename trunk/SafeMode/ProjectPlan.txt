@@ -1,17 +1,24 @@
+Release Plan:
 v1.0
--Hide/restore phone numbers
+-Hide/restore phone numbers		#DEBUGGING
+-Temporary on/off
 -Finalize theme (backgrounds)
 -Notification should appear when SAFEMODE starts instead of the first time the screen is unlocked
+-Combine MathStop and UnlockPhone activities?
 -Directions upon first use
 -Help menu?
 
 v1.1
 -Intercept phone calls more directly
 -Block incoming phone calls
+-Limit number of attempts and time allowed for unlocking phone
+-More options for unlocking phone
+----Puzzle game
+----Walk straight and balance
 
 v1.2
 -Handle texting
--Handle emails and facebook?
+-Handle facebook/twitter?
 
 v2.0
 -Block applications
@@ -24,5 +31,5 @@ Publishing:
 -Lite version: Free   Max blacklist of 1 person (disable Add All and limit Add)
 
 
-Bug list:
---Add bugs we find here--
+Bug List:
+-New math problem on screen turn
