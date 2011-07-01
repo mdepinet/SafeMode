@@ -26,7 +26,7 @@ public class PopulateTask extends AsyncTask<Void, Integer, Void> {
     // Runs on main thread.
     @Override
     protected void onPreExecute() {
-    	loading = ProgressDialog.show(mActivity, "","Loading Contacts...", true); 
+    	loading = ProgressDialog.show(mActivity, "",mActivity.getString(R.string.loading), true); 
     }
 
     // Runs on main thread.

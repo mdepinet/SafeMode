@@ -55,40 +55,24 @@ public class SafeLaunchActivity extends Activity {
 	private boolean allowTimer = false;
 	
 	private Menu mMenu;
-	private final String edit_blacklist = "Edit Blacklist";
-	private final String view_blacklist = "View Blacklist";
+	private String edit_blacklist;
+	private String view_blacklist;
 	
 	private BlackListIOTask ioTask;
 	
-	private final int LockedNotificationId = 1;
+	public static final int LockedNotificationId = 1;
 	
 	//Broadcast Receiver (for notification)
-	private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if(applicationOnState) {
-				int icon = R.drawable.locked;
-				CharSequence tickerText = "SAFEMODE Locked";
-				long when = System.currentTimeMillis();
-				
-				Notification not = new Notification(icon, tickerText, when);
-				not.setLatestEventInfo(context, 
-									  "Contacts protected by SAFEMODE", 
-									  "Click here to unlock SAFEMODE", 
-									  PendingIntent.getActivity(context, 0, new Intent(getApplicationContext(), UnlockPhoneActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK)
-									  );
-				String ns = Context.NOTIFICATION_SERVICE;
-				NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-				mNotificationManager.notify(LockedNotificationId, not);
-			}
-		}
-	};
+	private BroadcastReceiver mIntentReceiver;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        view_blacklist = getString(R.string.view_blacklist);
+        edit_blacklist = getString(R.string.edit_blacklist);
 
         onOffButton = (Button)findViewById(R.id.onOffButton);
         countdownTimer = (TextView)findViewById(R.id.countdownTimer);
@@ -111,6 +95,27 @@ public class SafeLaunchActivity extends Activity {
 				day = view.getDayOfMonth();
 				dateUpdated = true;
 				if (timeUpdated) handleTimes(false,false);
+			}
+		};
+		
+		mIntentReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if(applicationOnState) {
+					int icon = R.drawable.locked;
+					CharSequence tickerText = getString(R.string.notif_locked_short);
+					long when = System.currentTimeMillis();
+					
+					Notification not = new Notification(icon, tickerText, when);
+					not.setLatestEventInfo(context, 
+										  getString(R.string.notif_locked_message), 
+										  getString(R.string.notif_click_here), 
+										  PendingIntent.getActivity(context, 0, new Intent(getApplicationContext(), MathStopActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK)
+										  );
+					String ns = Context.NOTIFICATION_SERVICE;
+					NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+					mNotificationManager.notify(LockedNotificationId, not);
+				}
 			}
 		};
     }
@@ -245,7 +250,7 @@ public class SafeLaunchActivity extends Activity {
     }
     
     private void turnOn(){
-    	countdownTimer.setText("Waiting for user input...");
+    	countdownTimer.setText(getString(R.string.wait_user));
     	mTask = new DateWaitTask(this);
     	mTask.execute((Void[])(null));
     }
@@ -253,7 +258,7 @@ public class SafeLaunchActivity extends Activity {
     public void finishTurnOn(){
     	//Time related variables are now set (by DateWaitTask)
     	if (offTime <= System.currentTimeMillis()){
-    		Toast.makeText(getApplicationContext(), "Off time must be in the future!", Toast.LENGTH_SHORT).show();
+    		Toast.makeText(getApplicationContext(), getString(R.string.future_reqd), Toast.LENGTH_SHORT).show();
     		return;
     	}
     	ioTask = new BlackListIOTask(this,null,BlackListIOTask.HIDE_CONTACTS_MODE);
@@ -291,13 +296,13 @@ public class SafeLaunchActivity extends Activity {
         timeUpdated = dateUpdated = false;
         
 		int icon = R.drawable.locked;
-		CharSequence tickerText = "SAFEMODE Locked";
+		CharSequence tickerText = getString(R.string.notif_locked_short);
 		long when = System.currentTimeMillis();
 		Notification not = new Notification(icon, tickerText, when);
 		not.setLatestEventInfo(getApplicationContext(), 
-							  "Contacts protected by SAFEMODE", 
-							  "Click here to unlock SAFEMODE", 
-							  PendingIntent.getActivity(getApplicationContext(), 0, new Intent(getApplicationContext(), UnlockPhoneActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK)
+							  getString(R.string.notif_locked_message), 
+							  getString(R.string.notif_click_here), 
+							  PendingIntent.getActivity(getApplicationContext(), 0, new Intent(getApplicationContext(), MathStopActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK)
 							  );
 		String ns = Context.NOTIFICATION_SERVICE;
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
