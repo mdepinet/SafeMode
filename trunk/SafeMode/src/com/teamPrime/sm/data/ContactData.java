@@ -48,27 +48,35 @@ abstract class ContactDataGeneric implements ContactData{
 	public static ContactDataGeneric getData(String mimeType, long rawContactId, int isPrimary, int isSuperPrimary,
 			int dataVersion, Object data1, Object data2, Object data3, Object data4, Object data5) throws DataCreationException{
 		if (mimeType.equals(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)){
-			if (!(data1 instanceof String && data2 instanceof Integer && data3 instanceof String))
+			if (!((data1 == null || data1 instanceof String) && (data2 == null || data2 instanceof Number) && (data3 == null || data3 instanceof String)))
 				throw new DataCreationException("Failed to create Phone data object due to data argument types: "
 						+data1.getClass().getName()+", "+data2.getClass().getName()+", "+data3.getClass().getName());
-			return new ContactDataPhone(rawContactId, isPrimary, isSuperPrimary, dataVersion, (String)data2, (Integer)data2, (String)data3);
+			return new ContactDataPhone(rawContactId, isPrimary, isSuperPrimary, dataVersion, (String)data1, convertToInteger((Number)data2), (String)data3);
 		}
 		else if (mimeType.equals(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)){
-			if (!(data1 instanceof String && data2 instanceof Integer && data3 instanceof String))
+			if (!((data1 == null || data1 instanceof String) && (data2 == null || data2 instanceof Number) && (data3 == null || data3 instanceof String)))
 				throw new DataCreationException("Failed to create Email data object due to data argument types: "
 						+data1.getClass().getName()+", "+data2.getClass().getName()+", "+data3.getClass().getName());
-			return new ContactDataEmail(rawContactId, isPrimary, isSuperPrimary, dataVersion, (String)data2, (Integer)data2, (String)data3);
+			return new ContactDataEmail(rawContactId, isPrimary, isSuperPrimary, dataVersion, (String)data1, convertToInteger((Number)data2), (String)data3);
 		}
 		else if (mimeType.equals(ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE)){
-			if (!(data1 instanceof String && data2 instanceof Integer && data3 instanceof String && data4 instanceof String && data5 instanceof String))
+			if (!((data1 == null || data1 instanceof String) && (data2 == null || data2 instanceof Number) && (data3 == null || data3 instanceof String)
+					&& (data4 == null || data4 instanceof String) && (data5 == null || data5 instanceof String)))
 				throw new DataCreationException("Failed to create IM data object due to data argument types: "
 						+data1.getClass().getName()+", "+data2.getClass().getName()+", "+data3.getClass().getName()
 						+data4.getClass().getName()+", "+data5.getClass().getName());
-			return new ContactDataIM(rawContactId, isPrimary, isSuperPrimary, dataVersion, (String)data2, (Integer)data2, (String)data3, (String)data4, (String)data5);
+			return new ContactDataIM(rawContactId, isPrimary, isSuperPrimary, dataVersion, (String)data1, convertToInteger((Number)data2), (String)data3, (String)data4, (String)data5);
 		}
 		else{
 			throw new DataCreationException("Failed to create data object due to unknown mimeType argument");
 		}
+	}
+	private static Integer convertToInteger(Number num){
+		if (num instanceof Byte) return new Integer((Byte)num);
+		else if (num instanceof Short) return new Integer((Short)num);
+		else if (num instanceof Integer) return (Integer)num;
+		else if (num instanceof Long) return new Integer(((Long)num).intValue());
+		else throw new IllegalArgumentException("Failed to convert "+num+" to an Integer");
 	}
 }
 

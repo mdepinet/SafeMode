@@ -85,9 +85,8 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			 List<Long> result2 = new LinkedList<Long>();
 			 result2.add((long) j);
 			 return result2;
-		 default:
-			 return null;
 		 }
+		 return null;
 	 }
 	 
 	 @SuppressWarnings("unchecked")
