@@ -279,18 +279,22 @@ public class ContactDAO {
     
 	private static final String contactSaveLoc = "SAFEMODE_contactData.bin";
 	private static boolean lastHid = false;
+	private static final String supportedDataTypes = "(\'"+ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE+"\',"
+														+"\'"+ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE+"\',"
+														+"\'"+ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE+"\')";
     
     
     private static List<ContactData> getDataForContacts(ContentResolver cr, List<Long> contactIds){
     	List<ContactData> dataList = new LinkedList<ContactData>();
     	 Cursor rawCursor = cr.query(RawContacts.CONTENT_URI, new String[]{RawContacts._ID},
-    	          RawContacts.CONTACT_ID + " IN ?", new String[]{formatListForSQLin(contactIds)}, null);
+    	          RawContacts.CONTACT_ID + " IN "+formatListForSQLin(contactIds), new String[]{}, null);
     	 while (rawCursor.moveToNext()){
     		 Cursor dataCursor =  cr.query(Data.CONTENT_URI,
     				 new String[] {Data.MIMETYPE, Data.RAW_CONTACT_ID, Data.IS_PRIMARY, Data.IS_SUPER_PRIMARY, Data.DATA_VERSION,
     				 	Data.DATA1, Data.DATA2, Data.DATA3, Data.DATA4, Data.DATA5, Data.DATA6},
-    		         Data.RAW_CONTACT_ID + "=?", new String[] {String.valueOf(rawCursor.getLong(0))}, null);
+    		         Data.RAW_CONTACT_ID + "=? AND "+Data.MIMETYPE + " in "+supportedDataTypes, new String[] {String.valueOf(rawCursor.getLong(0))}, null);
     		 while (dataCursor.moveToNext()){
+    			 Log.i("SAFEMODE - ContactDAO", "Mimetype is "+dataCursor.getString(0));
     			 try {
 					ContactData dataRow = ContactDataGeneric.getData(dataCursor.getString(0), dataCursor.getLong(1),
 							 dataCursor.getInt(2), dataCursor.getInt(3), dataCursor.getInt(4), deserializeBlob(dataCursor.getBlob(5)),
@@ -310,9 +314,10 @@ public class ContactDAO {
     private static int deleteData(ContentResolver cr, List<Long> contactIds){
     	int numDeleted = 0;
     	Cursor rawCursor = cr.query(RawContacts.CONTENT_URI, new String[]{RawContacts._ID},
-  	          RawContacts.CONTACT_ID + " IN ?", new String[]{formatListForSQLin(contactIds)}, null);
+  	          RawContacts.CONTACT_ID + " IN "+formatListForSQLin(contactIds), new String[]{}, null);
     	while (rawCursor.moveToNext()){
-    		numDeleted += cr.delete(Data.CONTENT_URI, Data.RAW_CONTACT_ID + "=?", new String[]{String.valueOf(rawCursor.getLong(0))});
+    		numDeleted += cr.delete(Data.CONTENT_URI, Data.RAW_CONTACT_ID + "=? AND "+Data.MIMETYPE+" IN "+supportedDataTypes,
+    				new String[]{String.valueOf(rawCursor.getLong(0))});
     	}
     	rawCursor.close();
     	return numDeleted;
@@ -347,12 +352,16 @@ public class ContactDAO {
     
     private static String formatListForSQLin(List<?> list){
     	StringBuffer buff = new StringBuffer();
+    	boolean nonEmpty = false;
     	buff.append("(");
     	for (Object obj : list){
-    		buff.append(obj.toString());
-    		buff.append(", ");
+    		if (obj != null) {
+    			buff.append(obj.toString());
+    			buff.append(", ");
+    			nonEmpty = true;
+    		}
     	}
-    	if (!list.isEmpty()){
+    	if (nonEmpty){
 	    	int index = buff.lastIndexOf(",");
 	    	buff.replace(index,index+1,")");
     	}
@@ -362,6 +371,31 @@ public class ContactDAO {
     	return buff.toString();
     }
     private static Object deserializeBlob(byte[] blob){
+    	if (blob == null) return blob;
+    	if (blob[blob.length-1] == 0){
+	    	String strAttempt = new String(blob,0,blob.length-1);
+	    	if (strAttempt.matches("[\\w\\s)(-]*")){ //This really is a String!
+	    		if (strAttempt.matches("\\d+")){ //But it could also be a long
+	    			//Return the most specific type possible
+    				byte b = Byte.parseByte(strAttempt);
+    				short s = Short.parseShort(strAttempt);
+    				int i = Integer.parseInt(strAttempt);
+    				long l = Long.parseLong(strAttempt);
+	    			if (b == l) return new Byte(b);
+	    			else if (s == l) return new Short(s);
+	    			else if (i == l) return new Integer(i);
+	    			else return l;
+	    		}
+	    		else if (strAttempt.matches("\\d*[.]\\d+")){ //Or a double
+	    			//Return the most specific type possible
+	    			float f = Float.parseFloat(strAttempt);
+	    			double d = Double.parseDouble(strAttempt);
+	    			if (f == d) return new Float(f);
+	    			else return new Double(d);
+	    		}
+	    		else return strAttempt;
+	    	}
+    	}
     	Object result = null;
     	ByteArrayInputStream bais = null;
     	ObjectInputStream ois = null;

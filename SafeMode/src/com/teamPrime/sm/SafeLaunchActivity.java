@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.teamPrime.sm.tasks.BlackListIOTask;
 import com.teamPrime.sm.tasks.DateWaitTask;
@@ -38,7 +39,8 @@ import com.teamPrime.sm.tasks.DateWaitTask;
  * @version 1.0
  */
 public class SafeLaunchActivity extends Activity {	
-	private boolean onState;
+	private boolean applicationOnState;
+	private boolean privateOnState;
 	private long offTime;
 	private Button onOffButton;
 	private TextView countdownTimer;
@@ -58,11 +60,13 @@ public class SafeLaunchActivity extends Activity {
 	
 	private BlackListIOTask ioTask;
 	
+	private final int LockedNotificationId = 1;
+	
+	//Broadcast Receiver (for notification)
 	private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
-
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if(onState) {
+			if(applicationOnState) {
 				int icon = R.drawable.locked;
 				CharSequence tickerText = "SAFEMODE Locked";
 				long when = System.currentTimeMillis();
@@ -75,7 +79,7 @@ public class SafeLaunchActivity extends Activity {
 									  );
 				String ns = Context.NOTIFICATION_SERVICE;
 				NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-				mNotificationManager.notify(1, not);
+				mNotificationManager.notify(LockedNotificationId, not);
 			}
 		}
 	};
@@ -85,24 +89,9 @@ public class SafeLaunchActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
-        SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
-        onState = data.getBoolean("onState", false);
-        offTime = data.getLong("offTime", System.currentTimeMillis());
 
         onOffButton = (Button)findViewById(R.id.onOffButton);
         countdownTimer = (TextView)findViewById(R.id.countdownTimer);
-        
-        onOffButton.setText(getString(onState ? R.string.end_button : R.string.start_button));
-        
-        long timeLeft = 0;
-        if (onState){
-        	timeLeft = offTime - System.currentTimeMillis();
-        	allowTimer = true;
-        	if (timer != null) timer.cancel();
-        	timer = new SimpleTimer(timeLeft,1000);
-            timer.start();
-        }
         
         mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
         	@Override
@@ -110,6 +99,7 @@ public class SafeLaunchActivity extends Activity {
                 hour = view.getCurrentHour();
                 minute = view.getCurrentMinute();
                 timeUpdated = true;
+                if (dateUpdated) handleTimes(false,false);
             }
         };
         
@@ -120,48 +110,48 @@ public class SafeLaunchActivity extends Activity {
 				month = view.getMonth();
 				day = view.getDayOfMonth();
 				dateUpdated = true;
+				if (timeUpdated) handleTimes(false,false);
 			}
 		};
-		Calendar c = Calendar.getInstance(TimeZone.getDefault(),Locale.getDefault());
-		c.setTimeInMillis(offTime);
-		hour = c.get(Calendar.HOUR_OF_DAY);
-		minute = c.get(Calendar.MINUTE);
-		c = Calendar.getInstance(TimeZone.getDefault(),Locale.getDefault());
-		year = c.get(Calendar.YEAR);
-		month = c.get(Calendar.MONTH);
-		day = c.get(Calendar.DAY_OF_MONTH);
-		if (year == 0 && month == 0 && day == 0 && hour == 0 && minute == 0){
-			hour = c.get(Calendar.HOUR_OF_DAY);
-			minute = c.get(Calendar.MINUTE);
-		}
     }
     
     @Override
     public void onResume(){
     	super.onResume();
     	SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
-        onState = data.getBoolean("onState", false);
+        applicationOnState = data.getBoolean("onState", false);
         offTime = data.getLong("offTime", System.currentTimeMillis());
+        handleTimes(true,true);
+        data = getSharedPreferences(SafeLaunchActivity.class.getName(), MODE_PRIVATE);
+        privateOnState = data.getBoolean("onState", false);
         
-        onOffButton.setText(getString(onState ? R.string.end_button : R.string.start_button));
+        onOffButton.setText(getString(applicationOnState ? R.string.end_button : R.string.start_button));
         
-        long timeLeft = 0;
-        if (onState){
-        	timeLeft = offTime - System.currentTimeMillis();
-        	allowTimer = true;
-        	if (timer != null) timer.cancel();
-        	timer = new SimpleTimer(timeLeft,1000);
-            timer.start();
+        if (applicationOnState){
+        	if (privateOnState){
+	        	long timeLeft = 0;
+	        	timeLeft = offTime - System.currentTimeMillis();
+	        	allowTimer = true;
+	        	if (timer != null) timer.cancel();
+	        	timer = new SimpleTimer(timeLeft,1000);
+	            timer.start();
+        	}
+        	else{ //If the application was started from a different activity
+        		turnOn();
+        	}
         }
         else{
-        	allowTimer = false;
-        	countdownTimer.setText("");
-        	if (timer != null) timer.cancel();
+        	if (!privateOnState){
+	        	//If we already knew we were off, we shouldn't have to do anything
+        	}
+        	else{
+        		turnOff(); //If someone else turned us off, make sure we're actually off
+        	}
         }
         
         if (mMenu != null){
         	mMenu.clear();
-        	String blackString = onState ? view_blacklist : edit_blacklist;
+        	String blackString = applicationOnState ? view_blacklist : edit_blacklist;
         	mMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, blackString);
         }
     }
@@ -171,8 +161,12 @@ public class SafeLaunchActivity extends Activity {
     	super.onPause();
     	SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
         SharedPreferences.Editor editor = data.edit();
-        editor.putBoolean("onState", onState);
+        editor.putBoolean("onState", applicationOnState);
         editor.putLong("offTime", offTime);
+        editor.commit();
+        data = getSharedPreferences(SafeLaunchActivity.class.getName(), MODE_PRIVATE);
+        editor = data.edit();
+        editor.putBoolean("onState", privateOnState);
         editor.commit();
     }
     
@@ -181,8 +175,8 @@ public class SafeLaunchActivity extends Activity {
     	boolean result = super.onCreateOptionsMenu(menu);
     	mMenu = menu;
 //    	String blackString = getText(R.string.edit_blacklist).toString();
-//    	String blackString = getString(onState ? R.string.edit_blacklist : R.string.view_blacklist);
-    	String blackString = onState ? view_blacklist : edit_blacklist;
+//    	String blackString = getString(applicationOnState ? R.string.edit_blacklist : R.string.view_blacklist);
+    	String blackString = applicationOnState ? view_blacklist : edit_blacklist;
     	menu.add(Menu.NONE, Menu.NONE, Menu.NONE, blackString);
         return result;
     }
@@ -190,7 +184,7 @@ public class SafeLaunchActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	Intent i = new Intent(getApplicationContext(), BlackListActivity.class);
-    	i.putExtra("readOnly", onState);
+    	i.putExtra("readOnly", applicationOnState);
     	startActivity(i);
         return super.onOptionsItemSelected(item);
     }
@@ -225,7 +219,7 @@ public class SafeLaunchActivity extends Activity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.onOffButton:
-            	if (!onState) turnOn();
+            	if (!applicationOnState) turnOn();
             	else{
             		//turnOff();
             		startActivity(new Intent(getApplicationContext(), MathStopActivity.class));
@@ -233,54 +227,72 @@ public class SafeLaunchActivity extends Activity {
         }
     }
     
+    private void handleTimes(boolean fromLong, boolean useTodayDate){
+    	Calendar c = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
+    	if (useTodayDate){
+    		year = c.get(Calendar.YEAR);
+    		month = c.get(Calendar.MONTH);
+    		day = c.get(Calendar.DAY_OF_MONTH);
+    	}
+    	if (fromLong){
+    		hour = c.get(Calendar.HOUR);
+    		minute = c.get(Calendar.MINUTE);
+    	}
+    	else{
+    		c.set(year, month, day, hour, minute);
+    		offTime = c.getTimeInMillis();
+    	}
+    }
+    
     private void turnOn(){
     	countdownTimer.setText("Waiting for user input...");
     	mTask = new DateWaitTask(this);
     	mTask.execute((Void[])(null));
-    	
-    	// Make notification here
-        // Register the Receiver to call the Unlock Page when phone unlocks
-        IntentFilter mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(Intent.ACTION_USER_PRESENT);
-     //   mIntentFilter.addAction(Intent.A)
-    	registerReceiver(mIntentReceiver, mIntentFilter);
-		Log.v("registeredReceiver", "finishedregistration");
     }
+    
     public void finishTurnOn(){
+    	//Time related variables are now set (by DateWaitTask)
+    	if (offTime <= System.currentTimeMillis()){
+    		Toast.makeText(getApplicationContext(), "Off time must be in the future!", Toast.LENGTH_SHORT).show();
+    		return;
+    	}
     	ioTask = new BlackListIOTask(this,null,BlackListIOTask.HIDE_CONTACTS_MODE);
     	ioTask.execute((Void[])(null));
-    	Calendar c = Calendar.getInstance(TimeZone.getDefault(),Locale.getDefault());
-//		c.add(Calendar.YEAR, year-1900);
-//		c.add(Calendar.MONTH, month);
-//		c.add(Calendar.DAY_OF_MONTH, day);
-//		c.add(Calendar.HOUR_OF_DAY, hour);
-//		c.add(Calendar.MINUTE, minute);
-    	c.set(year, month, day, hour, minute);
-		
-		//offTime = (long)((((year*12+month)*30.436875+day)*24+hour)*60+minute)*60000;
-		offTime = c.getTimeInMillis();
-		onState = true;
-		SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
-        SharedPreferences.Editor editor = data.edit();
-        editor.putBoolean("onState", true);
-        editor.putLong("offTime", offTime);
-        editor.commit();
+    	
+		applicationOnState = true;
+		privateOnState = true;
+//		  SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
+//        SharedPreferences.Editor editor = data.edit();
+//        editor.putBoolean("onState", true);
+//        editor.putLong("offTime", offTime);
+//        editor.commit();
+//        data = getSharedPreferences(SafeLaunchActivity.class.getName(), MODE_PRIVATE);
+//        editor = data.edit();
+//        editor.putBoolean("onState", true);
+//        editor.commit();
         
-        onOffButton.setText(getString(R.string.end_button));
+		onOffButton.setText(getString(R.string.end_button));
         if (mMenu != null){
             mMenu.clear();
             mMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, view_blacklist);
         }
+        
+        // Register the Receiver to call the Unlock Page when phone unlocks
+        IntentFilter mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Intent.ACTION_USER_PRESENT);
+    	registerReceiver(mIntentReceiver, mIntentFilter);
+		Log.v("SAFEMODE - Receiver", "Finished registration of broadcast receiver");
+        
     	long timeLeft = offTime - System.currentTimeMillis();
     	allowTimer = true;
     	if (timer != null) timer.cancel();
     	timer = new SimpleTimer(timeLeft,1000);
         timer.start();
         timeUpdated = dateUpdated = false;
+        
 		int icon = R.drawable.locked;
 		CharSequence tickerText = "SAFEMODE Locked";
 		long when = System.currentTimeMillis();
-		
 		Notification not = new Notification(icon, tickerText, when);
 		not.setLatestEventInfo(getApplicationContext(), 
 							  "Contacts protected by SAFEMODE", 
@@ -289,17 +301,23 @@ public class SafeLaunchActivity extends Activity {
 							  );
 		String ns = Context.NOTIFICATION_SERVICE;
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-		mNotificationManager.notify(1, not);
+		mNotificationManager.notify(LockedNotificationId, not);
     }
     
     private void turnOff(){
     	ioTask = new BlackListIOTask(this,null,BlackListIOTask.REVEAL_CONTACTS_MODE);
     	ioTask.execute((Void[])(null));
-    	SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
-        SharedPreferences.Editor editor = data.edit();
-        onState = false;
-        editor.putBoolean("onState", false);
-        editor.commit();
+    	
+    	applicationOnState = false;
+    	privateOnState = false;
+//    	  SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
+//        SharedPreferences.Editor editor = data.edit();
+//        editor.putBoolean("onState", false);
+//        editor.commit();
+//        data = getSharedPreferences(SafeLaunchActivity.class.getName(), MODE_PRIVATE);
+//        editor = data.edit();
+//        editor.putBoolean("onState", false);
+//        editor.commit();
         
         onOffButton.setText(getString(R.string.start_button));
         allowTimer = false;
@@ -313,76 +331,38 @@ public class SafeLaunchActivity extends Activity {
 
 		String ns = Context.NOTIFICATION_SERVICE;
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-		mNotificationManager.cancelAll();
+		mNotificationManager.cancel(LockedNotificationId);
     }
     
-    public int getHour() {
-		return hour;
-	}
-
-	public int getMinute() {
-		return minute;
-	}
-
-	public int getYear() {
-		return year;
-	}
-
-	public int getMonth() {
-		return month;
-	}
-
-	public int getDay() {
-		return day;
-	}
-
-	public boolean isTimeUpdated() {
-		return timeUpdated;
-	}
+    //Getters and Setters for time related variables
+    public int getHour() {return hour;}
+	public int getMinute() {return minute;}
+	public int getYear() {return year;}
+	public int getMonth() {return month;}
+	public int getDay() {return day;}
 	
-	public boolean isDateUpdated() {
-		return dateUpdated;
-	}
+	public boolean isTimeUpdated() {return timeUpdated;}
+	public boolean isDateUpdated() {return dateUpdated;}
 
-	public void setHour(int hour) {
-		this.hour = hour;
-	}
+	public void setHour(int hour) {this.hour = hour;}
+	public void setMinute(int minute) {this.minute = minute;}
+	public void setYear(int year) {this.year = year;}
+	public void setMonth(int month) {this.month = month;}
+	public void setDay(int day) {this.day = day;}
 
-	public void setMinute(int minute) {
-		this.minute = minute;
-	}
+	public void setTimeUpdated(boolean timeUpdated) {this.timeUpdated = timeUpdated;}
+	public void setDateUpdated(boolean dateUpdated) {this.dateUpdated = dateUpdated;}
 
-	public void setYear(int year) {
-		this.year = year;
-	}
-
-	public void setMonth(int month) {
-		this.month = month;
-	}
-
-	public void setDay(int day) {
-		this.day = day;
-	}
-
-	public void setTimeUpdated(boolean timeUpdated) {
-		this.timeUpdated = timeUpdated;
-	}
 	
-	public void setDateUpdated(boolean dateUpdated) {
-		this.dateUpdated = dateUpdated;
-	}
-
 	class SimpleTimer extends CountDownTimer{
     	public SimpleTimer(long millisInFuture, long countDownInterval){
     		super(millisInFuture, countDownInterval);
     	}
-
 		@Override
 		public void onFinish() {
 			countdownTimer.setText(new Date(0).toString().substring(11,19));
 			turnOff();
 		}
-
 		@Override
 		public void onTick(long millisLeft) {
 			if (!allowTimer) return;
