@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -26,11 +27,13 @@ public class MathStopActivity extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.math_stop);
+ 
         question = (TextView) findViewById(R.id.questionStopText);
         answer = (TextView) findViewById(R.id.answerScreenStop);
         SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
         onState = data.getBoolean("onState", true);
         if (!onState) finish(); //Don't even run if SAFEMODE is off.  This should return the user to the main screen
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
     }
 
     /** Called upon subsequent calls to Activity **/
