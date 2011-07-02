@@ -17,6 +17,7 @@ import java.util.TreeMap;
 
 import android.app.ListActivity;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -30,7 +31,6 @@ import android.widget.Toast;
 
 import com.teamPrime.sm.tasks.BlackListIOTask;
 import com.teamPrime.sm.tasks.PopulateTask;
-import com.teamPrime.sm.R;
 
 public class BlackListActivity extends ListActivity {
     /** Called when the activity is first created. */
@@ -70,7 +70,7 @@ public class BlackListActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState!=null) savedNull = false;
-    
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         readOnly = getIntent().getBooleanExtra("readOnly", true);
         if (readOnly){
         	setContentView(R.layout.readonly);
