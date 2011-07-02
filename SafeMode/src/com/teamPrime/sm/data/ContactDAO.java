@@ -1,6 +1,5 @@
 package com.teamPrime.sm.data;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -38,20 +37,15 @@ public class ContactDAO {
     	 while (rawCursor.moveToNext()){
     		 Cursor dataCursor =  cr.query(Data.CONTENT_URI,
     				 new String[] {Data.MIMETYPE, Data.RAW_CONTACT_ID, Data.IS_PRIMARY, Data.IS_SUPER_PRIMARY, Data.DATA_VERSION,
-    				 	Data.DATA1, Data.DATA2, Data.DATA3, Data.DATA4, Data.DATA5, Data.DATA6},
+    				 	Data.DATA1, Data.DATA2, Data.DATA3, Data.DATA4, Data.DATA5},
     		         Data.RAW_CONTACT_ID + "=? AND "+Data.MIMETYPE + " in "+supportedDataTypes, new String[] {String.valueOf(rawCursor.getLong(0))}, null);
     		 while (dataCursor.moveToNext()){
     			 Log.i("SAFEMODE - ContactDAO", "Mimetype is "+dataCursor.getString(0));
-    			 try {
-					ContactData dataRow = ContactDataGeneric.getData(dataCursor.getString(0), dataCursor.getLong(1),
-							 dataCursor.getInt(2), dataCursor.getInt(3), dataCursor.getInt(4), deserializeBlob(dataCursor.getBlob(5)),
-							 deserializeBlob(dataCursor.getBlob(6)), deserializeBlob(dataCursor.getBlob(7)),
-							 deserializeBlob(dataCursor.getBlob(8)), deserializeBlob(dataCursor.getBlob(9)));
-					dataList.add(dataRow);
-				} catch (DataCreationException e) {
-					Log.e("SAFEMODE - ContactDAO", "Failed to create data object", e);
-					e.printStackTrace();
-				}
+				ContactData dataRow = new ContactDataGeneric(dataCursor.getString(0), dataCursor.getLong(1),
+						 dataCursor.getInt(2), dataCursor.getInt(3), dataCursor.getInt(4), dataCursor.getBlob(5),
+						 dataCursor.getBlob(6), dataCursor.getBlob(7),
+						 dataCursor.getBlob(8), dataCursor.getBlob(9));
+				dataList.add(dataRow);
     		 }
     		 dataCursor.close();
     	 }
@@ -75,11 +69,11 @@ public class ContactDAO {
     		ops.add(ContentProviderOperation.newInsert(Data.CONTENT_URI)
    	             .withValue(Data.RAW_CONTACT_ID, contact.getRawContactId())
    	             .withValue(Data.MIMETYPE, contact.getMimeType())
-   	             .withValue(Data.DATA1, contact.getData1())
-   	             .withValue(Data.DATA2, contact.getData2())
-   	             .withValue(Data.DATA3, contact.getData3())
-   	             .withValue(Data.DATA4, contact.getProtocol())
-   	             .withValue(Data.DATA5, contact.getCustomProtocol())
+   	             .withValue(Data.DATA1, contact.getData(1))
+   	             .withValue(Data.DATA2, contact.getData(2))
+   	             .withValue(Data.DATA3, contact.getData(3))
+   	             .withValue(Data.DATA4, contact.getData(4))
+   	             .withValue(Data.DATA5, contact.getData(5))
    	             .build());
     	}
 	    try {
@@ -118,72 +112,72 @@ public class ContactDAO {
     	}
     	return buff.toString();
     }
-    private static Object deserializeBlob(byte[] blob){
-    	if (blob == null) return blob;
-    	if (blob[blob.length-1] == 0){
-	    	String strAttempt = new String(blob,0,blob.length-1);
-	    	if (strAttempt.matches("[\\w\\s)(-]*")){ //This really is a String!
-	    		if (strAttempt.matches("\\d+")){ //But it could also be a long
-	    			//Return the most specific type possible
-	    			long l; byte b; short s; int i;
-	    			try{
-	    				l = Long.parseLong(strAttempt);
-	    			} catch(NumberFormatException ex){
-	    				return strAttempt;
-	    			}
-	    			try{
-	    				b = Byte.parseByte(strAttempt);
-	    				if (b == l) return new Byte(b);
-	    			} catch (NumberFormatException ex){}
-    				try{
-    					s = Short.parseShort(strAttempt);
-    					if (s == l) return new Short(s);
-    				} catch (NumberFormatException ex){}
-    				try{
-    					i = Integer.parseInt(strAttempt);
-    					if (i == l) return new Integer(i);
-    				} catch (NumberFormatException ex){}
-
-	    			return new Long(l);
-	    		}
-	    		else if (strAttempt.matches("\\d*[.]\\d+")){ //Or a double
-	    			//Return the most specific type possible
-	    			double d; float f;
-	    			try{
-	    				d = Double.parseDouble(strAttempt);
-	    			} catch (NumberFormatException ex){
-	    				return strAttempt;
-	    			}
-	    			try{
-	    				f = Float.parseFloat(strAttempt);
-	    				if (f == d) return new Float(f);
-	    			} catch (NumberFormatException ex){}
-	    			return new Double(d);
-	    		}
-	    		else return strAttempt;
-	    	}
-    	}
-    	Object result = null;
-    	ByteArrayInputStream bais = null;
-    	ObjectInputStream ois = null;
-    	try {
-    		bais = new ByteArrayInputStream(blob);
-			ois = new ObjectInputStream(bais);
-			result = ois.readObject();
-		} catch (StreamCorruptedException e) {
-			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
-			e.printStackTrace();
-		} catch (IOException e) {
-			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
-			e.printStackTrace();
-		} finally {
-			try{bais.close();ois.close();} catch(Throwable t){}
-		}
-		return result;
-    }
+//    private static Object deserializeBlob(byte[] blob){
+//    	if (blob == null) return blob;
+//    	if (blob[blob.length-1] == 0){
+//	    	String strAttempt = new String(blob,0,blob.length-1);
+//	    	if (strAttempt.matches("[\\w\\s)(-]*")){ //This really is a String!
+//	    		if (strAttempt.matches("\\d+")){ //But it could also be a long
+//	    			//Return the most specific type possible
+//	    			long l; byte b; short s; int i;
+//	    			try{
+//	    				l = Long.parseLong(strAttempt);
+//	    			} catch(NumberFormatException ex){
+//	    				return strAttempt;
+//	    			}
+//	    			try{
+//	    				b = Byte.parseByte(strAttempt);
+//	    				if (b == l) return new Byte(b);
+//	    			} catch (NumberFormatException ex){}
+//    				try{
+//    					s = Short.parseShort(strAttempt);
+//    					if (s == l) return new Short(s);
+//    				} catch (NumberFormatException ex){}
+//    				try{
+//    					i = Integer.parseInt(strAttempt);
+//    					if (i == l) return new Integer(i);
+//    				} catch (NumberFormatException ex){}
+//
+//	    			return new Long(l);
+//	    		}
+//	    		else if (strAttempt.matches("\\d*[.]\\d+")){ //Or a double
+//	    			//Return the most specific type possible
+//	    			double d; float f;
+//	    			try{
+//	    				d = Double.parseDouble(strAttempt);
+//	    			} catch (NumberFormatException ex){
+//	    				return strAttempt;
+//	    			}
+//	    			try{
+//	    				f = Float.parseFloat(strAttempt);
+//	    				if (f == d) return new Float(f);
+//	    			} catch (NumberFormatException ex){}
+//	    			return new Double(d);
+//	    		}
+//	    		else return strAttempt;
+//	    	}
+//    	}
+//    	Object result = null;
+//    	ByteArrayInputStream bais = null;
+//    	ObjectInputStream ois = null;
+//    	try {
+//    		bais = new ByteArrayInputStream(blob);
+//			ois = new ObjectInputStream(bais);
+//			result = ois.readObject();
+//		} catch (StreamCorruptedException e) {
+//			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
+//			e.printStackTrace();
+//		} catch (ClassNotFoundException e) {
+//			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
+//			e.printStackTrace();
+//		} finally {
+//			try{bais.close();ois.close();} catch(Throwable t){}
+//		}
+//		return result;
+//    }
     
     private static void saveContacts(Activity activity, List<ContactData> contacts){
     	ByteArrayOutputStream baos = new ByteArrayOutputStream();
