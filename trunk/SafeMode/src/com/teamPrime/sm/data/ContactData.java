@@ -50,21 +50,28 @@ abstract class ContactDataGeneric implements ContactData{
 		if (mimeType.equals(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)){
 			if (!((data1 == null || data1 instanceof String) && (data2 == null || data2 instanceof Number) && (data3 == null || data3 instanceof String)))
 				throw new DataCreationException("Failed to create Phone data object due to data argument types: "
-						+data1.getClass().getName()+", "+data2.getClass().getName()+", "+data3.getClass().getName());
+						+ (data1==null ? "NULL" : data1.getClass().getName())+", "
+						+ (data2==null ? "NULL" : data2.getClass().getName())+", "
+						+ (data3==null ? "NULL" : data3.getClass().getName()));
 			return new ContactDataPhone(rawContactId, isPrimary, isSuperPrimary, dataVersion, (String)data1, convertToInteger((Number)data2), (String)data3);
 		}
 		else if (mimeType.equals(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)){
 			if (!((data1 == null || data1 instanceof String) && (data2 == null || data2 instanceof Number) && (data3 == null || data3 instanceof String)))
 				throw new DataCreationException("Failed to create Email data object due to data argument types: "
-						+data1.getClass().getName()+", "+data2.getClass().getName()+", "+data3.getClass().getName());
+						+ (data1==null ? "NULL" : data1.getClass().getName())+", "
+						+ (data2==null ? "NULL" : data2.getClass().getName())+", "
+						+ (data3==null ? "NULL" : data3.getClass().getName()));
 			return new ContactDataEmail(rawContactId, isPrimary, isSuperPrimary, dataVersion, (String)data1, convertToInteger((Number)data2), (String)data3);
 		}
 		else if (mimeType.equals(ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE)){
 			if (!((data1 == null || data1 instanceof String) && (data2 == null || data2 instanceof Number) && (data3 == null || data3 instanceof String)
 					&& (data4 == null || data4 instanceof String) && (data5 == null || data5 instanceof String)))
 				throw new DataCreationException("Failed to create IM data object due to data argument types: "
-						+data1.getClass().getName()+", "+data2.getClass().getName()+", "+data3.getClass().getName()
-						+data4.getClass().getName()+", "+data5.getClass().getName());
+						+ (data1==null ? "NULL" : data1.getClass().getName())+", "
+						+ (data2==null ? "NULL" : data2.getClass().getName())+", "
+						+ (data3==null ? "NULL" : data3.getClass().getName())+", "
+						+ (data4==null ? "NULL" : data4.getClass().getName())+", "
+						+ (data5==null ? "NULL" : data5.getClass().getName()));
 			return new ContactDataIM(rawContactId, isPrimary, isSuperPrimary, dataVersion, (String)data1, convertToInteger((Number)data2), (String)data3, (String)data4, (String)data5);
 		}
 		else{
