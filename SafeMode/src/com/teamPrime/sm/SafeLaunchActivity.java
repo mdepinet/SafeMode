@@ -40,8 +40,8 @@ import com.teamPrime.sm.R;
  * @version 1.0
  */
 public class SafeLaunchActivity extends Activity {	
-	private boolean applicationOnState;
-	private boolean privateOnState;
+	private boolean applicationOnState = false;
+	private boolean privateOnState = false;
 	private long offTime;
 	private Button onOffButton;
 	private TextView countdownTimer;
@@ -64,7 +64,7 @@ public class SafeLaunchActivity extends Activity {
 	public static final int LockedNotificationId = 1;
 	
 	//Broadcast Receiver (for notification)
-	private BroadcastReceiver mIntentReceiver;
+	private BroadcastReceiver mIntentReceiver = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -102,7 +102,9 @@ public class SafeLaunchActivity extends Activity {
 		mIntentReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				if(applicationOnState) {
+				SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
+		        boolean onState = data.getBoolean("onState", false);
+				if(onState) {
 					int icon = R.drawable.locked;
 					CharSequence tickerText = getString(R.string.notif_locked_short);
 					long when = System.currentTimeMillis();
