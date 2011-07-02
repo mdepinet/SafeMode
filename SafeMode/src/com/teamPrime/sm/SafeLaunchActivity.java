@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.teamPrime.sm.tasks.BlackListIOTask;
 import com.teamPrime.sm.tasks.DateWaitTask;
+import com.teamPrime.sm.R;
 
 /**
  * This is our main activity.  It allows the user to start and stop the app, as well as 
@@ -250,7 +251,7 @@ public class SafeLaunchActivity extends Activity {
     }
     
     private void turnOn(){
-    	countdownTimer.setText(getString(R.string.wait_user));
+    	countdownTimer.setText(getString(R.string.waiting_user));
     	mTask = new DateWaitTask(this);
     	mTask.execute((Void[])(null));
     }
