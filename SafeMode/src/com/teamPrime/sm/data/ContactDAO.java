@@ -118,30 +118,31 @@ public class ContactDAO {
     	Log.v("SAFEMODE - DAO typing","Began getWithType");
     	try{
     		short s = c.getShort(index);
-    		return new Short(s);
+    		if (s != 0) return new Short(s);
     	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a short");}
     	try{
     		int i = c.getInt(index);
-    		return new Integer(i);
+    		if (i != 0) return new Integer(i);
     	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not an int");}
     	try{
     		long l = c.getInt(index);
-    		return new Long(l);
+    		if (l != 0) return new Long(l);
     	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a long");}
     	try{
     		float f = c.getFloat(index);
-    		return new Float(f);
+    		if (f != 0) return new Float(f);
     	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a float");}
     	try{
     		double d = c.getDouble(index);
-    		return new Double(d);
+    		if (d != 0) return new Double(d);
     	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a double");}
     	try{
     		String s = c.getString(index);
-    		return s;
+    		if (s != null && !"".equals(s) && !"0".equals(s)) return s; //Apparently if it isn't a String, then "0" is returned.  Why?
     	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a String");}
     	
     	//Fine.  Deserialize it.
+    	if (c.getBlob(index) == null) return null;
     	Object result = null;
     	ByteArrayInputStream bais = null;
     	ObjectInputStream ois = null;
