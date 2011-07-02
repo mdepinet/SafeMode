@@ -98,6 +98,7 @@ public class ContactDAO {
     }
     
     private static String formatListForSQLin(List<?> list){
+    	if (list == null) return "()";
     	StringBuffer buff = new StringBuffer();
     	boolean nonEmpty = false;
     	buff.append("(");

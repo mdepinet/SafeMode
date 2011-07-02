@@ -1,10 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/linearLayout1" android:layout_width="fill_parent" android:layout_height="fill_parent"
-  xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:gravity="center_horizontal">
-    <TextView android:layout_width="match_parent" android:text="@string/math_question" android:layout_height="wrap_content"
-      android:id="@+id/questionStopText" android:textSize="40px" />
-    <EditText android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Type your answer here"
-      android:id="@+id/answerScreenStop" android:numeric="integer" />
-    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/submitStopButton"
-      android:text="@string/submit_button" android:onClick="onClick" />
+<LinearLayout
+  android:id="@+id/linearLayout1"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:gravity="center_horizontal"
+  android:background="@drawable/background"
+  >
+    <TextView
+      android:layout_width="match_parent"
+      android:text="@string/math_question"
+      android:layout_height="wrap_content"
+      android:id="@+id/questionStopText"
+      android:textSize="40px"
+     />
+    <EditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="Type your answer here"
+      android:id="@+id/answerScreenStop"
+      android:numeric="integer"
+    />
+    <Button
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/submitStopButton"
+      android:text="@string/submit_button"
+      android:onClick="onClick"
+    />
 </LinearLayout>
