@@ -1,5 +1,6 @@
 package com.teamPrime.sm.data;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -69,11 +70,11 @@ public class ContactDAO {
     		ops.add(ContentProviderOperation.newInsert(Data.CONTENT_URI)
    	             .withValue(Data.RAW_CONTACT_ID, contact.getRawContactId())
    	             .withValue(Data.MIMETYPE, contact.getMimeType())
-   	             .withValue(Data.DATA1, contact.getData(1))
-   	             .withValue(Data.DATA2, contact.getData(2))
-   	             .withValue(Data.DATA3, contact.getData(3))
-   	             .withValue(Data.DATA4, contact.getData(4))
-   	             .withValue(Data.DATA5, contact.getData(5))
+   	             .withValue(Data.DATA1, handleByteArray(contact.getData(1)))
+   	             .withValue(Data.DATA2, handleByteArray(contact.getData(2)))
+   	             .withValue(Data.DATA3, handleByteArray(contact.getData(3)))
+   	             .withValue(Data.DATA4, handleByteArray(contact.getData(4)))
+   	             .withValue(Data.DATA5, handleByteArray(contact.getData(5)))
    	             .build());
     	}
 	    try {
@@ -111,6 +112,32 @@ public class ContactDAO {
     		buff.append(")");
     	}
     	return buff.toString();
+    }
+    
+    private static Object handleByteArray(Object obj){
+    	if (obj instanceof byte[]){
+    		Object result = null;
+        	ByteArrayInputStream bais = null;
+        	ObjectInputStream ois = null;
+        	try {
+        		bais = new ByteArrayInputStream((byte[])obj);
+    			ois = new ObjectInputStream(bais);
+    			result = ois.readObject();
+    		} catch (StreamCorruptedException e) {
+    			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
+    			e.printStackTrace();
+    		} catch (IOException e) {
+    			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
+    			e.printStackTrace();
+    		} catch (ClassNotFoundException e) {
+    			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
+    			e.printStackTrace();
+    		} finally {
+    			try{bais.close();ois.close();} catch(Throwable t){}
+    		}
+    		return result;
+    	}
+    	else return obj;
     }
 //    private static Object deserializeBlob(byte[] blob){
 //    	if (blob == null) return blob;
