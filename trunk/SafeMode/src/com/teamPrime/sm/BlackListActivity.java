@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import android.R;
 import android.app.ListActivity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -29,9 +28,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.teamPrime.sm.data.Contact;
 import com.teamPrime.sm.tasks.BlackListIOTask;
 import com.teamPrime.sm.tasks.PopulateTask;
+import com.teamPrime.sm.R;
 
 public class BlackListActivity extends ListActivity {
     /** Called when the activity is first created. */
@@ -298,7 +297,7 @@ public class BlackListActivity extends ListActivity {
     }
     	//}    
         if(mArrayAdapterBL.isEmpty()){
-        	mArrayAdapterBL.add(getString(bl_list_empty));
+        	mArrayAdapterBL.add(getString(R.string.bl_list_empty));
         	emptyList = true;
         }
 }

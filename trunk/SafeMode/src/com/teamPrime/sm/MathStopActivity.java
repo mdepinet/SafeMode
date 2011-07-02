@@ -2,7 +2,6 @@ package com.teamPrime.sm;
 
 import java.util.Random;
 
-import android.R;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -13,13 +12,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.teamPrime.sm.R;
+
 
 public class MathStopActivity extends Activity{
 	
 	private TextView question;
 	private TextView answer;
 	private int corAnswer;
-	@SuppressWarnings("unused")
 	private boolean onState;
     /** Called when the activity is first created. */
     @Override
