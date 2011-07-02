@@ -125,21 +125,40 @@ public class ContactDAO {
 	    	if (strAttempt.matches("[\\w\\s)(-]*")){ //This really is a String!
 	    		if (strAttempt.matches("\\d+")){ //But it could also be a long
 	    			//Return the most specific type possible
-    				byte b = Byte.parseByte(strAttempt);
-    				short s = Short.parseShort(strAttempt);
-    				int i = Integer.parseInt(strAttempt);
-    				long l = Long.parseLong(strAttempt);
-	    			if (b == l) return new Byte(b);
-	    			else if (s == l) return new Short(s);
-	    			else if (i == l) return new Integer(i);
-	    			else return l;
+	    			long l; byte b; short s; int i;
+	    			try{
+	    				l = Long.parseLong(strAttempt);
+	    			} catch(NumberFormatException ex){
+	    				return strAttempt;
+	    			}
+	    			try{
+	    				b = Byte.parseByte(strAttempt);
+	    				if (b == l) return new Byte(b);
+	    			} catch (NumberFormatException ex){}
+    				try{
+    					s = Short.parseShort(strAttempt);
+    					if (s == l) return new Short(s);
+    				} catch (NumberFormatException ex){}
+    				try{
+    					i = Integer.parseInt(strAttempt);
+    					if (i == l) return new Integer(i);
+    				} catch (NumberFormatException ex){}
+
+	    			return new Long(l);
 	    		}
 	    		else if (strAttempt.matches("\\d*[.]\\d+")){ //Or a double
 	    			//Return the most specific type possible
-	    			float f = Float.parseFloat(strAttempt);
-	    			double d = Double.parseDouble(strAttempt);
-	    			if (f == d) return new Float(f);
-	    			else return new Double(d);
+	    			double d; float f;
+	    			try{
+	    				d = Double.parseDouble(strAttempt);
+	    			} catch (NumberFormatException ex){
+	    				return strAttempt;
+	    			}
+	    			try{
+	    				f = Float.parseFloat(strAttempt);
+	    				if (f == d) return new Float(f);
+	    			} catch (NumberFormatException ex){}
+	    			return new Double(d);
 	    		}
 	    		else return strAttempt;
 	    	}
