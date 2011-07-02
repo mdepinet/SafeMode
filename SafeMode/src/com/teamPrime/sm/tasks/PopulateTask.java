@@ -37,11 +37,17 @@ public class PopulateTask extends AsyncTask<Void, Integer, Void> {
     // Runs on main thread.
     @Override
     protected void onPostExecute(Void result) {
+    	//mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     	mActivity.setArrayAdapter(new ArrayAdapter<String>(mActivity,android.R.layout.simple_dropdown_item_1line,mActivity.getContactNames()));
     	mActivity.setAutoComplete((AutoCompleteTextView)mActivity.findViewById(R.id.blacklist_text));
         mActivity.getAutoComplete().setAdapter(mActivity.getArrayAdapter());
         mActivity.getAutoComplete().setThreshold(2);
-        loading.dismiss();
+        try{
+        	loading.dismiss();
+        }
+        catch (Exception e){
+        	
+        }
     }
 	
 	@Override
