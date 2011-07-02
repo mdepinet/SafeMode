@@ -43,9 +43,9 @@ public class ContactDAO {
     		 while (dataCursor.moveToNext()){
     			 Log.i("SAFEMODE - ContactDAO", "Mimetype is "+dataCursor.getString(0));
 				ContactData dataRow = new ContactDataGeneric(dataCursor.getString(0), dataCursor.getLong(1),
-						 dataCursor.getInt(2), dataCursor.getInt(3), dataCursor.getInt(4), dataCursor.getBlob(5),
-						 dataCursor.getBlob(6), dataCursor.getBlob(7),
-						 dataCursor.getBlob(8), dataCursor.getBlob(9));
+						 dataCursor.getInt(2), dataCursor.getInt(3), dataCursor.getInt(4),
+						 getWithType(dataCursor,5), getWithType(dataCursor,6), getWithType(dataCursor,7),
+						 getWithType(dataCursor,8), getWithType(dataCursor,9));
 				dataList.add(dataRow);
     		 }
     		 dataCursor.close();
@@ -70,11 +70,11 @@ public class ContactDAO {
     		ops.add(ContentProviderOperation.newInsert(Data.CONTENT_URI)
    	             .withValue(Data.RAW_CONTACT_ID, contact.getRawContactId())
    	             .withValue(Data.MIMETYPE, contact.getMimeType())
-   	             .withValue(Data.DATA1, handleByteArray(contact.getData(1)))
-   	             .withValue(Data.DATA2, handleByteArray(contact.getData(2)))
-   	             .withValue(Data.DATA3, handleByteArray(contact.getData(3)))
-   	             .withValue(Data.DATA4, handleByteArray(contact.getData(4)))
-   	             .withValue(Data.DATA5, handleByteArray(contact.getData(5)))
+   	             .withValue(Data.DATA1, contact.getData(1))
+   	             .withValue(Data.DATA2, contact.getData(2))
+   	             .withValue(Data.DATA3, contact.getData(3))
+   	             .withValue(Data.DATA4, contact.getData(4))
+   	             .withValue(Data.DATA5, contact.getData(5))
    	             .build());
     	}
 	    try {
@@ -114,33 +114,62 @@ public class ContactDAO {
     	return buff.toString();
     }
     
-    private static Object handleByteArray(Object obj){
-    	if (obj instanceof byte[]){
-    		Object result = null;
-        	ByteArrayInputStream bais = null;
-        	ObjectInputStream ois = null;
-        	try {
-        		bais = new ByteArrayInputStream((byte[])obj);
-    			ois = new ObjectInputStream(bais);
-    			result = ois.readObject();
-    		} catch (StreamCorruptedException e) {
-    			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
-    			e.printStackTrace();
-    		} catch (IOException e) {
-    			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
-    			e.printStackTrace();
-    		} catch (ClassNotFoundException e) {
-    			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
-    			e.printStackTrace();
-    		} finally {
-    			try{bais.close();ois.close();} catch(Throwable t){}
-    		}
-    		return result;
-    	}
-    	else return obj;
+    private static Object getWithType(Cursor c, int index){
+    	Log.v("SAFEMODE - DAO typing","Began getWithType");
+    	try{
+    		short s = c.getShort(index);
+    		return new Short(s);
+    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a short");}
+    	try{
+    		int i = c.getInt(index);
+    		return new Integer(i);
+    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not an int");}
+    	try{
+    		long l = c.getInt(index);
+    		return new Long(l);
+    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a long");}
+    	try{
+    		float f = c.getFloat(index);
+    		return new Float(f);
+    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a float");}
+    	try{
+    		double d = c.getDouble(index);
+    		return new Double(d);
+    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a double");}
+    	try{
+    		String s = c.getString(index);
+    		return s;
+    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a String");}
+    	
+    	//Fine.  Deserialize it.
+    	Object result = null;
+    	ByteArrayInputStream bais = null;
+    	ObjectInputStream ois = null;
+    	try {
+    		bais = new ByteArrayInputStream(c.getBlob(index));
+			ois = new ObjectInputStream(bais);
+			result = ois.readObject();
+		} catch (StreamCorruptedException e) {
+			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
+			e.printStackTrace();
+		} finally {
+			try{bais.close();ois.close();} catch(Throwable t){}
+		}
+		return result;
     }
+    
+//    private static Object handleByteArray(Object obj){
+//    	if (obj instanceof byte[]) return deserializeBlob((byte[])obj);
+//    	else return obj;
+//    }
 //    private static Object deserializeBlob(byte[] blob){
-//    	if (blob == null) return blob;
+//    	if (blob == null) return null;
 //    	if (blob[blob.length-1] == 0){
 //	    	String strAttempt = new String(blob,0,blob.length-1);
 //	    	if (strAttempt.matches("[\\w\\s)(-]*")){ //This really is a String!
