@@ -12,5 +12,10 @@
     android:id="@+id/onOffButton"
     android:onClick="onClick"
     ></Button>
-    <TextView android:text="" android:id="@+id/countdownTimer" android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
+    <TextView
+    android:text=""
+    android:id="@+id/countdownTimer"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:textColor="#FF0000"/>
 </LinearLayout>

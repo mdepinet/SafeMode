@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.Notification;
@@ -23,6 +24,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -61,7 +63,8 @@ public class SafeLaunchActivity extends Activity {
 	private TimePickerDialog.OnTimeSetListener mTimeSetListener;
 	private DatePickerDialog.OnDateSetListener mDateSetListener;
 	private int hour, minute, year, month, day;
-	public static final int TIME_ID = 0, DATE_ID = 1;
+	public static final int TIME_ID = 0, DATE_ID = 1, NOTICE_ID = 2;
+	private boolean seenNotice = false;
 	private CountDownTimer timer;
 	private boolean timeUpdated, dateUpdated = false;
 	private DateWaitTask mTask;
@@ -162,8 +165,11 @@ public class SafeLaunchActivity extends Activity {
         applicationOnState = data.getBoolean("onState", false);
         offTime = data.getLong("offTime", System.currentTimeMillis());
         handleTimes(true,true);
+        seenNotice = data.getBoolean("seenNotice",false);
         data = getSharedPreferences(SafeLaunchActivity.class.getName(), MODE_PRIVATE);
         privateOnState = data.getBoolean("onState", false);
+        
+        if (!seenNotice) showDialog(NOTICE_ID);
         
         onOffButton.setText(getString(applicationOnState ? R.string.end_button : R.string.start_button));
         
@@ -231,15 +237,30 @@ public class SafeLaunchActivity extends Activity {
     
     @Override
     protected Dialog onCreateDialog(int id) {
+    	Dialog d = null;
         switch (id) {
         case TIME_ID:
         	timeUpdated = false;
-            return new TimePickerDialog(this, mTimeSetListener, hour, minute, false);
+            d = new TimePickerDialog(this, mTimeSetListener, hour, minute, false);
+            break;
         case DATE_ID:
         	dateUpdated = false;
-        	return new DatePickerDialog(this, mDateSetListener, year, month, day);
+        	d = new DatePickerDialog(this, mDateSetListener, year, month, day);
+        	break;
+        case NOTICE_ID:
+        	d = new AlertDialog.Builder(this).setMessage(getString(R.string.init_notice)).setCancelable(false)
+        		.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+        	           public void onClick(DialogInterface dialog, int id) {
+        	        	   SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
+        	        	   SharedPreferences.Editor editor = data.edit();
+        	        	   editor.putBoolean("seenNotice", true);
+        	        	   editor.commit();
+        	        	   dialog.dismiss();
+        	           }
+        		}).create();
+        	break;
         }
-        return null;
+        return d;
     }
     
     @Override
