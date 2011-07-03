@@ -1,3 +1,12 @@
+/**
+ * Copyright © 2011 Mike Depinet
+ * All rights reserved
+ * 
+ * This file is distributed as a part of the SAFEMODE application for
+ * Android devices.  SAFEMODE is distributed under Apache License 2.0
+ * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package com.teamPrime.sm;
 
 import java.util.Calendar;
@@ -236,6 +245,7 @@ public class SafeLaunchActivity extends Activity {
     @Override
     public void onDestroy(){
     	super.onDestroy();
+    	mChecker.onDestroy();
     	if (mTask != null) mTask.cancel(true);
     	if (ioTask != null) ioTask.cancel(true);
     }
@@ -418,8 +428,8 @@ public class SafeLaunchActivity extends Activity {
 		@Override
 		public void allow() {
 			//Proceed as usual
+			//TODO  This line should be removed pre-release
 			Toast.makeText(getApplicationContext(), "License approved", Toast.LENGTH_SHORT).show();
-
 		}
 		@Override
 		public void dontAllow() {

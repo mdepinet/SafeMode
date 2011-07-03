@@ -1,3 +1,12 @@
+/**
+ * Copyright © 2011 Mike Depinet
+ * All rights reserved
+ * 
+ * This file is distributed as a part of the SAFEMODE application for
+ * Android devices.  SAFEMODE is distributed under Apache License 2.0
+ * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package com.teamPrime.sm.tasks;
 
 
@@ -6,6 +15,14 @@ import com.teamPrime.sm.SafeLaunchActivity;
 import android.os.AsyncTask;
 import android.util.Log;
 
+/**
+ * DateWaitTask allows SafeLaunchActivity to wait
+ * for the user to enter a date and time without
+ * force closing before then.
+ * 
+ * @author Mike Depinet
+ * @version 1.0
+ */
 public class DateWaitTask extends AsyncTask<Void, Integer, Void> {
 	private SafeLaunchActivity mActivity;
 	private boolean dateUpdated, timeUpdated = false;

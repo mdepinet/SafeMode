@@ -1,3 +1,12 @@
+/**
+ * Copyright © 2011 Boris Treskunov
+ * All rights reserved
+ * 
+ * This file is distributed as a part of the SAFEMODE application for
+ * Android devices.  SAFEMODE is distributed under Apache License 2.0
+ * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package com.teamPrime.sm.tasks;
 
 
@@ -9,6 +18,13 @@ import android.widget.AutoCompleteTextView;
 import com.teamPrime.sm.BlackListActivity;
 import com.teamPrime.sm.R;
 
+/**
+ * PopulateTask populates the auto complete behind
+ * the scenes for the BlackListActivity
+ * 
+ * @author Boris Treskunov
+ * @version 1.0
+ */
 public class PopulateTask extends AsyncTask<Void, Integer, Void> {
 	private BlackListActivity mActivity;
 	ProgressDialog loading;

@@ -1,3 +1,12 @@
+/**
+ * Copyright © 2011 Mike Depinet
+ * All rights reserved
+ * 
+ * This file is distributed as a part of the SAFEMODE application for
+ * Android devices.  SAFEMODE is distributed under Apache License 2.0
+ * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package com.teamPrime.sm.data;
 
 import java.io.ByteArrayInputStream;
@@ -23,6 +32,14 @@ import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
 import android.util.Log;
 
+/**
+ * ContactDAO takes care of all contact data management.  All
+ * insert, update, and delete SQL statements for the contacts
+ * database come through here.
+ * 
+ * @author Mike Depinet
+ * @version 1.0
+ */
 public class ContactDAO {
 	private static final String contactSaveLoc = "SAFEMODE_contactData.bin";
 	private static boolean lastHid = false;

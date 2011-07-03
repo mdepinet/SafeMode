@@ -1,3 +1,12 @@
+/**
+ * Copyright © 2011 Mike Depinet
+ * All rights reserved
+ * 
+ * This file is distributed as a part of the SAFEMODE application for
+ * Android devices.  SAFEMODE is distributed under Apache License 2.0
+ * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package com.teamPrime.sm.tasks;
 
 
@@ -15,6 +24,13 @@ import android.util.Log;
 import com.teamPrime.sm.data.ContactDAO;
 import com.teamPrime.sm.data.ContactDAO.DataAccessException;
 
+/**
+ * BlackListIOTask takes care of calling ContactDAO in the
+ * background with the proper contact ids.
+ * 
+ * @author Mike Depinet
+ * @version 1.0
+ */
 public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	public static final int WRITE_IDS_MODE = 0;
 	public static final int READ_IDS_MODE = 1;
