@@ -133,26 +133,26 @@ public class ContactDAO {
     
     private static Object getWithType(Cursor c, int index){
     	Log.v("SAFEMODE - DAO typing","Began getWithType");
-    	try{
-    		short s = c.getShort(index);
-    		if (s != 0) return new Short(s);
-    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a short");}
-    	try{
-    		int i = c.getInt(index);
-    		if (i != 0) return new Integer(i);
-    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not an int");}
-    	try{
-    		long l = c.getInt(index);
-    		if (l != 0) return new Long(l);
-    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a long");}
-    	try{
-    		float f = c.getFloat(index);
-    		if (f != 0) return new Float(f);
-    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a float");}
-    	try{
-    		double d = c.getDouble(index);
-    		if (d != 0) return new Double(d);
-    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a double");}
+//    	try{
+//    		short s = c.getShort(index);
+//    		if (s != 0) return new Short(s);
+//    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a short");}
+//    	try{
+//    		int i = c.getInt(index);
+//    		if (i != 0) return new Integer(i);
+//    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not an int");}
+//    	try{
+//    		long l = c.getInt(index);
+//    		if (l != 0) return new Long(l);
+//    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a long");}
+//    	try{
+//    		float f = c.getFloat(index);
+//    		if (f != 0) return new Float(f);
+//    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a float");}
+//    	try{
+//    		double d = c.getDouble(index);
+//    		if (d != 0) return new Double(d);
+//    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a double");}
     	try{
     		String s = c.getString(index);
     		if (s != null && !"".equals(s) && !"0".equals(s)) return s; //Apparently if it isn't a String, then "0" is returned.  Why?
