@@ -1,7 +1,10 @@
-/** This is the main activity for the blacklist
+/**
+ * Copyright © 2011 Boris Treskunov
+ * All rights reserved
  * 
- * @author Boris Treskunov
- *  
+ * This file is distributed as a part of the SAFEMODE application for
+ * Android devices.  SAFEMODE is distributed under Apache License 2.0
+ * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
  */
 
 //onSavedInstanceState()
@@ -32,6 +35,12 @@ import android.widget.Toast;
 import com.teamPrime.sm.tasks.BlackListIOTask;
 import com.teamPrime.sm.tasks.PopulateTask;
 
+/**
+ * This is the main activity for the blacklist
+ * 
+ * @author Boris Treskunov
+ *  
+ */
 public class BlackListActivity extends ListActivity {
     /** Called when the activity is first created. */
 	
