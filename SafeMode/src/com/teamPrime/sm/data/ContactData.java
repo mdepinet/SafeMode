@@ -11,6 +11,8 @@ package com.teamPrime.sm.data;
 
 import java.io.Serializable;
 
+import android.provider.ContactsContract;
+
 /**
  * ContactData holds data for a row from the Data table in
  * the contacts database.
@@ -51,6 +53,7 @@ class ContactDataGeneric implements ContactData{
 		for (int i = 0; i<this.data.length; i++){
 			this.data[i] = data[i];
 		}
+		fixData(); //Shouldn't be necessary, but if there is bad data, our application shouldn't explode as a result
 	}
 	
 	public String getMimeType(){
@@ -73,5 +76,26 @@ class ContactDataGeneric implements ContactData{
 		if (dataNum<1||dataNum>data.length) return null;
 		else return data[dataNum-1];
 	}
+	
+	private void fixData(){
+		if (getData(2) == null && getData(3) != null){
+			if (ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE.equals(mimeType)) data[1] = ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM;
+			else if (ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE.equals(mimeType)) data[1] = ContactsContract.CommonDataKinds.Email.TYPE_CUSTOM;
+			else if (ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE.equals(mimeType)) data[1] = ContactsContract.CommonDataKinds.Im.TYPE_CUSTOM;
+		}
+		if (getData(5) == null && getData(6) != null && ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE.equals(mimeType)){
+			data[4] = ContactsContract.CommonDataKinds.Im.PROTOCOL_CUSTOM;
+		}
+	}
 
+	@Override
+	public String toString(){
+		String s = "[";
+		for (Object obj : data) s += obj.toString()+", ";
+		s = s.substring(0,s.length()-1)+"]";
+		if (ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE.equals(mimeType)) s = "PHONE: "+s;
+		else if (ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE.equals(mimeType)) s = "EMAIL: "+s;
+		else if (ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE.equals(mimeType)) s = "IM: "+s;
+		return s;
+	}
 }
