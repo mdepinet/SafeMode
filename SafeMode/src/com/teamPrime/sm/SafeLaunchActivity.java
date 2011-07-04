@@ -289,16 +289,30 @@ public class SafeLaunchActivity extends Activity {
         }
     }
     
-    private void handleTimes(boolean fromLong, boolean useTodayDate){
+    private void handleTimes(boolean fromLong, boolean updateDate){
+    	if (fromLong && updateDate) handleTimes(true,false); //Before we can update the date, our current values need to be set.
     	Calendar c = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
-    	if (useTodayDate){
-    		year = c.get(Calendar.YEAR);
-    		month = c.get(Calendar.MONTH);
-    		day = c.get(Calendar.DAY_OF_MONTH);
+    	Log.v("SAFEMODE - times", "Curr: "+System.currentTimeMillis()+". Off: "+offTime);
+    	if (updateDate){
+    		int currYear, currMonth, currDay;
+    		currYear = c.get(Calendar.YEAR);
+    		currMonth = c.get(Calendar.MONTH);
+    		currDay = c.get(Calendar.DAY_OF_MONTH);
+    		if (currDay+30.436875*currMonth+365.2425*currYear > day+30.436875*month+365.2425*year){ //If offTime has past date
+    			year = currYear;
+    			month = currMonth;
+    			day = currDay;
+    		}
     	}
     	if (fromLong){
+    		c.setTimeInMillis(offTime);
     		hour = c.get(Calendar.HOUR);
     		minute = c.get(Calendar.MINUTE);
+    		if (!updateDate){
+    			year = c.get(Calendar.YEAR);
+    			month = c.get(Calendar.MONTH);
+    			day = c.get(Calendar.DAY_OF_MONTH);
+    		}
     	}
     	else{
     		c.set(year, month, day, hour, minute);
@@ -316,6 +330,7 @@ public class SafeLaunchActivity extends Activity {
     	//Time related variables are now set (by DateWaitTask)
     	if (offTime <= System.currentTimeMillis()){
     		Toast.makeText(getApplicationContext(), getString(R.string.future_reqd), Toast.LENGTH_SHORT).show();
+    		countdownTimer.setText("");
     		return;
     	}
     	ioTask = new BlackListIOTask(this,null,BlackListIOTask.HIDE_CONTACTS_MODE);
