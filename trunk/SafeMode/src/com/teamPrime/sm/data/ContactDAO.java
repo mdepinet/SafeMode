@@ -55,14 +55,14 @@ public class ContactDAO {
     	 while (rawCursor.moveToNext()){
     		 Cursor dataCursor =  cr.query(Data.CONTENT_URI,
     				 new String[] {Data.MIMETYPE, Data.RAW_CONTACT_ID, Data.IS_PRIMARY, Data.IS_SUPER_PRIMARY, Data.DATA_VERSION,
-    				 	Data.DATA1, Data.DATA2, Data.DATA3, Data.DATA4, Data.DATA5},
+    				 	Data.DATA1, Data.DATA2, Data.DATA3, Data.DATA4, Data.DATA5, Data.DATA6},
     		         Data.RAW_CONTACT_ID + "=? AND "+Data.MIMETYPE + " in "+supportedDataTypes, new String[] {String.valueOf(rawCursor.getLong(0))}, null);
     		 while (dataCursor.moveToNext()){
     			 Log.i("SAFEMODE - ContactDAO", "Mimetype is "+dataCursor.getString(0));
 				ContactData dataRow = new ContactDataGeneric(dataCursor.getString(0), dataCursor.getLong(1),
 						 dataCursor.getInt(2), dataCursor.getInt(3), dataCursor.getInt(4),
 						 getWithType(dataCursor,5), getWithType(dataCursor,6), getWithType(dataCursor,7),
-						 getWithType(dataCursor,8), getWithType(dataCursor,9));
+						 getWithType(dataCursor,8), getWithType(dataCursor,9), getWithType(dataCursor,10));
 				dataList.add(dataRow);
     		 }
     		 dataCursor.close();
@@ -92,6 +92,7 @@ public class ContactDAO {
    	             .withValue(Data.DATA3, contact.getData(3))
    	             .withValue(Data.DATA4, contact.getData(4))
    	             .withValue(Data.DATA5, contact.getData(5))
+   	             .withValue(Data.DATA6, contact.getData(6))
    	             .build());
     	}
 	    try {
@@ -155,7 +156,7 @@ public class ContactDAO {
 //    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a double");}
     	try{
     		String s = c.getString(index);
-    		if (s != null && !"".equals(s) && !"0".equals(s)) return s; //Apparently if it isn't a String, then "0" is returned.  Why?
+    		if (s != null && !"".equals(s)) return s; //Apparently if it isn't a String, then "0" is returned.  Why?
     	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a String");}
     	
     	//Fine.  Deserialize it.
