@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <!-- These are the strings used in German -->
-    <string name="app_name">SAFEMODE</string>
-    <string name="start_button">Start SAFEMODE</string>
-    <string name="end_button">Ende SAFEMODE</string>
+    <string name="app_name">SafeMode</string>
+    <string name="start_button">Start SafeMode</string>
+    <string name="end_button">Ende SafeMode</string>
     <string name="submit_button">Einreichen</string>
     <string name="blacklist_add">(Geben Sie den Namen eines Kontakts!)</string>
     <string name="add_button">Hinzufügen</string>
     <string name="remove_button">Entfernen</string>
     <string name="select_all_button">Fügen Sie alle</string>
-    <string name="notif_locked_message">Kontakte nach SAFEMODE geschützt</string>
-    <string name="notif_click_here">Klicken Sie hier, um auszuschalten SAFEMODE</string>
-    <string name="notif_locked_short">SAFEMODE auf</string>
+    <string name="notif_locked_message">Kontakte nach SafeMode geschützt</string>
+    <string name="notif_click_here">Klicken Sie hier, um auszuschalten SafeMode</string>
+    <string name="notif_locked_short">SafeMode auf</string>
     <string name="edit_blacklist">Bearbeiten Blacklist</string>
     <string name="view_blacklist">Zeige Blacklist</string>
     <string name="math_question">Was ist </string>
@@ -19,7 +19,7 @@
     <string name="remove_all_button">entfernen Sie alle</string>
     <string name="future_reqd">Zeit zum Ausschalten muss in der Zukunft sein!</string>
     <string name="waiting_user">Warten auf Benutzereingaben...</string>
-    <string name="turn_off">SAFEMODE ausgeschaltet wurde</string>
+    <string name="turn_off">SafeMode ausgeschaltet wurde</string>
     <string name="wrong_ans">Sorry, falsche Antwort...</string>
     <string name="loading">Kontakte werden geladen...</string>
     
