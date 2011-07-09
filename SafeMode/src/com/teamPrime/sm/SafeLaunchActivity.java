@@ -464,8 +464,7 @@ public class SafeLaunchActivity extends Activity {
 		@Override
 		public void allow() {
 			//Proceed as usual
-			//TODO  This line should be removed pre-release
-			Toast.makeText(getApplicationContext(), "License approved", Toast.LENGTH_SHORT).show();
+			Log.i("SAFEMODE","Licensing success");
 		}
 		@Override
 		public void dontAllow() {
