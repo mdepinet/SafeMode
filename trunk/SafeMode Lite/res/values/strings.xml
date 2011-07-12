@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, SafeLaunchActivity!</string>
+    <string name="app_name">SafeMode Lite</string>
+    <string name="start_button">Start SafeMode</string>
+    <string name="end_button">End SafeMode</string>
+    <string name="submit_button">Submit</string>
+    <string name="blacklist_add">(Type a contact\'s name!)</string>
+    <string name="add_button">Add</string>
+    <string name="remove_button">Remove</string>
+    <string name="select_all_button">Add All</string>
+    <string name="notif_locked_message">Contacts protected by SafeMode</string>
+    <string name="notif_click_here">Click here to turn off SafeMode</string>
+    <string name="notif_locked_short">SafeMode on</string>
+    <string name="edit_blacklist">Edit Blacklist</string>
+    <string name="view_blacklist">View Blacklist</string>
+    <string name="math_question">What is </string>
+    <string name="options">Options</string>
+    <string name="remove_all_button">Remove All</string>
+    <string name="future_reqd">Time to turn off must be in the future!</string>
+    <string name="waiting_user">Waiting for user input...</string>
+    <string name="turn_off">SafeMode has been turned off</string>
+    <string name="wrong_ans">Sorry, wrong answer...</string>
+    <string name="loading">Loading contacts...</string>
+    
+    <string name="bl_err_incor_name">Incorrect contact name</string>
+    <string name="bl_err_contact_present">Contact already in blacklist</string>
+    <string name="bl_err_all_present">All contacts already in blacklist</string>
+    <string name="bl_err_not_present">Contact is not in blacklist</string>
+    <string name="bl_state_all_rem">All contacts removed from blacklist</string>
+    <string name="bl_list_empty">Your blacklist is currently empty...</string>
+    
+    <string name="init_notice">Welcome to SafeMode! (v1.0)\n\nCopyright 2011 Mike Depinet and Boris Treskunov\n\n\n
+    To get started, select contacts to add to your blacklist (by using the \"Edit Blacklist\" option in the menu).
+    \n\nThen you can start SafeMode by pushing the \"Start SafeMode\" button.  This will ask you for a time at which SafeMode will turn off automatically.
+    \n\nUntil the time selected, the contacts in your blacklist will be unavailable (so that you cannot call, text, email, or IM them).
+    \n\nTo turn off SafeMode early, you may push the \"End SafeMode\" button.  This will require you to prove sobriety, then turn off SafeMode.
+    \n\nNow then, enjoy your party!
+    \n
+    \nSafeMode --Keeping you responsible while you\'re being irresponsible.
+	\n
+	\n\nLicensed under the Apache License, Version 2.0 (the \"License\");
+	you may not use this application except in compliance with the License.
+	You may obtain a copy of the License at
+	\n
+	\n\thttp://www.apache.org/licenses/LICENSE-2.0
+	\n
+	\nUnless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an \"AS IS\" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.</string>
+</resources>
