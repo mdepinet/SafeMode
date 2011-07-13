@@ -82,14 +82,14 @@ public class SafeLaunchActivity extends Activity {
 	private BroadcastReceiver mIntentReceiver = null;
 	
 	//Randomly generated salt and deviceId for licensing stuff
-	private final byte[] SALT = new byte[] {-62,-74,107,-13,110,-84,-29,121,33,-107,-95,7,70,-15,-112,123,20,-21,-62,59};
-	private String deviceId = null;
-	private LicenseChecker mChecker = null;
-	private final String PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAg8NGOO0Vpkyhq+R/K5iQ4zk7SFpHQqfxUTJ"
-		+"yesFk3ZljkR4dy3U3VyU5Pc8lyOr1Z8ScasRPe37kgAcybd+Mw3UPh9+nZa27DdUZ9U1HwMvCJ0bGl+18hrrjsNNuO/1mUG7XM8IQ1Qm58ngb"
-		+"Jh197mBnvNiNLd+PFeTupvQyPffzciBfGQXflZArUY1pvxrraGDFMB97KdKD17sk+LnYfQ5T9dQnsCPFNEnV0bTyG6tyOXc/KoPOk8O2kVjPg"
-		+"UTKrgq60LOGo8yz8uyUaDxPDvDKoB2pYTdmnq50B/cnc34uOR/NHBc7nYsQs6HC8UYfsYqRQKnsAV/kWkNtkxOrbwIDAQAB";
-	private LicenseCheckerCallback mLicenseCallback = null;
+//	private final byte[] SALT = new byte[] {-62,-74,107,-13,110,-84,-29,121,33,-107,-95,7,70,-15,-112,123,20,-21,-62,59};
+//	private String deviceId = null;
+//	private LicenseChecker mChecker = null;
+//	private final String PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAg8NGOO0Vpkyhq+R/K5iQ4zk7SFpHQqfxUTJ"
+//		+"yesFk3ZljkR4dy3U3VyU5Pc8lyOr1Z8ScasRPe37kgAcybd+Mw3UPh9+nZa27DdUZ9U1HwMvCJ0bGl+18hrrjsNNuO/1mUG7XM8IQ1Qm58ngb"
+//		+"Jh197mBnvNiNLd+PFeTupvQyPffzciBfGQXflZArUY1pvxrraGDFMB97KdKD17sk+LnYfQ5T9dQnsCPFNEnV0bTyG6tyOXc/KoPOk8O2kVjPg"
+//		+"UTKrgq60LOGo8yz8uyUaDxPDvDKoB2pYTdmnq50B/cnc34uOR/NHBc7nYsQs6HC8UYfsYqRQKnsAV/kWkNtkxOrbwIDAQAB";
+//	private LicenseCheckerCallback mLicenseCallback = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -103,14 +103,14 @@ public class SafeLaunchActivity extends Activity {
         onOffButton = (Button)findViewById(R.id.onOffButton);
         countdownTimer = (TextView)findViewById(R.id.countdownTimer);
         
-		if (deviceId == null) deviceId = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-		mLicenseCallback = new SafeModeLLC();
-		mChecker = new LicenseChecker(this,
-				new ServerManagedPolicy(this,
-		            new AESObfuscator(SALT, getPackageName(), deviceId)),
-		            PUBLIC_KEY  // Your public licensing key.
-		        );
-		mChecker.checkAccess(mLicenseCallback);
+//		if (deviceId == null) deviceId = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+//		mLicenseCallback = new SafeModeLLC();
+//		mChecker = new LicenseChecker(this,
+//				new ServerManagedPolicy(this,
+//		            new AESObfuscator(SALT, getPackageName(), deviceId)),
+//		            PUBLIC_KEY  // Your public licensing key.
+//		        );
+//		mChecker.checkAccess(mLicenseCallback);
 
         
         mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
@@ -266,7 +266,7 @@ public class SafeLaunchActivity extends Activity {
     @Override
     public void onDestroy(){
     	super.onDestroy();
-    	mChecker.onDestroy();
+//    	mChecker.onDestroy();
     	if (mTask != null) mTask.cancel(true);
     	if (ioTask != null) ioTask.cancel(true);
     }
@@ -460,22 +460,22 @@ public class SafeLaunchActivity extends Activity {
 		}
     }
 	
-	private class SafeModeLLC implements LicenseCheckerCallback{
-		@Override
-		public void allow() {
-			//Proceed as usual
-			Log.i("SAFEMODE","Licensing success");
-		}
-		@Override
-		public void dontAllow() {
-			Toast.makeText(getApplicationContext(), "You don't have a license. Sorry, bro", Toast.LENGTH_SHORT).show();
-			finish();
-		}
-		@Override
-		public void applicationError(ApplicationErrorCode errorCode) {
-			Toast.makeText(getApplicationContext(), "Failed to load license.\nServer returned: "+errorCode, Toast.LENGTH_SHORT).show();
-			finish();
-		}
-	}
+//	private class SafeModeLLC implements LicenseCheckerCallback{
+//		@Override
+//		public void allow() {
+//			//Proceed as usual
+//			Log.i("SAFEMODE","Licensing success");
+//		}
+//		@Override
+//		public void dontAllow() {
+//			Toast.makeText(getApplicationContext(), "You don't have a license. Sorry, bro", Toast.LENGTH_SHORT).show();
+//			finish();
+//		}
+//		@Override
+//		public void applicationError(ApplicationErrorCode errorCode) {
+//			Toast.makeText(getApplicationContext(), "Failed to load license.\nServer returned: "+errorCode, Toast.LENGTH_SHORT).show();
+//			finish();
+//		}
+//	}
     
 }
