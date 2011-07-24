@@ -14,15 +14,12 @@ import java.util.Random;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.teamPrime.sml.R;
 
 
 public class MathStopActivity extends Activity{
@@ -75,8 +72,6 @@ public class MathStopActivity extends Activity{
 					mNotificationManager.cancel(SafeLaunchActivity.LockedNotificationId);
 					
 					Toast.makeText(getApplicationContext(), getString(R.string.turn_off), Toast.LENGTH_SHORT).show();
-					Intent i = new Intent(getApplicationContext(), SafeLaunchActivity.class);
-			    	startActivity(i);
 					finish();
     			}
     			else {
