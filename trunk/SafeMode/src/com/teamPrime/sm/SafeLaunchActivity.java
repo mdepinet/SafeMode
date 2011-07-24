@@ -40,10 +40,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.android.vending.licensing.AESObfuscator;
-import com.android.vending.licensing.LicenseChecker;
-import com.android.vending.licensing.LicenseCheckerCallback;
-import com.android.vending.licensing.ServerManagedPolicy;
 import com.teamPrime.sm.tasks.BlackListIOTask;
 import com.teamPrime.sm.tasks.DateWaitTask;
 
@@ -220,8 +216,6 @@ public class SafeLaunchActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
     	boolean result = super.onCreateOptionsMenu(menu);
     	mMenu = menu;
-//    	String blackString = getText(R.string.edit_blacklist).toString();
-//    	String blackString = getString(applicationOnState ? R.string.edit_blacklist : R.string.view_blacklist);
     	String blackString = applicationOnState ? view_blacklist : edit_blacklist;
     	menu.add(Menu.NONE, Menu.NONE, Menu.NONE, blackString);
         return result;
