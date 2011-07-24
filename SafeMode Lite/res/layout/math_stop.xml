@@ -9,14 +9,14 @@
   android:background="@drawable/background"
   >
     <TextView
-      android:layout_width="match_parent"
+      android:layout_width="fill_parent"
       android:text="@string/math_question"
       android:layout_height="wrap_content"
       android:id="@+id/questionStopText"
       android:textSize="40px"
      />
     <EditText
-      android:layout_width="match_parent"
+      android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:hint="Type your answer here"
       android:id="@+id/answerScreenStop"
