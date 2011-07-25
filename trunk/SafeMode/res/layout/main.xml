@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -18,4 +18,22 @@
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
     android:textColor="#FF0000"/>
-</LinearLayout>
+</LinearLayout> -->
+<com.google.android.apps.iosched.ui.widget.DashboardLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
+    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/start_button"
+        android:id="@+id/dashboard_onOff"
+        android:onClick="onClick" android:gravity="center" />
+    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/edit_blacklist"
+        android:id="@+id/dashboard_blacklist"
+        android:onClick="onClick" android:gravity="center"/>
+    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/hist_view_button"
+        android:id="@+id/dashboard_history"
+        android:onClick="onClick" android:gravity="center"/>
+    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/find_button"
+        android:id="@+id/dashboard_find"
+        android:onClick="onClick" android:gravity="center"/>
+    <TextView android:text="" android:id="@+id/countdownTimer" android:textColor="#FF0000"
+    	android:layout_height="wrap_content" android:layout_width="wrap_content" />
+</com.google.android.apps.iosched.ui.widget.DashboardLayout>
