@@ -30,6 +30,11 @@
     <string name="bl_state_all_rem">All contacts removed from blacklist</string>
     <string name="bl_list_empty">Your blacklist is currently empty...</string>
     
+    <string name="hist_clear">Clear History</string>
+    <string name="hist_view_button">View History</string>
+    
+    <string name="find_button">Find Me</string>
+    
     <string name="init_notice">Welcome to SafeMode! (v1.0)\n\nCopyright 2011 Mike Depinet and Boris Treskunov\n\n\n
     To get started, select contacts to add to your blacklist (by using the \"Edit Blacklist\" option in the menu).
     \n\nThen you can start SafeMode by pushing the \"Start SafeMode\" button.  This will ask you for a time at which SafeMode will turn off automatically.

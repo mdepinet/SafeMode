@@ -96,7 +96,7 @@ public class SafeLaunchActivity extends Activity {
         view_blacklist = getString(R.string.view_blacklist);
         edit_blacklist = getString(R.string.edit_blacklist);
 
-        onOffButton = (Button)findViewById(R.id.onOffButton);
+        onOffButton = (Button)findViewById(R.id.dashboard_onOff);
         countdownTimer = (TextView)findViewById(R.id.countdownTimer);
         
 //		if (deviceId == null) deviceId = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
@@ -274,7 +274,7 @@ public class SafeLaunchActivity extends Activity {
     
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.onOffButton:
+            case R.id.dashboard_onOff:
             	if (!applicationOnState) turnOn();
             	else{
             		//turnOff();

@@ -49,7 +49,7 @@ public class HistoryActivity extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	boolean result = super.onCreateOptionsMenu(menu);
-    	menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Clear History");
+    	menu.add(Menu.NONE, Menu.NONE, Menu.NONE, getString(R.string.hist_clear));
         return result;
     }
     
