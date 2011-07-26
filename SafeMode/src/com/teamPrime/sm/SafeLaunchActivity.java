@@ -31,11 +31,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -53,8 +51,9 @@ public class SafeLaunchActivity extends Activity {
 	private boolean applicationOnState = false;
 	private boolean privateOnState = false;
 	private long offTime;
-	private Button onOffButton;
-	private TextView countdownTimer;
+	private ImageButton onOffButton;
+	private TextView onOffText;
+	private TextView blacklistText;
 	
 	private TimePickerDialog.OnTimeSetListener mTimeSetListener;
 	private DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -65,10 +64,6 @@ public class SafeLaunchActivity extends Activity {
 	private boolean timeUpdated, dateUpdated = false;
 	private DateWaitTask mTask;
 	private boolean allowTimer = false;
-	
-	private Menu mMenu;
-	private String edit_blacklist;
-	private String view_blacklist;
 	
 	private BlackListIOTask ioTask;
 	
@@ -92,12 +87,10 @@ public class SafeLaunchActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
-        view_blacklist = getString(R.string.view_blacklist);
-        edit_blacklist = getString(R.string.edit_blacklist);
 
-        onOffButton = (Button)findViewById(R.id.dashboard_onOff);
-        countdownTimer = (TextView)findViewById(R.id.countdownTimer);
+        onOffButton = (ImageButton)findViewById(R.id.dashboard_onOff);
+        onOffText = (TextView)findViewById(R.id.dashboard_onOff_text);
+        blacklistText = (TextView)findViewById(R.id.dashboard_blacklist_text);
         
 //		if (deviceId == null) deviceId = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
 //		mLicenseCallback = new SafeModeLLC();
@@ -167,7 +160,9 @@ public class SafeLaunchActivity extends Activity {
         
         if (!seenNotice) showDialog(NOTICE_ID);
         
-        onOffButton.setText(getString(applicationOnState ? R.string.end_button : R.string.start_button));
+        onOffButton.setImageDrawable(getResources().getDrawable(applicationOnState ? R.drawable.turn_off_button : R.drawable.turn_on_button));
+        onOffText.setText(getString(applicationOnState ? R.string.end_button : R.string.start_button));
+        blacklistText.setText(getString(applicationOnState ? R.string.view_blacklist : R.string.edit_blacklist));
         
         if (applicationOnState){
         	if (privateOnState){
@@ -190,12 +185,6 @@ public class SafeLaunchActivity extends Activity {
         		turnOff(); //If someone else turned us off, make sure we're actually off
         	}
         }
-        
-        if (mMenu != null){
-        	mMenu.clear();
-        	String blackString = applicationOnState ? view_blacklist : edit_blacklist;
-        	mMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, blackString);
-        }
     }
     
     @Override
@@ -210,23 +199,6 @@ public class SafeLaunchActivity extends Activity {
         editor = data.edit();
         editor.putBoolean("onState", privateOnState);
         editor.commit();
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-    	boolean result = super.onCreateOptionsMenu(menu);
-    	mMenu = menu;
-    	String blackString = applicationOnState ? view_blacklist : edit_blacklist;
-    	menu.add(Menu.NONE, Menu.NONE, Menu.NONE, blackString);
-        return result;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	Intent i = new Intent(getApplicationContext(), BlackListActivity.class);
-    	i.putExtra("readOnly", applicationOnState);
-    	startActivity(i);
-        return super.onOptionsItemSelected(item);
     }
     
     @Override
@@ -272,14 +244,26 @@ public class SafeLaunchActivity extends Activity {
     }
     
     
+    //TODO
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.dashboard_onOff:
             	if (!applicationOnState) turnOn();
             	else{
-            		//turnOff();
             		startActivity(new Intent(getApplicationContext(), MathStopActivity.class));
             	}
+            	break;
+            case R.id.dashboard_blacklist:
+            	Intent i = new Intent(getApplicationContext(), BlackListActivity.class);
+            	i.putExtra("readOnly", applicationOnState);
+            	startActivity(i);
+            	break;
+            case R.id.dashboard_history:
+            	startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+            	break;
+            case R.id.dashboard_find_me:
+            	//TODO
+            	break;
         }
     }
     
@@ -315,7 +299,7 @@ public class SafeLaunchActivity extends Activity {
     }
     
     private void turnOn(){
-    	countdownTimer.setText(getString(R.string.waiting_user));
+    	onOffText.setText(getString(R.string.waiting_user));
     	mTask = new DateWaitTask(this);
     	mTask.execute((Void[])(null));
     }
@@ -324,7 +308,7 @@ public class SafeLaunchActivity extends Activity {
     	//Time related variables are now set (by DateWaitTask)
     	if (offTime <= System.currentTimeMillis()){
     		Toast.makeText(getApplicationContext(), getString(R.string.future_reqd), Toast.LENGTH_SHORT).show();
-    		countdownTimer.setText("");
+    		onOffText.setText(getString(R.string.start_button));
     		return;
     	}
     	ioTask = new BlackListIOTask(this,null,BlackListIOTask.HIDE_CONTACTS_MODE);
@@ -332,21 +316,10 @@ public class SafeLaunchActivity extends Activity {
     	
 		applicationOnState = true;
 		privateOnState = true;
-//		  SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = data.edit();
-//        editor.putBoolean("onState", true);
-//        editor.putLong("offTime", offTime);
-//        editor.commit();
-//        data = getSharedPreferences(SafeLaunchActivity.class.getName(), MODE_PRIVATE);
-//        editor = data.edit();
-//        editor.putBoolean("onState", true);
-//        editor.commit();
         
-		onOffButton.setText(getString(R.string.end_button));
-        if (mMenu != null){
-            mMenu.clear();
-            mMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, view_blacklist);
-        }
+		onOffButton.setImageDrawable(getResources().getDrawable(R.drawable.turn_off_button));
+		onOffText.setText(getString(R.string.end_button));
+		blacklistText.setText(getString(R.string.view_blacklist));
         
         // Register the Receiver to call the Unlock Page when phone unlocks
         IntentFilter mIntentFilter = new IntentFilter();
@@ -381,24 +354,13 @@ public class SafeLaunchActivity extends Activity {
     	
     	applicationOnState = false;
     	privateOnState = false;
-//    	  SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = data.edit();
-//        editor.putBoolean("onState", false);
-//        editor.commit();
-//        data = getSharedPreferences(SafeLaunchActivity.class.getName(), MODE_PRIVATE);
-//        editor = data.edit();
-//        editor.putBoolean("onState", false);
-//        editor.commit();
-        
-        onOffButton.setText(getString(R.string.start_button));
+    	
         allowTimer = false;
         if (timer != null) timer.cancel();
-        countdownTimer.setText("");
         
-        if (mMenu != null){
-	        mMenu.clear();
-	        mMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, edit_blacklist);
-        }
+    	onOffButton.setImageDrawable(getResources().getDrawable(R.drawable.turn_on_button));
+        onOffText.setText(getString(R.string.start_button));
+        blacklistText.setText(getString(R.string.edit_blacklist));
 
 		String ns = Context.NOTIFICATION_SERVICE;
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
@@ -431,7 +393,7 @@ public class SafeLaunchActivity extends Activity {
     	}
 		@Override
 		public void onFinish() {
-			countdownTimer.setText(new Date(0).toString().substring(11,19));
+			onOffText.setText(new Date(0).toString().substring(11,19));
 			turnOff();
 		}
 		@Override
@@ -445,8 +407,7 @@ public class SafeLaunchActivity extends Activity {
 			millisLeft %= 60000;
 			int seconds = (int) (millisLeft/1000);
 			String dayString = days == 0 ? "" : ""+days+"days ";
-			//countdownTimer.setText(dayString+(new Date(millisLeft).toString().substring(11,19)));
-			countdownTimer.setText(dayString+pad(hours)+":"+pad(minutes)+":"+pad(seconds));
+			onOffText.setText(dayString+pad(hours)+":"+pad(minutes)+":"+pad(seconds));
 		}
 		private String pad(int input){
 			if (input < 10) return "0"+input;

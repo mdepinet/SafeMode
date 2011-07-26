@@ -22,18 +22,36 @@
 <com.google.android.apps.iosched.ui.widget.DashboardLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent" android:layout_height="fill_parent">
-    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/start_button"
-        android:id="@+id/dashboard_onOff"
-        android:onClick="onClick" android:gravity="center" />
-    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/edit_blacklist"
-        android:id="@+id/dashboard_blacklist"
-        android:onClick="onClick" android:gravity="center"/>
-    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/hist_view_button"
-        android:id="@+id/dashboard_history"
-        android:onClick="onClick" android:gravity="center"/>
-    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/find_button"
-        android:id="@+id/dashboard_find"
-        android:onClick="onClick" android:gravity="center"/>
-    <TextView android:text="" android:id="@+id/countdownTimer" android:textColor="#FF0000"
-    	android:layout_height="wrap_content" android:layout_width="wrap_content" />
+    <LinearLayout android:orientation="vertical" android:gravity="center"
+    	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	    <ImageButton android:src="@drawable/turn_on_button" android:layout_width="wrap_content" android:layout_height="wrap_content"
+	        android:id="@+id/dashboard_onOff"
+	        android:onClick="onClick" android:scaleType="center" />
+	    <TextView android:text="Start SafeMode" android:id="@+id/dashboard_onOff_text" android:textColor="#FFFFFF"
+	    	android:layout_height="wrap_content" android:layout_width="wrap_content" />
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical" android:gravity="center"
+    	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	    <ImageButton android:src="@drawable/blacklist_button" android:layout_width="wrap_content" android:layout_height="wrap_content"
+	        android:id="@+id/dashboard_blacklist"
+	        android:onClick="onClick" android:scaleType="center" />
+	    <TextView android:text="Edit Blacklist" android:id="@+id/dashboard_blacklist_text" android:textColor="#FFFFFF"
+	    	android:layout_height="wrap_content" android:layout_width="wrap_content" />
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical" android:gravity="center"
+    	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	    <ImageButton android:src="@drawable/history_button" android:layout_width="wrap_content" android:layout_height="wrap_content"
+	        android:id="@+id/dashboard_history"
+	        android:onClick="onClick" android:scaleType="center" />
+	    <TextView android:text="View History" android:id="@+id/dashboard_history_text" android:textColor="#FFFFFF"
+	    	android:layout_height="wrap_content" android:layout_width="wrap_content" />
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical" android:gravity="center"
+    	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	    <ImageButton android:src="@drawable/find_me_button" android:layout_width="wrap_content" android:layout_height="wrap_content"
+	        android:id="@+id/dashboard_find_me"
+	        android:onClick="onClick" android:scaleType="center" />
+	    <TextView android:text="Find me" android:id="@+id/dashboard_findMe_text" android:textColor="#FFFFFF"
+	    	android:layout_height="wrap_content" android:layout_width="wrap_content" />
+    </LinearLayout>
 </com.google.android.apps.iosched.ui.widget.DashboardLayout>
