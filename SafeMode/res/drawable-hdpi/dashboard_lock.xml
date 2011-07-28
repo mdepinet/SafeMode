@@ -3,6 +3,9 @@
     <!-- When selected-->
     <item android:drawable="@drawable/locked_new_pressed"
           android:state_pressed="true" />
+	<!-- When focused-->
+    <item android:drawable="@drawable/locked_new_pressed"
+          android:state_focused="true" />          
     <!-- When not selected-->
     <item android:drawable="@drawable/locked_new" />
 </selector>
