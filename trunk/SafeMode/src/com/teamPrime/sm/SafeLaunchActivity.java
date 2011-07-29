@@ -39,6 +39,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.teamPrime.sm.history.DefaultFindMeItem;
+import com.teamPrime.sm.history.HistAction;
+import com.teamPrime.sm.history.HistoryItem;
+import com.teamPrime.sm.history.action.ResendTextAction;
+import com.teamPrime.sm.history.action.ViewTextAction;
 import com.teamPrime.sm.tasks.BlackListIOTask;
 import com.teamPrime.sm.tasks.DateWaitTask;
 
@@ -48,7 +53,7 @@ import com.teamPrime.sm.tasks.DateWaitTask;
  * @author Mike Depinet
  * @version 1.0
  */
-public class SafeLaunchActivity extends Activity {	
+public class SafeLaunchActivity extends Activity{	
 	private boolean applicationOnState = false;
 	private boolean privateOnState = false;
 	private long offTime;
@@ -265,7 +270,8 @@ public class SafeLaunchActivity extends Activity {
             case R.id.dashboard_find_me:
             	try{
             		//sends message but does not add it to sent messages:
-            		String phoneNumber = "3057789281"; //temporary number
+            		//String phoneNumber = "3057789281"; //temporary number
+            		String phoneNumber = "8329717948";
             		String address = "30837 NE 25th ave"; //temporary address
             		String message = "I am at " + address;
             		sendSMS(phoneNumber, message);
@@ -278,7 +284,7 @@ public class SafeLaunchActivity extends Activity {
         }
     }
     
-    private void sendSMS(String phoneNumber, String message) {        
+    private void sendSMS(final String phoneNumber, final String message) {        
     	String SENT = "SMS_SENT";
         String DELIVERED = "SMS_DELIVERED";
  
@@ -311,6 +317,11 @@ public class SafeLaunchActivity extends Activity {
                                 Toast.LENGTH_SHORT).show();
                         break;
                 }
+                //Add to history
+                HistAction viewText = new ViewTextAction(phoneNumber, message, getResultCode());
+                HistAction resendText = new ResendTextAction(phoneNumber, message);
+                HistoryItem item = new DefaultFindMeItem(null, viewText, resendText);
+                HistoryActivity.addItem(getBaseContext(), item);
             }
         }, new IntentFilter(SENT));
  
@@ -334,7 +345,7 @@ public class SafeLaunchActivity extends Activity {
  
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);        
-    }    
+    }
     
     private void handleTimes(boolean fromLong, boolean updateDate){
     	if (fromLong && updateDate) handleTimes(true,false); //Before we can update the date, our current values need to be set.
