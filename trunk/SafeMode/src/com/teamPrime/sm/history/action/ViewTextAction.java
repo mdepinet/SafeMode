@@ -3,7 +3,6 @@ package com.teamPrime.sm.history.action;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.telephony.SmsManager;
 
@@ -38,7 +37,7 @@ public class ViewTextAction implements HistAction, DialogCreator {
 		activity.showDialog(this, 0);
 	}
 	
-	public Dialog createDialog(final Context c, int dialogSubId){
+	public Dialog createDialog(final HistoryActivity activity, int dialogSubId){
 		String response = "Unknown";
 		switch (responseCode){
 		case Activity.RESULT_OK:
@@ -54,7 +53,7 @@ public class ViewTextAction implements HistAction, DialogCreator {
 			response = "This message failed to send because your radio was off.";
 			break;
 		}
-		return new AlertDialog.Builder(c).setMessage("Sent to: "+phoneNumber+"\n\nMessage: "+messageText+"\n\nStatus: "+response)
+		return new AlertDialog.Builder(activity).setMessage("Sent to: "+phoneNumber+"\n\nMessage: "+messageText+"\n\nStatus: "+response)
 		.setCancelable(false).setNeutralButton("Ok", new DialogInterface.OnClickListener() {
 	           public void onClick(DialogInterface dialog, int id) {
 	        	   dialog.dismiss();

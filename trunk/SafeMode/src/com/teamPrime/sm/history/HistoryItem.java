@@ -4,12 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.content.DialogInterface;
 
 import com.teamPrime.sm.HistoryActivity;
 
@@ -18,14 +15,13 @@ public abstract class HistoryItem implements Serializable, DialogCreator{
 	
 	public static final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
 	
-	protected HistAction defaultAction; //Used for press events
-	protected List<HistAction> actions; //Used for long press events
+	protected List<HistAction> actions; //Actions available for this item
 	protected HistoryActivity activity; //Used for dialog creation
 	
 	public HistoryItem(HistoryActivity activity, HistAction defaultAction, HistAction... acts){
 		this.activity = activity;
-		this.defaultAction = defaultAction;
 		this.actions = new ArrayList<HistAction>();
+		actions.add(defaultAction);
 		for (HistAction ha : acts){
 			this.actions.add(ha);
 		}
@@ -40,36 +36,25 @@ public abstract class HistoryItem implements Serializable, DialogCreator{
 	}
 	
 	public void onClick(){
-		//activity.showDialog(this, -1);
-		defaultAction.execute(activity);
+		if (activity != null) activity.showDialog(this, -1); //emptyItem will not do anything
+		//defaultAction.execute(activity);
 	}
 
-	public Dialog createDialog(Context c, int subDialogId){
-		final Dialog d = new Dialog(c);
-		d.setTitle("Select Action:");
-		ListView lv = new ListView(c);
-		TextView tv = new TextView(c);
-		tv.setText(defaultAction.toString());
-		tv.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v) {
-				defaultAction.execute(activity);
-				d.cancel();
-			}
-		});
-		lv.addView(tv);
-		for (final HistAction act : actions){
-			tv = new TextView(c);
-			tv.setText(act.toString());
-			tv.setOnClickListener(new OnClickListener(){
-				@Override
-				public void onClick(View v) {
-					act.execute(activity);
-					d.cancel();
-				}
-			});
+	public Dialog createDialog(final HistoryActivity activity, int subDialogId){
+		final HistAction[] combinedActions = new HistAction[actions.size()];
+		String[] titles = new String[combinedActions.length];
+		for (int i = 0; i<actions.size(); i++){
+			combinedActions[i] = actions.get(i);
+			titles[i] = actions.get(i).toString();
 		}
-		d.setContentView(lv);
-		return d;
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		builder.setTitle(""+toString()).setItems(titles, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int item) {
+				dialog.dismiss();
+				combinedActions[item].execute(activity);
+		 }
+		}).setCancelable(true);
+		return builder.create();
 	}
 }

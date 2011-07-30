@@ -28,14 +28,22 @@ import com.teamPrime.sm.history.DialogCreator;
 import com.teamPrime.sm.history.HistoryItem;
 
 public class HistoryActivity extends ListActivity {
-	private static final int CALLBACK_DIALOG_ID = -1;
+	private static final int STARTING_CALLBACK_DIALOG_ID = -1;
 	private static final String SHARED_PREF_NAME = "SafeMode - History";
 	private static final String FILE_NAME_PREFIX = "HistoryItem ";
 	
 	private ArrayAdapter<HistoryItem> adapter;
 	private static List<HistoryItem> items;
+	@SuppressWarnings("serial")
+	private static HistoryItem emptyItem = new HistoryItem(null,null){
+		public String toString(){
+			return "Your history is empty.";
+		}
+	};
+	
 	private DialogCreator nextDialogCreator = null;
 	private int nextDialogSubId = -1;
+	private int callbackDialogCounter = 0;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -54,7 +62,6 @@ public class HistoryActivity extends ListActivity {
 	@Override
 	public void onPause(){
 		super.onPause();
-		saveItems();
 	}
 	
     @Override
@@ -66,15 +73,13 @@ public class HistoryActivity extends ListActivity {
     
     @Override
     protected Dialog onCreateDialog(int id){
-    	switch (id){
-		case CALLBACK_DIALOG_ID:
+    	if (id < 0){
     		Dialog d = (nextDialogCreator == null ? null : nextDialogCreator.createDialog(this, nextDialogSubId));
     		nextDialogCreator = null;
     		nextDialogSubId = -1;
     		return d;
-		default:
-			return null;
     	}
+    	else return null;
     }
     
     @Override
@@ -83,7 +88,8 @@ public class HistoryActivity extends ListActivity {
     	Editor edit = data.edit();
     	edit.putInt("numItems", 0);
     	edit.commit();
-    	items.clear();
+    	adapter.clear();
+    	adapter.add(emptyItem);
         return super.onOptionsItemSelected(item);
     }
     
@@ -122,32 +128,34 @@ public class HistoryActivity extends ListActivity {
 				try{fis.close();ois.close();} catch (Throwable t){}
 			}
 		}
+		if (items.isEmpty()) items.add(emptyItem);
 	}
 	
-	private void saveItems(){
-		if (items == null || items.isEmpty()) return;
-		SharedPreferences data = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-		Editor edit = data.edit();
-		edit.putInt("numItems", items.size());
-		int i = 0;
-		for (HistoryItem hi : items){
-			ObjectOutputStream oos = null;
-			FileOutputStream fos = null;
-			try{
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				oos = new ObjectOutputStream(baos);
-				hi.setActivity(null);
-				oos.writeObject(hi);
-				fos = openFileOutput(FILE_NAME_PREFIX+(++i), MODE_PRIVATE);
-				fos.write(baos.toByteArray());
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			} finally{
-				try{fos.close(); oos.close();} catch(Throwable t){}
-			}
-		}
-		edit.commit();
-	}
+//	private void saveItems(){
+//		if (items == null || items.isEmpty()) return;
+//		SharedPreferences data = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
+//		Editor edit = data.edit();
+//		edit.putInt("numItems", items.size());
+//		int i = 0;
+//		items.remove(emptyItem);
+//		for (HistoryItem hi : items){
+//			ObjectOutputStream oos = null;
+//			FileOutputStream fos = null;
+//			try{
+//				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//				oos = new ObjectOutputStream(baos);
+//				hi.setActivity(null);
+//				oos.writeObject(hi);
+//				fos = openFileOutput(FILE_NAME_PREFIX+(++i), MODE_PRIVATE);
+//				fos.write(baos.toByteArray());
+//			} catch (IOException ex) {
+//				ex.printStackTrace();
+//			} finally{
+//				try{fos.close(); oos.close();} catch(Throwable t){}
+//			}
+//		}
+//		edit.commit();
+//	}
 	
 	public static int addItem(Context c, HistoryItem hi){
 		SharedPreferences data = c.getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
@@ -175,6 +183,6 @@ public class HistoryActivity extends ListActivity {
 	public void showDialog(DialogCreator dc, int dialogSubId){
 		nextDialogCreator = dc;
 		nextDialogSubId = dialogSubId;
-		showDialog(CALLBACK_DIALOG_ID);
+		showDialog(STARTING_CALLBACK_DIALOG_ID - callbackDialogCounter++);
 	}
 }
