@@ -35,7 +35,7 @@ public class HistoryActivity extends ListActivity {
 	private static final String SHARED_PREF_NAME = "SafeMode - History";
 	private static final String FILE_NAME_PREFIX = "HistoryItem ";
 	
-	private ArrayAdapter<HistoryItem> adapter;
+	//private ArrayAdapter<HistoryItem> adapter;
 	private HistoryAdapter historyAdapter;
 	private static List<HistoryItem> items;
 	@SuppressWarnings("serial")
@@ -101,7 +101,7 @@ public class HistoryActivity extends ListActivity {
     @Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
     	super.onListItemClick(l, v, position, id);
-		HistoryItem hi = adapter.getItem(position);
+		HistoryItem hi = historyAdapter.getItem(position);
 		hi.onClick();
 	}
 	
