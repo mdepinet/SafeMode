@@ -12,6 +12,7 @@ public class DefaultFindMeItem extends HistoryItem {
 	
 	public DefaultFindMeItem(HistoryActivity activity, String phoneNumber, HistAction defaultAction, HistAction... acts) {
 		super(activity, defaultAction, acts);
+		phoneNumber = this.phoneNumber;
 	}
 	
 	public String toString(){
