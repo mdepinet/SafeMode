@@ -18,11 +18,14 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.teamPrime.sm.history.DialogCreator;
 import com.teamPrime.sm.history.HistoryItem;
@@ -33,6 +36,7 @@ public class HistoryActivity extends ListActivity {
 	private static final String FILE_NAME_PREFIX = "HistoryItem ";
 	
 	private ArrayAdapter<HistoryItem> adapter;
+	private HistoryAdapter historyAdapter;
 	private static List<HistoryItem> items;
 	@SuppressWarnings("serial")
 	private static HistoryItem emptyItem = new HistoryItem(null,null){
@@ -55,8 +59,9 @@ public class HistoryActivity extends ListActivity {
 	public void onResume(){
 		super.onResume();
 		populateItems();
+		historyAdapter = new HistoryAdapter(this, R.layout.history_row, items);
 		adapter = new ArrayAdapter<HistoryItem>(this,android.R.layout.simple_list_item_1,items);
-		setListAdapter(adapter);
+		setListAdapter(historyAdapter);
 	}
 	
 	@Override
@@ -185,4 +190,55 @@ public class HistoryActivity extends ListActivity {
 		nextDialogSubId = dialogSubId;
 		showDialog(STARTING_CALLBACK_DIALOG_ID - callbackDialogCounter++);
 	}
+	
+    private class HistoryAdapter extends ArrayAdapter<HistoryItem> {
+
+        private final List<HistoryItem> items;
+
+        public HistoryAdapter(Context context, int textViewResourceId, List<HistoryItem> items2) {
+                super(context, textViewResourceId, items2);
+                this.items = items2;
+        }
+        
+        @Override
+        public View getView(int position, View view, ViewGroup parent) {
+                View v = view;
+                TextView title;
+                TextView date;
+                TextView time;
+                
+                if (v == null) {
+                    LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    v = inflater.inflate(R.layout.history_row, null);
+                }
+                
+                final HistoryItem historyItem = items.get(position);
+                
+                if (historyItem != null) {
+                	
+                    //set title
+                	title = (TextView) v.findViewById(R.id.history_title);
+                    if (title != null) {
+                    	title.setText(historyItem.getTitle());
+                        }
+                         
+                    //set date
+                    date = (TextView) v.findViewById(R.id.history_date);
+                    if (date != null){
+                    	date.setText(historyItem.getDate());
+                   }
+                    	  
+                   	//set time
+                   	time = (TextView) v.findViewById(R.id.history_time);
+                   	if (time != null){
+                   		time.setText(historyItem.getTime());
+                   	}
+                
+                }
+                return v;
+        }
+    }
+
 }
+
+
