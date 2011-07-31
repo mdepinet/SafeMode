@@ -1,7 +1,9 @@
 package com.teamPrime.sm.history;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -14,6 +16,7 @@ public abstract class HistoryItem implements Serializable, DialogCreator{
 	private static final long serialVersionUID = -7064460474245401203L;
 	
 	public static final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
+	private Date creationDate = new Date();
 	
 	protected List<HistAction> actions; //Actions available for this item
 	protected HistoryActivity activity; //Used for dialog creation
@@ -56,5 +59,17 @@ public abstract class HistoryItem implements Serializable, DialogCreator{
 		 }
 		}).setCancelable(true);
 		return builder.create();
+	}
+	
+	public String getTitle(){
+		return "History Item";
+	}
+	
+	public String getDate(){
+		return "";
+	}
+	
+	public String getTime(){
+		return "";
 	}
 }

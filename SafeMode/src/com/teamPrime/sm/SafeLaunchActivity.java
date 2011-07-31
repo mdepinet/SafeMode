@@ -166,7 +166,7 @@ public class SafeLaunchActivity extends Activity{
         
         if (!seenNotice) showDialog(NOTICE_ID);
         
-        onOffButton.setImageDrawable(getResources().getDrawable(applicationOnState ? R.drawable.turn_off_button : R.drawable.turn_on_button));
+        onOffButton.setImageDrawable(getResources().getDrawable(applicationOnState ? R.drawable.dashboard_unlock : R.drawable.dashboard_lock));
         onOffText.setText(getString(applicationOnState ? R.string.end_button : R.string.start_button));
         blacklistText.setText(getString(applicationOnState ? R.string.view_blacklist : R.string.edit_blacklist));
         
@@ -320,7 +320,7 @@ public class SafeLaunchActivity extends Activity{
                 //Add to history
                 HistAction viewText = new ViewTextAction(phoneNumber, message, getResultCode());
                 HistAction resendText = new ResendTextAction(phoneNumber, message);
-                HistoryItem item = new DefaultFindMeItem(null, viewText, resendText);
+                HistoryItem item = new DefaultFindMeItem(null, phoneNumber, viewText, resendText);
                 HistoryActivity.addItem(getBaseContext(), item);
             }
         }, new IntentFilter(SENT));
@@ -397,7 +397,7 @@ public class SafeLaunchActivity extends Activity{
 		applicationOnState = true;
 		privateOnState = true;
         
-		onOffButton.setImageDrawable(getResources().getDrawable(R.drawable.turn_off_button));
+		onOffButton.setImageDrawable(getResources().getDrawable(R.drawable.dashboard_unlock));
 		onOffText.setText(getString(R.string.end_button));
 		blacklistText.setText(getString(R.string.view_blacklist));
         
@@ -438,7 +438,7 @@ public class SafeLaunchActivity extends Activity{
         allowTimer = false;
         if (timer != null) timer.cancel();
         
-    	onOffButton.setImageDrawable(getResources().getDrawable(R.drawable.turn_on_button));
+    	onOffButton.setImageDrawable(getResources().getDrawable(R.drawable.dashboard_lock));
         onOffText.setText(getString(R.string.start_button));
         blacklistText.setText(getString(R.string.edit_blacklist));
 
