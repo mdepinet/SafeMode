@@ -60,7 +60,7 @@ public class HistoryActivity extends ListActivity {
 		super.onResume();
 		populateItems();
 		historyAdapter = new HistoryAdapter(this, R.layout.history_row, items);
-		adapter = new ArrayAdapter<HistoryItem>(this,android.R.layout.simple_list_item_1,items);
+		//adapter = new ArrayAdapter<HistoryItem>(this,android.R.layout.simple_list_item_1,items);
 		setListAdapter(historyAdapter);
 	}
 	
@@ -93,8 +93,8 @@ public class HistoryActivity extends ListActivity {
     	Editor edit = data.edit();
     	edit.putInt("numItems", 0);
     	edit.commit();
-    	adapter.clear();
-    	adapter.add(emptyItem);
+    	historyAdapter.clear();
+    	historyAdapter.add(emptyItem);
         return super.onOptionsItemSelected(item);
     }
     
