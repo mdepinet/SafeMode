@@ -24,9 +24,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.teamPrime.sm.history.DateItem;
 import com.teamPrime.sm.history.DialogCreator;
 import com.teamPrime.sm.history.HistoryItem;
 
@@ -121,7 +124,14 @@ public class HistoryActivity extends ListActivity {
 					ois = new ObjectInputStream(bais);
 					HistoryItem hi = (HistoryItem) ois.readObject();
 					hi.setActivity(this);
+					
+					/**if(items.isEmpty() || !items.get(items.size()-1).getDate().equals(hi.getDate())){
+						DateItem di = new DateItem(null, null);
+						items.add(di);
+					}*/
+					
 					items.add(hi);
+
 				}
 			} catch (ClassNotFoundException ex){
 				Log.e("SafeMode","Failed to load items",ex);
@@ -202,37 +212,49 @@ public class HistoryActivity extends ListActivity {
         
         @Override
         public View getView(int position, View view, ViewGroup parent) {
-                View v = view;
+                RelativeLayout v = (RelativeLayout) view;
+                TextView dateView;
                 TextView title;
-                TextView date;
+                TextView description;
                 TextView time;
-                
-                if (v == null) {
-                    LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    v = inflater.inflate(R.layout.history_row, null);
-                }
                 
                 final HistoryItem historyItem = items.get(position);
                 
+                if (v == null) {
+                    LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    if(historyItem.getTitle().equals("Date Item"))
+                    	v = (RelativeLayout) inflater.inflate(R.layout.history_date_row, null);
+                    else
+                    	v = (RelativeLayout) inflater.inflate(R.layout.history_row, null);
+                }
+                
                 if (historyItem != null) {
                 	
-                    //set title
-                	title = (TextView) v.findViewById(R.id.history_title);
-                    if (title != null) {
-                    	title.setText(historyItem.getTitle());
-                        }
-                         
-                    //set date
-                    date = (TextView) v.findViewById(R.id.history_date);
-                    if (date != null){
-                    	date.setText(historyItem.getDate());
-                   }
-                    	  
-                   	//set time
-                   	time = (TextView) v.findViewById(R.id.history_time);
-                   	if (time != null){
-                   		time.setText(historyItem.getTime());
-                   	}
+                	if(historyItem.getTitle().equals("Date Item")){
+                		dateView 	= 	(TextView) v.findViewById(R.id.date_entry);
+                		dateView.setText(historyItem.getDate());
+                	}
+                	
+                	else{
+                		
+	                    //set title
+	                	title = (TextView) v.findViewById(R.id.history_title);
+	                    if (title != null) {
+	                    	title.setText(historyItem.getTitle());
+	                        }
+	                         
+	                    //set description
+	                    description = (TextView) v.findViewById(R.id.history_descrip);
+	                    if (description != null){
+	                    	description.setText(historyItem.getDescription());
+	                   }
+	                    	  
+	                   	//set time
+	                   	time = (TextView) v.findViewById(R.id.history_time);
+	                   	if (time != null){
+	                   		time.setText(historyItem.getTime());
+	                   	}
+                	}
                 
                 }
                 return v;

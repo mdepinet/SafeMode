@@ -62,7 +62,11 @@ public abstract class HistoryItem implements Serializable, DialogCreator{
 	}
 	
 	public String getTitle(){
-		return "Your History is Currently Empty.";
+		return "";
+	}
+	
+	public String getDescription(){
+		return "Your History is Currently Empty...";
 	}
 	
 	public String getDate(){
