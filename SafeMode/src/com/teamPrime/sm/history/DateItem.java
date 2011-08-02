@@ -7,7 +7,6 @@ import com.teamPrime.sm.HistoryActivity;
 
 public class DateItem extends HistoryItem {
 	private static final long serialVersionUID = -361038583952900332L;
-	private Date creationDate = new Date();
 	
 	public DateItem(HistoryActivity activity, HistAction defaultAction, HistAction... acts) {
 		super(activity, defaultAction, acts);
@@ -18,12 +17,11 @@ public class DateItem extends HistoryItem {
 	}
 	
 	public String getTitle(){
-		return "Date Item";
+		return new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate);
 	}
 	
 	public String getDescription(){
-		//should be changed to contact name
-		return "date";
+		return "";
 	}
 	
 	public String getDate(){

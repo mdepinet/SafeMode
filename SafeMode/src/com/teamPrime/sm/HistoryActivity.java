@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Dialog;
@@ -24,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -112,6 +112,7 @@ public class HistoryActivity extends ListActivity {
 		SharedPreferences data = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
 		items = new ArrayList<HistoryItem>();
 		int numItems = data.getInt("numItems", 0);
+		Date lastDate = null;
 		for (int i = 1; i<=numItems; i++){
 			ObjectInputStream ois = null;
 			FileInputStream fis = null;
@@ -124,12 +125,11 @@ public class HistoryActivity extends ListActivity {
 					ois = new ObjectInputStream(bais);
 					HistoryItem hi = (HistoryItem) ois.readObject();
 					hi.setActivity(this);
-					
-					/**if(items.isEmpty() || !items.get(items.size()-1).getDate().equals(hi.getDate())){
-						DateItem di = new DateItem(null, null);
-						items.add(di);
-					}*/
-					
+					if (!hi.getCreationDate().equals(lastDate)){
+						DateItem dateLabel = new DateItem(null,null);
+						dateLabel.setCreationDate(hi.getCreationDate());
+						items.add(dateLabel);
+					}
 					items.add(hi);
 
 				}
