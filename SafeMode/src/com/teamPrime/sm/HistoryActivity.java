@@ -222,7 +222,7 @@ public class HistoryActivity extends ListActivity {
                 
                 if (v == null) {
                     LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    if(historyItem.getTitle().equals("Date Item"))
+                    if(historyItem.toString().equals("This is a date item"))
                     	v = (RelativeLayout) inflater.inflate(R.layout.history_date_row, null);
                     else
                     	v = (RelativeLayout) inflater.inflate(R.layout.history_row, null);
