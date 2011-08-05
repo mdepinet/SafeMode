@@ -1,7 +1,6 @@
 package com.teamPrime.sm.history;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import com.teamPrime.sm.HistoryActivity;
 
@@ -22,13 +21,5 @@ public class DateItem extends HistoryItem {
 	
 	public String getDescription(){
 		return "";
-	}
-	
-	public String getDate(){
-		return new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate).substring(0, 10);
-	}
-	
-	public String getTime(){
-		return new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate).substring(10);
 	}
 }

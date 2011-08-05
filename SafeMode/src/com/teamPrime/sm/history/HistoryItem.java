@@ -1,6 +1,7 @@
 package com.teamPrime.sm.history;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +15,7 @@ import com.teamPrime.sm.HistoryActivity;
 public abstract class HistoryItem implements Serializable, DialogCreator{
 	private static final long serialVersionUID = -7064460474245401203L;
 	
-	public static final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
+	public static final String DATE_FORMAT = "M/d/yyyy hh:mm aa";
 	protected Date creationDate = new Date();
 	
 	protected List<HistAction> actions; //Actions available for this item
@@ -68,18 +69,22 @@ public abstract class HistoryItem implements Serializable, DialogCreator{
 		return "Your History is Currently Empty...";
 	}
 	
-	public String getDate(){
-		return "";
-	}
-	
-	public String getTime(){
-		return "";
-	}
-	
 	public Date getCreationDate(){
 		return creationDate;
 	}
 	public void setCreationDate(Date creationDate){
 		this.creationDate = creationDate;
+	}
+	
+	public String getDate(){
+		String date = new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate);
+		date = date.substring(0, date.indexOf(" "));
+		return date;
+	}
+	
+	public String getTime(){
+		String date = new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate);
+		date = date.substring(date.indexOf(" ")+1);
+		return date;
 	}
 }
