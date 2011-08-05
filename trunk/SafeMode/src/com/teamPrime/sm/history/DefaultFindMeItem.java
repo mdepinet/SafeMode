@@ -29,12 +29,4 @@ public class DefaultFindMeItem extends HistoryItem {
 		//should be changed to contact name
 		return PhoneNumberUtils.formatNumber(phoneNumber);
 	}
-	
-	public String getDate(){
-		return new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate).substring(0, 10);
-	}
-	
-	public String getTime(){
-		return new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate).substring(10);
-	}
 }

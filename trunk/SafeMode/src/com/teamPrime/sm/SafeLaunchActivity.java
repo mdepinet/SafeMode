@@ -42,6 +42,7 @@ import android.widget.Toast;
 import com.teamPrime.sm.history.DefaultFindMeItem;
 import com.teamPrime.sm.history.HistAction;
 import com.teamPrime.sm.history.HistoryItem;
+import com.teamPrime.sm.history.SafeModeOnOffItem;
 import com.teamPrime.sm.history.action.ResendTextAction;
 import com.teamPrime.sm.history.action.ViewTextAction;
 import com.teamPrime.sm.tasks.BlackListIOTask;
@@ -426,6 +427,8 @@ public class SafeLaunchActivity extends Activity{
 		String ns = Context.NOTIFICATION_SERVICE;
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 		mNotificationManager.notify(LockedNotificationId, not);
+		
+		HistoryActivity.addItem(getApplicationContext(), new SafeModeOnOffItem(true, null, null));
     }
     
     private void turnOff(){
@@ -445,6 +448,9 @@ public class SafeLaunchActivity extends Activity{
 		String ns = Context.NOTIFICATION_SERVICE;
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 		mNotificationManager.cancel(LockedNotificationId);
+		
+		HistoryActivity.addItem(getApplicationContext(), new SafeModeOnOffItem(false, null, null));
+
     }
     
     //Getters and Setters for time related variables

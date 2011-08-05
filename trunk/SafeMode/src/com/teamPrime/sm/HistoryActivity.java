@@ -8,8 +8,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import android.app.Dialog;
@@ -41,10 +42,19 @@ public class HistoryActivity extends ListActivity {
 	//private ArrayAdapter<HistoryItem> adapter;
 	private HistoryAdapter historyAdapter;
 	private static List<HistoryItem> items;
-	@SuppressWarnings("serial")
 	private static HistoryItem emptyItem = new HistoryItem(null,null){
+		private static final long serialVersionUID = -7634608861370557155L;
 		public String toString(){
 			return "Your history is empty.";
+		}
+		public String getTime(){
+			return "";
+		}
+		public String getTitle(){
+			return toString();
+		}
+		public String getDescription(){
+			return "";
 		}
 	};
 	
@@ -112,7 +122,7 @@ public class HistoryActivity extends ListActivity {
 		SharedPreferences data = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
 		items = new ArrayList<HistoryItem>();
 		int numItems = data.getInt("numItems", 0);
-		Date lastDate = null;
+		String lastDate = null;
 		for (int i = 1; i<=numItems; i++){
 			ObjectInputStream ois = null;
 			FileInputStream fis = null;
@@ -125,9 +135,10 @@ public class HistoryActivity extends ListActivity {
 					ois = new ObjectInputStream(bais);
 					HistoryItem hi = (HistoryItem) ois.readObject();
 					hi.setActivity(this);
-					if (!hi.getCreationDate().equals(lastDate)){
+					if (lastDate == null || !lastDate.equals(hi.getDate())){
 						DateItem dateLabel = new DateItem(null,null);
-						dateLabel.setCreationDate(hi.getCreationDate());
+						lastDate = hi.getDate();
+						dateLabel.setCreationDate(new SimpleDateFormat(HistoryItem.DATE_FORMAT.substring(0,HistoryItem.DATE_FORMAT.indexOf(" "))).parse(hi.getDate()));
 						items.add(dateLabel);
 					}
 					items.add(hi);
@@ -138,6 +149,8 @@ public class HistoryActivity extends ListActivity {
 			} catch (StreamCorruptedException ex) {
 				Log.e("SafeMode","Failed to load items",ex);
 			} catch (IOException ex) {
+				Log.e("SafeMode","Failed to load items",ex);
+			} catch (ParseException ex) {
 				Log.e("SafeMode","Failed to load items",ex);
 			} finally {
 				try{fis.close();ois.close();} catch (Throwable t){}
@@ -222,7 +235,7 @@ public class HistoryActivity extends ListActivity {
                 
                 if (v == null) {
                     LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    if(historyItem.toString().equals("This is a date item"))
+                    if(historyItem instanceof DateItem)
                     	v = (RelativeLayout) inflater.inflate(R.layout.history_date_row, null);
                     else
                     	v = (RelativeLayout) inflater.inflate(R.layout.history_row, null);
@@ -230,7 +243,7 @@ public class HistoryActivity extends ListActivity {
                 
                 if (historyItem != null) {
                 	
-                	if(historyItem.getTitle().equals("Date Item")){
+                	if(historyItem instanceof DateItem){
                 		dateView 	= 	(TextView) v.findViewById(R.id.date_entry);
                 		dateView.setText(historyItem.getDate());
                 	}
