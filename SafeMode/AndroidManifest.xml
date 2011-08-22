@@ -8,6 +8,7 @@
 	<uses-permission android:name="android.permission.READ_CONTACTS" />
 	<uses-permission android:name="android.permission.WRITE_CONTACTS" />
 	<uses-permission android:name="android.permission.SEND_SMS"/>
+	<uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
 	<!-- <uses-permission android:name="com.android.vending.CHECK_LICENSE" /> -->
 	
 
