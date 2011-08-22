@@ -39,7 +39,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.teamPrime.sm.history.DefaultFindMeItem;
+import com.teamPrime.sm.history.FindMeItem;
 import com.teamPrime.sm.history.HistAction;
 import com.teamPrime.sm.history.HistoryItem;
 import com.teamPrime.sm.history.SafeModeOnOffItem;
@@ -321,7 +321,7 @@ public class SafeLaunchActivity extends Activity{
                 //Add to history
                 HistAction viewText = new ViewTextAction(phoneNumber, message, getResultCode());
                 HistAction resendText = new ResendTextAction(phoneNumber, message);
-                HistoryItem item = new DefaultFindMeItem(null, phoneNumber, viewText, resendText);
+                HistoryItem item = new FindMeItem(null, phoneNumber, viewText, resendText);
                 HistoryActivity.addItem(getBaseContext(), item);
             }
         }, new IntentFilter(SENT));
@@ -445,6 +445,7 @@ public class SafeLaunchActivity extends Activity{
         onOffText.setText(getString(R.string.start_button));
         blacklistText.setText(getString(R.string.edit_blacklist));
 
+        try{unregisterReceiver(mIntentReceiver);}catch(Throwable t){}
 		String ns = Context.NOTIFICATION_SERVICE;
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 		mNotificationManager.cancel(LockedNotificationId);

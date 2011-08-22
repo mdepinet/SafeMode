@@ -18,12 +18,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 import android.app.Activity;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.os.RemoteException;
@@ -42,6 +47,8 @@ import android.util.Log;
  */
 public class ContactDAO {
 	private static final String contactSaveLoc = "SAFEMODE_contactData.bin";
+	private static final String contactVMSaveLoc = "SAFEMODE_sendToVM.bin";
+	private static Map<Long, Integer> sendToVM = new HashMap<Long, Integer>();
 	private static boolean lastHid = false;
 	private static final String supportedDataTypes = "(\'"+ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE+"\',"
 														+"\'"+ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE+"\',"
@@ -50,9 +57,11 @@ public class ContactDAO {
     
     private static List<ContactData> getDataForContacts(ContentResolver cr, List<Long> contactIds){
     	List<ContactData> dataList = new LinkedList<ContactData>();
-    	 Cursor rawCursor = cr.query(RawContacts.CONTENT_URI, new String[]{RawContacts._ID},
+    	sendToVM.clear();
+    	 Cursor rawCursor = cr.query(RawContacts.CONTENT_URI, new String[]{RawContacts._ID, RawContacts.SEND_TO_VOICEMAIL},
     	          RawContacts.CONTACT_ID + " IN "+formatListForSQLin(contactIds), new String[]{}, null);
     	 while (rawCursor.moveToNext()){
+    		 sendToVM.put(rawCursor.getLong(0), rawCursor.getInt(1));
     		 Cursor dataCursor =  cr.query(Data.CONTENT_URI,
     				 new String[] {Data.MIMETYPE, Data.RAW_CONTACT_ID, Data.IS_PRIMARY, Data.IS_SUPER_PRIMARY, Data.DATA_VERSION,
     				 	Data.DATA1, Data.DATA2, Data.DATA3, Data.DATA4, Data.DATA5, Data.DATA6},
@@ -79,9 +88,21 @@ public class ContactDAO {
     				new String[]{String.valueOf(rawCursor.getLong(0))});
     	}
     	rawCursor.close();
+    	
+    	//Send to voicemail
+    	ContentValues cv = new ContentValues();
+    	cv.put(RawContacts.SEND_TO_VOICEMAIL, 1);
+    	cr.update(RawContacts.CONTENT_URI, cv, RawContacts.CONTACT_ID + " IN "+formatListForSQLin(contactIds), new String[]{});
+    	
     	return numDeleted;
     }
     private static int insertData(ContentResolver cr, List<ContactData> data){
+    	for (Map.Entry<Long, Integer> entry : sendToVM.entrySet()){
+    		ContentValues cv = new ContentValues();
+        	cv.put(RawContacts.SEND_TO_VOICEMAIL, entry.getValue());
+        	cr.update(RawContacts.CONTENT_URI, cv, RawContacts.CONTACT_ID + " =?", new String[]{String.valueOf(entry.getKey())});
+    	}
+    	
     	ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
     	for (ContactData contact : data){
     		ops.add(ContentProviderOperation.newInsert(Data.CONTENT_URI)
@@ -133,30 +154,10 @@ public class ContactDAO {
     }
     
     private static Object getWithType(Cursor c, int index){
-    	Log.v("SAFEMODE - DAO typing","Began getWithType");
-//    	try{
-//    		short s = c.getShort(index);
-//    		if (s != 0) return new Short(s);
-//    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a short");}
-//    	try{
-//    		int i = c.getInt(index);
-//    		if (i != 0) return new Integer(i);
-//    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not an int");}
-//    	try{
-//    		long l = c.getInt(index);
-//    		if (l != 0) return new Long(l);
-//    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a long");}
-//    	try{
-//    		float f = c.getFloat(index);
-//    		if (f != 0) return new Float(f);
-//    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a float");}
-//    	try{
-//    		double d = c.getDouble(index);
-//    		if (d != 0) return new Double(d);
-//    	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a double");}
+    	//Turns out we only care whether or not it's a String because all numbers can be stored as Strings
     	try{
     		String s = c.getString(index);
-    		if (s != null && !"".equals(s)) return s; //Apparently if it isn't a String, then "0" is returned.  Why?
+    		if (s != null && !"".equals(s)) return s;
     	} catch (Exception ex){Log.v("SAFEMODE - DAO typing","It's not a String");}
     	
     	//Fine.  Deserialize it.
@@ -183,77 +184,6 @@ public class ContactDAO {
 		return result;
     }
     
-//    private static Object handleByteArray(Object obj){
-//    	if (obj instanceof byte[]) return deserializeBlob((byte[])obj);
-//    	else return obj;
-//    }
-//    private static Object deserializeBlob(byte[] blob){
-//    	if (blob == null) return null;
-//    	if (blob[blob.length-1] == 0){
-//	    	String strAttempt = new String(blob,0,blob.length-1);
-//	    	if (strAttempt.matches("[\\w\\s)(-]*")){ //This really is a String!
-//	    		if (strAttempt.matches("\\d+")){ //But it could also be a long
-//	    			//Return the most specific type possible
-//	    			long l; byte b; short s; int i;
-//	    			try{
-//	    				l = Long.parseLong(strAttempt);
-//	    			} catch(NumberFormatException ex){
-//	    				return strAttempt;
-//	    			}
-//	    			try{
-//	    				b = Byte.parseByte(strAttempt);
-//	    				if (b == l) return new Byte(b);
-//	    			} catch (NumberFormatException ex){}
-//    				try{
-//    					s = Short.parseShort(strAttempt);
-//    					if (s == l) return new Short(s);
-//    				} catch (NumberFormatException ex){}
-//    				try{
-//    					i = Integer.parseInt(strAttempt);
-//    					if (i == l) return new Integer(i);
-//    				} catch (NumberFormatException ex){}
-//
-//	    			return new Long(l);
-//	    		}
-//	    		else if (strAttempt.matches("\\d*[.]\\d+")){ //Or a double
-//	    			//Return the most specific type possible
-//	    			double d; float f;
-//	    			try{
-//	    				d = Double.parseDouble(strAttempt);
-//	    			} catch (NumberFormatException ex){
-//	    				return strAttempt;
-//	    			}
-//	    			try{
-//	    				f = Float.parseFloat(strAttempt);
-//	    				if (f == d) return new Float(f);
-//	    			} catch (NumberFormatException ex){}
-//	    			return new Double(d);
-//	    		}
-//	    		else return strAttempt;
-//	    	}
-//    	}
-//    	Object result = null;
-//    	ByteArrayInputStream bais = null;
-//    	ObjectInputStream ois = null;
-//    	try {
-//    		bais = new ByteArrayInputStream(blob);
-//			ois = new ObjectInputStream(bais);
-//			result = ois.readObject();
-//		} catch (StreamCorruptedException e) {
-//			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
-//			e.printStackTrace();
-//		} catch (ClassNotFoundException e) {
-//			Log.e("SAFEMODE - ContactDAO", "Failed to deserialize blob", e);
-//			e.printStackTrace();
-//		} finally {
-//			try{bais.close();ois.close();} catch(Throwable t){}
-//		}
-//		return result;
-//    }
-    
     private static void saveContacts(Activity activity, List<ContactData> contacts){
     	ByteArrayOutputStream baos = new ByteArrayOutputStream();
     	ObjectOutputStream oos = null;
@@ -262,6 +192,18 @@ public class ContactDAO {
 			oos = new ObjectOutputStream(baos);
 			oos.writeObject(contacts);
 			fos = activity.openFileOutput(contactSaveLoc, Activity.MODE_PRIVATE);
+			fos.write(baos.toByteArray());
+		} catch (IOException e) {
+			Log.e("SAFEMODE","Error writing contact list",e);
+			e.printStackTrace();
+		} finally{
+			try{fos.close();oos.close();} catch(Throwable t){}
+		}
+		baos = new ByteArrayOutputStream();
+		try {
+			oos = new ObjectOutputStream(baos);
+			oos.writeObject(sendToVM);
+			fos = activity.openFileOutput(contactVMSaveLoc, Activity.MODE_PRIVATE);
 			fos.write(baos.toByteArray());
 		} catch (IOException e) {
 			Log.e("SAFEMODE","Error writing contact list",e);
@@ -293,19 +235,47 @@ public class ContactDAO {
 		} finally{
 			try{ois.close();} catch(Throwable t){}
 		}
+		try {
+			ois = new ObjectInputStream(activity.openFileInput(contactVMSaveLoc));
+			sendToVM = (Map<Long, Integer>) ois.readObject();
+		} catch (StreamCorruptedException e) {
+			Log.e("SAFEMODE","Error reading contact list",e);
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			Log.e("SAFEMODE","Error reading contact list",e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.e("SAFEMODE","Error reading contact list",e);
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			Log.e("SAFEMODE","Error reading contact list",e);
+			e.printStackTrace();
+		} finally{
+			try{ois.close();} catch(Throwable t){}
+		}
 		return result;
     }
     
-    public static int hideContacts(Activity activity, List<Long> contactIds) throws DataAccessException{
+    public static List<ContactData> hideContacts(Activity activity, List<Long> contactIds) throws DataAccessException{
     	if (lastHid) throw new DataAccessException("Last batch of contacts was not revealed.  Cannot hide more.");
     	List<ContactData> dataList = getDataForContacts(activity.getContentResolver(), contactIds);
     	saveContacts(activity, dataList);
     	deleteData(activity.getContentResolver(), contactIds);
-    	return dataList.size();
+    	return dataList;
     }
     public static int revealContacts(Activity activity){
     	List<ContactData> dataList = readContacts(activity);
     	return insertData(activity.getContentResolver(), dataList);
+    }
+    
+    public static Collection<String> getPhoneNumbersForContacts(Collection<ContactData> allData){
+    	Collection<String> numbers = new TreeSet<String>();
+    	for (ContactData data : allData){
+    		if (data.getMimeType().equals(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)){
+    			numbers.add((String) data.getData(1));
+    		}
+    	}
+    	return numbers;
     }
     
     

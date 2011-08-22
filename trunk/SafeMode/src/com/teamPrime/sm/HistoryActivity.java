@@ -245,7 +245,7 @@ public class HistoryActivity extends ListActivity {
                 	
                 	if(historyItem instanceof DateItem){
                 		dateView 	= 	(TextView) v.findViewById(R.id.date_entry);
-                		dateView.setText(historyItem.getDate());
+                		if (dateView != null) dateView.setText(historyItem.getDate());
                 	}
                 	
                 	else{

@@ -14,15 +14,25 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.teamPrime.sm.HistoryActivity;
 import com.teamPrime.sm.data.ContactDAO;
 import com.teamPrime.sm.data.ContactDAO.DataAccessException;
+import com.teamPrime.sm.data.ContactData;
+import com.teamPrime.sm.history.BlockedCallItem;
+import com.teamPrime.sm.history.action.RedialAction;
 
 /**
  * BlackListIOTask takes care of calling ContactDAO in the
@@ -87,9 +97,17 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			 return contactIds;
 		 case HIDE_CONTACTS_MODE:
 			 readContactIds();
+			 
 			 int i = 0;
 			 try {
-				 i = ContactDAO.hideContacts(mActivity, contactIds);
+				 //Remove from database
+				 List<ContactData> blockedData = ContactDAO.hideContacts(mActivity, contactIds);
+				 
+				 //Register receiver to explicitly block outgoing calls
+				 IntentFilter filter = new IntentFilter();
+			     filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
+			     filter.setPriority(IntentFilter.SYSTEM_LOW_PRIORITY+1);
+				 mActivity.registerReceiver(new CallInterceptor(ContactDAO.getPhoneNumbersForContacts(blockedData)), filter);
 			 } catch (DataAccessException e) {
 				 Log.e("SAFEMODE - ContactsIO", "Failed to hide contacts",e);
 			 }
@@ -119,4 +137,38 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 				try{ois.close();}catch(Throwable t){}
 		 }
 	 }
+	 
+	 
+
+		public class CallInterceptor extends BroadcastReceiver{
+			private Collection<String> blockedNums;
+			
+			public CallInterceptor(Collection<String> blockedNums){
+				this.blockedNums = blockedNums;
+			}
+			@Override
+			public void onReceive(Context c, Intent i){
+				if (i.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)){
+					String phoneNumber = (String) i.getExtras().get(Intent.EXTRA_PHONE_NUMBER);
+					if (isBlocked(phoneNumber)){
+						setResultData(null); //Don't make the call
+						Toast.makeText(c, "Call blocked by SafeMode", Toast.LENGTH_SHORT).show();
+						RedialAction ra = new RedialAction(phoneNumber);
+						HistoryActivity.addItem(c, new BlockedCallItem(null, phoneNumber, ra));
+					}
+				}
+			}
+			
+			private boolean isBlocked(String number){
+				for (String blocked : blockedNums){
+					if (standardize(blocked).equals(standardize(number))) return true;
+				}
+				return false;
+			}
+			private String standardize(String number){
+				String result = number.replaceAll("[\\s()+-]+", ""); //Strip whitespace, (, ), +, or -
+				if (result.length() > 10) result = result.substring(result.length()-10); //Only get last 10 digits
+				return result;
+			}
+		}
 }
