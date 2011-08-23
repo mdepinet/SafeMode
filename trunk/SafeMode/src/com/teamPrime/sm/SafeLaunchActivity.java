@@ -214,11 +214,21 @@ public class SafeLaunchActivity extends Activity{
         switch (id) {
         case TIME_ID:
         	timeUpdated = false;
-            d = new TimePickerDialog(this, mTimeSetListener, hour, minute, false);
+        	try{
+        		d = new TimePickerDialog(this, mTimeSetListener, hour, minute, false);
+        	} catch (IllegalArgumentException ex){
+        		Calendar c = Calendar.getInstance();
+        		d = new TimePickerDialog(this, mTimeSetListener, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false);
+        	}
             break;
         case DATE_ID:
         	dateUpdated = false;
-        	d = new DatePickerDialog(this, mDateSetListener, year, month, day);
+        	try{
+        		d = new DatePickerDialog(this, mDateSetListener, year, month, day);
+        	} catch (IllegalArgumentException ex){
+        		Calendar c = Calendar.getInstance();
+        		d = new DatePickerDialog(this, mDateSetListener, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+        	}
         	break;
         case NOTICE_ID:
         	d = new AlertDialog.Builder(this).setMessage(getString(R.string.init_notice)).setCancelable(false)
@@ -251,7 +261,6 @@ public class SafeLaunchActivity extends Activity{
     }
     
     
-    //TODO
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.dashboard_onOff:
@@ -402,7 +411,7 @@ public class SafeLaunchActivity extends Activity{
 		onOffText.setText(getString(R.string.end_button));
 		blacklistText.setText(getString(R.string.view_blacklist));
         
-        // Register the Receiver to call the Unlock Page when phone unlocks
+        // Register the Receiver to show the SafeMode icon when phone unlocks
         IntentFilter mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Intent.ACTION_USER_PRESENT);
     	registerReceiver(mIntentReceiver, mIntentFilter);

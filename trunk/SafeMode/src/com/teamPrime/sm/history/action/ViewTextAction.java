@@ -9,6 +9,7 @@ import android.telephony.SmsManager;
 import com.teamPrime.sm.HistoryActivity;
 import com.teamPrime.sm.history.DialogCreator;
 import com.teamPrime.sm.history.HistAction;
+import com.teamPrime.sm.tasks.BlackListIOTask;
 
 public class ViewTextAction implements HistAction, DialogCreator {
 	private static final long serialVersionUID = 8408088951105555088L;
@@ -51,6 +52,9 @@ public class ViewTextAction implements HistAction, DialogCreator {
 			break;
 		case SmsManager.RESULT_ERROR_RADIO_OFF:
 			response = "This message failed to send because your radio was off.";
+			break;
+		case BlackListIOTask.SafeMode_BLOCKED_SMS_RESPONSE_CODE:
+			response = "This message was blocked by SafeMode";
 			break;
 		}
 		return new AlertDialog.Builder(activity).setMessage("Sent to: "+phoneNumber+"\n\nMessage: "+messageText+"\n\nStatus: "+response)

@@ -10,10 +10,9 @@
 package com.teamPrime.sm.tasks;
 
 
-import com.teamPrime.sm.SafeLaunchActivity;
-
 import android.os.AsyncTask;
-import android.util.Log;
+
+import com.teamPrime.sm.SafeLaunchActivity;
 
 /**
  * DateWaitTask allows SafeLaunchActivity to wait
@@ -64,9 +63,7 @@ public class DateWaitTask extends AsyncTask<Void, Integer, Void> {
 			dateUpdated |= mActivity.isDateUpdated();
 			try {
 				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				Log.e(null, "SAFEMODE", e);
-			}
+			} catch (InterruptedException e) {}
 		}
 		return null;
 	}
