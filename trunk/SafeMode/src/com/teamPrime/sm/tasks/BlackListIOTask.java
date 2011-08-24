@@ -63,6 +63,8 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	private int mode;
 	private List<Long> contactIds;
 	private Handler mHandler;
+	private CallInterceptor callInt;
+	private SmsInterceptor smsInt;
 	
 	public BlackListIOTask(Activity activity, List<Long> contactIds, int mode){
 		mActivity = activity;
@@ -121,10 +123,10 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 				 IntentFilter filter = new IntentFilter();
 			     filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
 			     filter.setPriority(IntentFilter.SYSTEM_LOW_PRIORITY+1);
-				 mActivity.registerReceiver(new CallInterceptor(blockedNums), filter);
+				 mActivity.registerReceiver(callInt = new CallInterceptor(blockedNums), filter);
 				 
 				 //Register content observer to explicitly block outgoing sms messages
-				 mActivity.getContentResolver().registerContentObserver(Uri.parse(smsUri),true, new SmsInterceptor(mHandler,blockedNums));
+				 mActivity.getContentResolver().registerContentObserver(Uri.parse(smsUri),true, smsInt = new SmsInterceptor(mHandler,blockedNums));
 			 } catch (DataAccessException e) {
 				 Log.e("SAFEMODE - ContactsIO", "Failed to hide contacts",e);
 			 }
@@ -133,6 +135,8 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			 return result;
 		 case REVEAL_CONTACTS_MODE:
 			 int j = ContactDAO.revealContacts(mActivity);
+			 if (callInt != null) mActivity.unregisterReceiver(callInt);
+			 if (smsInt != null) mActivity.getContentResolver().unregisterContentObserver(smsInt);
 			 List<Long> result2 = new LinkedList<Long>();
 			 result2.add((long) j);
 			 return result2;
@@ -179,6 +183,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 		
 		public class SmsInterceptor extends ContentObserver{
 			private Collection<String> blockedNums;
+			private final long startTime = System.currentTimeMillis(); //Don't delete messages sent before this
 			
 			public SmsInterceptor(Handler handler, Collection<String> blockedNums) {
 				super(handler);
@@ -188,7 +193,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			@Override
 			public void onChange(boolean selfChange){
 				Uri uriSMSURI = Uri.parse(smsUri);
-				Cursor cur = mActivity.getContentResolver().query(uriSMSURI, new String[]{"protocol","address","_id","body"}, null, null, null);
+				Cursor cur = mActivity.getContentResolver().query(uriSMSURI, new String[]{"protocol","address","_id","body","date"}, null, null, null);
 				while(cur.moveToNext()){
 					String protocol = cur.getString(0);
 					String number = cur.getString(1);
@@ -196,6 +201,8 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 					if (isBlocked(number, blockedNums)){
 						String ID = cur.getString(2);
 						String body = cur.getString(3);
+						long recTime = cur.getLong(4);
+						if (recTime < startTime) continue;
 						mActivity.getContentResolver().delete(uriSMSURI, "_id=?", new String[]{ID}); //Don't send it hopefully
 						Toast.makeText(mActivity, "SMS blocked by SafeMode", Toast.LENGTH_SHORT).show();
 						ViewTextAction vta = new ViewTextAction(number, body, SafeMode_BLOCKED_SMS_RESPONSE_CODE);
