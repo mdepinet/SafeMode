@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.telephony.SmsManager;
 import android.widget.Toast;
 
@@ -17,10 +18,12 @@ public class ResendTextAction implements HistAction{
 	
 	private String messageText;
 	private String phoneNumber;
+	private boolean ignoreSafeMode;
 	
-	public ResendTextAction(String phoneNumber, String messageText){
+	public ResendTextAction(String phoneNumber, String messageText, boolean ignoreSafeMode){
 		this.phoneNumber = phoneNumber;
 		this.messageText = messageText;
+		this.ignoreSafeMode = ignoreSafeMode;
 	}
 	
 	public void setMessageText(String messageText) {
@@ -29,8 +32,18 @@ public class ResendTextAction implements HistAction{
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
+	public void setIgnoreSafeMode(boolean ignoreSafeMode) {
+		this.ignoreSafeMode = ignoreSafeMode;
+	}
 	
 	public void execute(final HistoryActivity activity){
+		SharedPreferences data = activity.getSharedPreferences("SAFEMODE", Context.MODE_PRIVATE);
+		boolean onState = data.getBoolean("onState", true);
+		if (onState && !ignoreSafeMode){
+			Toast.makeText(activity, "Cannot resend while SafeMode is on", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
 		String SENT = "SMS_SENT";
         String DELIVERED = "SMS_DELIVERED";
  

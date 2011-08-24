@@ -206,7 +206,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 						mActivity.getContentResolver().delete(uriSMSURI, "_id=?", new String[]{ID}); //Don't send it hopefully
 						Toast.makeText(mActivity, "SMS blocked by SafeMode", Toast.LENGTH_SHORT).show();
 						ViewTextAction vta = new ViewTextAction(number, body, SafeMode_BLOCKED_SMS_RESPONSE_CODE);
-						ResendTextAction rta = new ResendTextAction(number, body);
+						ResendTextAction rta = new ResendTextAction(number, body, false);
 						HistoryActivity.addItem(mActivity, new BlockedTextItem(null,number,vta,rta));
 						break; //Don't delete all the messages that have been sent!
 					}

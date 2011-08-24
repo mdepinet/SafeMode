@@ -329,7 +329,7 @@ public class SafeLaunchActivity extends Activity{
                 }
                 //Add to history
                 HistAction viewText = new ViewTextAction(phoneNumber, message, getResultCode());
-                HistAction resendText = new ResendTextAction(phoneNumber, message);
+                HistAction resendText = new ResendTextAction(phoneNumber, message, true);
                 HistoryItem item = new FindMeItem(null, phoneNumber, viewText, resendText);
                 HistoryActivity.addItem(getBaseContext(), item);
             }
