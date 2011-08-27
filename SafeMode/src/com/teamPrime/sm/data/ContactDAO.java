@@ -33,6 +33,7 @@ import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
 import android.util.Log;
@@ -48,7 +49,7 @@ import android.util.Log;
 public class ContactDAO {
 	private static final String contactSaveLoc = "SAFEMODE_contactData.bin";
 	private static final String contactVMSaveLoc = "SAFEMODE_sendToVM.bin";
-	private static Map<Long, Integer> sendToVM = new HashMap<Long, Integer>();
+	private static Map<Long, Integer> sendToVM = new HashMap<Long, Integer>(); //This will now be contact ids (not raw contact ids)
 	private static boolean lastHid = false;
 	private static final String supportedDataTypes = "(\'"+ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE+"\',"
 														+"\'"+ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE+"\',"
@@ -58,10 +59,16 @@ public class ContactDAO {
     private static List<ContactData> getDataForContacts(ContentResolver cr, List<Long> contactIds){
     	List<ContactData> dataList = new LinkedList<ContactData>();
     	sendToVM.clear();
-    	 Cursor rawCursor = cr.query(RawContacts.CONTENT_URI, new String[]{RawContacts._ID, RawContacts.SEND_TO_VOICEMAIL},
+    	 Cursor rawCursor = cr.query(RawContacts.CONTENT_URI, new String[]{RawContacts._ID, RawContacts.CONTACT_ID},
     	          RawContacts.CONTACT_ID + " IN "+formatListForSQLin(contactIds), new String[]{}, null);
     	 while (rawCursor.moveToNext()){
-    		 sendToVM.put(rawCursor.getLong(0), rawCursor.getInt(1));
+    		 if (!sendToVM.containsKey(rawCursor.getLong(1))){
+	    		 Cursor contCursor = cr.query(Contacts.CONTENT_URI, new String[]{Contacts._ID, Contacts.SEND_TO_VOICEMAIL},
+	    				 Contacts._ID+" =? ", new String[]{rawCursor.getString(1)}, null);
+	    		 contCursor.moveToFirst();
+	    		 sendToVM.put(contCursor.getLong(0), contCursor.getInt(1));
+	    		 contCursor.close();
+    		 }
     		 Cursor dataCursor =  cr.query(Data.CONTENT_URI,
     				 new String[] {Data.MIMETYPE, Data.RAW_CONTACT_ID, Data.IS_PRIMARY, Data.IS_SUPER_PRIMARY, Data.DATA_VERSION,
     				 	Data.DATA1, Data.DATA2, Data.DATA3, Data.DATA4, Data.DATA5, Data.DATA6},
@@ -91,16 +98,16 @@ public class ContactDAO {
     	
     	//Send to voicemail
     	ContentValues cv = new ContentValues();
-    	cv.put(RawContacts.SEND_TO_VOICEMAIL, 1);
-    	cr.update(RawContacts.CONTENT_URI, cv, RawContacts.CONTACT_ID + " IN "+formatListForSQLin(contactIds), new String[]{});
+    	cv.put(Contacts.SEND_TO_VOICEMAIL, 1);
+    	cr.update(Contacts.CONTENT_URI, cv, Contacts._ID + " IN "+formatListForSQLin(contactIds), new String[]{});
     	
     	return numDeleted;
     }
     private static int insertData(ContentResolver cr, List<ContactData> data){
     	for (Map.Entry<Long, Integer> entry : sendToVM.entrySet()){
     		ContentValues cv = new ContentValues();
-        	cv.put(RawContacts.SEND_TO_VOICEMAIL, entry.getValue());
-        	cr.update(RawContacts.CONTENT_URI, cv, RawContacts.CONTACT_ID + " =?", new String[]{String.valueOf(entry.getKey())});
+        	cv.put(Contacts.SEND_TO_VOICEMAIL, entry.getValue());
+        	cr.update(Contacts.CONTENT_URI, cv, Contacts._ID + " =?", new String[]{String.valueOf(entry.getKey())});
     	}
     	
     	ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
