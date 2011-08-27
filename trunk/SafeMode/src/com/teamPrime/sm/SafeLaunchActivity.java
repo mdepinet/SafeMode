@@ -266,7 +266,9 @@ public class SafeLaunchActivity extends Activity{
             case R.id.dashboard_onOff:
             	if (!applicationOnState) turnOn();
             	else{
-            		startActivity(new Intent(getApplicationContext(), MathStopActivity.class));
+            		int numAttempts = getSharedPreferences("SAFEMODE",MODE_PRIVATE).getInt("failedAttempts", 0);
+            		if (numAttempts > MathStopActivity.MAX_ATTEMPTS) Toast.makeText(getApplicationContext(), "Too many failed attempts!", Toast.LENGTH_SHORT).show();
+            		else startActivity(new Intent(getApplicationContext(), MathStopActivity.class));
             	}
             	break;
             case R.id.dashboard_blacklist:
@@ -458,6 +460,10 @@ public class SafeLaunchActivity extends Activity{
 		String ns = Context.NOTIFICATION_SERVICE;
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 		mNotificationManager.cancel(LockedNotificationId);
+		
+		SharedPreferences.Editor editor = getSharedPreferences("SAFEMODE",MODE_PRIVATE).edit();
+		editor.putInt("failedAttempts", 0);
+		editor.commit();
 		
 		HistoryActivity.addItem(getApplicationContext(), new SafeModeOnOffItem(false, null, null));
 
