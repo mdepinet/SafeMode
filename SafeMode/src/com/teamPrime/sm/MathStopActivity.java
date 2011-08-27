@@ -23,11 +23,13 @@ import android.widget.Toast;
 
 
 public class MathStopActivity extends Activity{
+	public static final int MAX_ATTEMPTS = 3;
 	
 	private TextView question;
 	private TextView answer;
 	private int corAnswer;
 	private boolean onState;
+	private int numAttempts;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,7 +40,12 @@ public class MathStopActivity extends Activity{
         answer = (TextView) findViewById(R.id.answerScreenStop);
         SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
         onState = data.getBoolean("onState", true);
+        numAttempts = data.getInt("failedAttempts", 0);
         if (!onState) finish(); //Don't even run if SAFEMODE is off.  This should return the user to the main screen
+        if (numAttempts >= MAX_ATTEMPTS){
+        	Toast.makeText(getBaseContext(), "Too many failed attempts!", Toast.LENGTH_SHORT).show();
+        	finish();
+        }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
     }
 
@@ -75,12 +82,18 @@ public class MathStopActivity extends Activity{
 					finish();
     			}
     			else {
-    				Toast.makeText(getApplicationContext(), getString(R.string.wrong_ans), Toast.LENGTH_SHORT).show();
+    				SharedPreferences.Editor editor = getSharedPreferences("SAFEMODE", MODE_PRIVATE).edit();
+    				editor.putInt("failedAttempts", ++numAttempts);
+    				editor.commit();
+    				Toast.makeText(getApplicationContext(), getString(R.string.wrong_ans) + "\n"+(MAX_ATTEMPTS-numAttempts)+" attempt"+(MAX_ATTEMPTS-numAttempts != 1 ? "s" : "")+" remaining", Toast.LENGTH_SHORT).show();
     				finish();
     			}
     		}
     		catch (NumberFormatException e) {
-    			Toast.makeText(getApplicationContext(), getString(R.string.wrong_ans), Toast.LENGTH_SHORT).show();
+    			SharedPreferences.Editor editor = getSharedPreferences("SAFEMODE", MODE_PRIVATE).edit();
+				editor.putInt("failedAttempts", ++numAttempts);
+				editor.commit();
+    			Toast.makeText(getApplicationContext(), getString(R.string.wrong_ans) + "\n"+(MAX_ATTEMPTS-numAttempts)+" attempt"+(MAX_ATTEMPTS-numAttempts != 1 ? "s" : "")+" remaining", Toast.LENGTH_SHORT).show();
     			finish();
     			
     		}
