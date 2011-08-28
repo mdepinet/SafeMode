@@ -1,5 +1,5 @@
 /**
- * Copyright © 2011 Boris Treskunov
+ * Copyright © 2011 Mike Depinet
  * All rights reserved
  * 
  * This file is distributed as a part of the SAFEMODE application for
@@ -10,6 +10,9 @@
 package com.teamPrime.sm;
 
 import java.util.Random;
+
+import com.teamPrime.sm.history.SafeModeOnOffItem;
+import com.teamPrime.sm.tasks.BlackListIOTask;
 
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -30,6 +33,7 @@ public class MathStopActivity extends Activity{
 	private int corAnswer;
 	private boolean onState;
 	private int numAttempts;
+	private boolean fullOff;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +58,8 @@ public class MathStopActivity extends Activity{
     @Override
    protected void onResume() {
     	super.onResume();
-        int mult1 = MathUtils.genSmallRandom();
+    	fullOff = getIntent().getBooleanExtra("fullOff", false);
+        int mult1 = fullOff ? MathUtils.genLargeRandom() : MathUtils.genSmallRandom();
         int mult2 = MathUtils.genLargeRandom();
         String mathQuestion = String.format(getString(R.string.math_question)+" %d * %d?", mult1, mult2);
     	question.setText(mathQuestion);
@@ -69,14 +74,22 @@ public class MathStopActivity extends Activity{
     			if (drunkAns == corAnswer) {
 					SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
 					SharedPreferences.Editor editor = data.edit();
-					editor.putBoolean("onState", false);
-					onState = false;
+					if (fullOff){
+						editor.putBoolean("onState", false);
+						onState = false;
+					}
+					else{
+						editor.putBoolean("tempOff", true);
+					}
 					editor.commit();
 					
-					// get rid of notifications
-					String ns = Context.NOTIFICATION_SERVICE;
-					NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-					mNotificationManager.cancel(SafeLaunchActivity.LockedNotificationId);
+					if (!fullOff){
+				    	BlackListIOTask ioTask = new BlackListIOTask(this,null,BlackListIOTask.END_CALL_TEXT_BLOCKING);
+				    	ioTask.execute((Void[])(null));
+				    	NotificationManager notMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+						notMgr.cancel(SafeLaunchActivity.LockedNotificationId);
+				    	HistoryActivity.addItem(getApplicationContext(), new SafeModeOnOffItem(false, true, null, null));
+					}
 					
 					Toast.makeText(getApplicationContext(), getString(R.string.turn_off), Toast.LENGTH_SHORT).show();
 					finish();

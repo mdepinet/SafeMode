@@ -10,7 +10,7 @@
     <string name="remove_button">Eliminar</string>
     <string name="select_all_button">Añadir Todos</string>
     <string name="notif_locked_message">Contactos protegidos por SafeMode</string>
-    <string name="notif_click_here">Haga clic aquí para desactivar SafeMode</string>
+    <string name="notif_click_here">Haga clic aquí para desactivar temporalmente SafeMode</string>
     <string name="notif_locked_short">SafeMode en</string>
     <string name="edit_blacklist">Editar la Lista Nigra</string>
     <string name="view_blacklist">Ver la Lista Nigra</string>
