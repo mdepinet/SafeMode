@@ -71,23 +71,11 @@ public class SafeLaunchActivity extends Activity{
 	private boolean timeUpdated, dateUpdated = false;
 	private DateWaitTask mTask;
 	private boolean allowTimer = false;
+	private static boolean timerAppendStar = false;
 	
 	private BlackListIOTask ioTask;
 	
 	public static final int LockedNotificationId = 1;
-	
-	//Broadcast Receiver (for notification)
-	private BroadcastReceiver mIntentReceiver = null;
-	
-	//Randomly generated salt and deviceId for licensing stuff
-//	private final byte[] SALT = new byte[] {-62,-74,107,-13,110,-84,-29,121,33,-107,-95,7,70,-15,-112,123,20,-21,-62,59};
-//	private String deviceId = null;
-//	private LicenseChecker mChecker = null;
-//	private final String PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAg8NGOO0Vpkyhq+R/K5iQ4zk7SFpHQqfxUTJ"
-//		+"yesFk3ZljkR4dy3U3VyU5Pc8lyOr1Z8ScasRPe37kgAcybd+Mw3UPh9+nZa27DdUZ9U1HwMvCJ0bGl+18hrrjsNNuO/1mUG7XM8IQ1Qm58ngb"
-//		+"Jh197mBnvNiNLd+PFeTupvQyPffzciBfGQXflZArUY1pvxrraGDFMB97KdKD17sk+LnYfQ5T9dQnsCPFNEnV0bTyG6tyOXc/KoPOk8O2kVjPg"
-//		+"UTKrgq60LOGo8yz8uyUaDxPDvDKoB2pYTdmnq50B/cnc34uOR/NHBc7nYsQs6HC8UYfsYqRQKnsAV/kWkNtkxOrbwIDAQAB";
-//	private LicenseCheckerCallback mLicenseCallback = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -98,17 +86,7 @@ public class SafeLaunchActivity extends Activity{
         onOffButton = (ImageButton)findViewById(R.id.dashboard_onOff);
         onOffText = (TextView)findViewById(R.id.dashboard_onOff_text);
         blacklistText = (TextView)findViewById(R.id.dashboard_blacklist_text);
-        
-//		if (deviceId == null) deviceId = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-//		mLicenseCallback = new SafeModeLLC();
-//		mChecker = new LicenseChecker(this,
-//				new ServerManagedPolicy(this,
-//		            new AESObfuscator(SALT, getPackageName(), deviceId)),
-//		            PUBLIC_KEY  // Your public licensing key.
-//		        );
-//		mChecker.checkAccess(mLicenseCallback);
 
-        
         mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
         	@Override
             public void onTimeSet(TimePicker view, int hourOfDay, int min) {
@@ -129,29 +107,6 @@ public class SafeLaunchActivity extends Activity{
 				if (timeUpdated) handleTimes(false,false);
 			}
 		};
-		
-		mIntentReceiver = new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
-		        boolean onState = data.getBoolean("onState", false);
-				if(onState) {
-					int icon = R.drawable.locked;
-					CharSequence tickerText = getString(R.string.notif_locked_short);
-					long when = System.currentTimeMillis();
-					
-					Notification not = new Notification(icon, tickerText, when);
-					not.setLatestEventInfo(context, 
-										  getString(R.string.notif_locked_message), 
-										  getString(R.string.notif_click_here), 
-										  PendingIntent.getActivity(context, 0, new Intent(getApplicationContext(), MathStopActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK)
-										  );
-					String ns = Context.NOTIFICATION_SERVICE;
-					NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-					mNotificationManager.notify(LockedNotificationId, not);
-				}
-			}
-		};
     }
     
     @Override
@@ -162,6 +117,7 @@ public class SafeLaunchActivity extends Activity{
         offTime = data.getLong("offTime", System.currentTimeMillis());
         handleTimes(true,true);
         seenNotice = data.getBoolean("seenNotice",false);
+        boolean tempOff = data.getBoolean("tempOff", false);
         data = getSharedPreferences(SafeLaunchActivity.class.getName(), MODE_PRIVATE);
         privateOnState = data.getBoolean("onState", false);
         
@@ -172,7 +128,7 @@ public class SafeLaunchActivity extends Activity{
         blacklistText.setText(getString(applicationOnState ? R.string.view_blacklist : R.string.edit_blacklist));
         
         if (applicationOnState){
-        	if (privateOnState){
+        	if (privateOnState){ //SafeMode is on and we know it
 	        	long timeLeft = 0;
 	        	timeLeft = offTime - System.currentTimeMillis();
 	        	allowTimer = true;
@@ -183,6 +139,8 @@ public class SafeLaunchActivity extends Activity{
         	else{ //If the application was started from a different activity
         		turnOn();
         	}
+        	
+        	timerAppendStar = tempOff;
         }
         else{
         	if (!privateOnState){
@@ -249,7 +207,6 @@ public class SafeLaunchActivity extends Activity{
     @Override
     public void onDestroy(){
     	super.onDestroy();
-//    	mChecker.onDestroy();
     	if (mTask != null) mTask.cancel(true);
     	if (ioTask != null) ioTask.cancel(true);
     }
@@ -268,7 +225,11 @@ public class SafeLaunchActivity extends Activity{
             	else{
             		int numAttempts = getSharedPreferences("SAFEMODE",MODE_PRIVATE).getInt("failedAttempts", 0);
             		if (numAttempts > MathStopActivity.MAX_ATTEMPTS) Toast.makeText(getApplicationContext(), "Too many failed attempts!", Toast.LENGTH_SHORT).show();
-            		else startActivity(new Intent(getApplicationContext(), MathStopActivity.class));
+            		else{
+            			Intent i = new Intent(getApplicationContext(), MathStopActivity.class);
+            			i.putExtra("fullOff", true);
+            			startActivity(i);
+            		}
             	}
             	break;
             case R.id.dashboard_blacklist:
@@ -335,25 +296,7 @@ public class SafeLaunchActivity extends Activity{
                 HistoryItem item = new FindMeItem(null, phoneNumber, viewText, resendText);
                 HistoryActivity.addItem(getBaseContext(), item);
             }
-        }, new IntentFilter(SENT));
- 
-        //---when the SMS has been delivered---  do we want this?
-        /**registerReceiver(new BroadcastReceiver(){
-            @Override
-            public void onReceive(Context arg0, Intent arg1) {
-                switch (getResultCode())
-                {
-                    case Activity.RESULT_OK:
-                        Toast.makeText(getBaseContext(), "SMS delivered", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        Toast.makeText(getBaseContext(), "SMS not delivered", 
-                                Toast.LENGTH_SHORT).show();
-                        break;                        
-                }
-            }
-        }, new IntentFilter(DELIVERED));*/        
+        }, new IntentFilter(SENT));    
  
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);        
@@ -413,11 +356,7 @@ public class SafeLaunchActivity extends Activity{
 		onOffText.setText(getString(R.string.end_button));
 		blacklistText.setText(getString(R.string.view_blacklist));
         
-        // Register the Receiver to show the SafeMode icon when phone unlocks
-        IntentFilter mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(Intent.ACTION_USER_PRESENT);
-    	registerReceiver(mIntentReceiver, mIntentFilter);
-		Log.v("SAFEMODE - Receiver", "Finished registration of broadcast receiver");
+        showIcon();
         
     	long timeLeft = offTime - System.currentTimeMillis();
     	allowTimer = true;
@@ -425,19 +364,6 @@ public class SafeLaunchActivity extends Activity{
     	timer = new SimpleTimer(timeLeft,1000);
         timer.start();
         timeUpdated = dateUpdated = false;
-        
-		int icon = R.drawable.locked;
-		CharSequence tickerText = getString(R.string.notif_locked_short);
-		long when = System.currentTimeMillis();
-		Notification not = new Notification(icon, tickerText, when);
-		not.setLatestEventInfo(getApplicationContext(), 
-							  getString(R.string.notif_locked_message), 
-							  getString(R.string.notif_click_here), 
-							  PendingIntent.getActivity(getApplicationContext(), 0, new Intent(getApplicationContext(), MathStopActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK)
-							  );
-		String ns = Context.NOTIFICATION_SERVICE;
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-		mNotificationManager.notify(LockedNotificationId, not);
 		
 		HistoryActivity.addItem(getApplicationContext(), new SafeModeOnOffItem(true, null, null));
     }
@@ -456,20 +382,33 @@ public class SafeLaunchActivity extends Activity{
         onOffText.setText(getString(R.string.start_button));
         blacklistText.setText(getString(R.string.edit_blacklist));
 
-        try{unregisterReceiver(mIntentReceiver);}catch(Throwable t){}
-		String ns = Context.NOTIFICATION_SERVICE;
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-		mNotificationManager.cancel(LockedNotificationId);
+        hideIcon();
 		
 		SharedPreferences.Editor editor = getSharedPreferences("SAFEMODE",MODE_PRIVATE).edit();
 		editor.putInt("failedAttempts", 0);
 		editor.commit();
 		
 		HistoryActivity.addItem(getApplicationContext(), new SafeModeOnOffItem(false, null, null));
-
     }
     
-    //Getters and Setters for time related variables
+    private void showIcon(){
+		Notification not = new Notification(R.drawable.locked, getString(R.string.notif_locked_short), System.currentTimeMillis());
+		not.setLatestEventInfo(getApplicationContext(), getString(R.string.notif_locked_message), getString(R.string.notif_click_here),
+							  PendingIntent.getActivity(getApplicationContext(), 0, new Intent(getApplicationContext(), MathStopActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK));
+		not.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
+		NotificationManager notMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		notMgr.notify(LockedNotificationId, not);
+    }
+    private void hideIcon(){
+    	NotificationManager notMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		notMgr.cancel(LockedNotificationId);
+    }
+    
+    public static void setTimerAppendStar(boolean starAppended) {
+		timerAppendStar = starAppended;
+	}
+
+	//Getters and Setters for time related variables
     public int getHour() {return hour;}
 	public int getMinute() {return minute;}
 	public int getYear() {return year;}
@@ -495,7 +434,7 @@ public class SafeLaunchActivity extends Activity{
     	}
 		@Override
 		public void onFinish() {
-			onOffText.setText(new Date(0).toString().substring(11,19));
+			onOffText.setText(new Date(0).toString().substring(11,19) + (timerAppendStar ? "*" : ""));
 			turnOff();
 		}
 		@Override
@@ -509,30 +448,12 @@ public class SafeLaunchActivity extends Activity{
 			millisLeft %= 60000;
 			int seconds = (int) (millisLeft/1000);
 			String dayString = days == 0 ? "" : ""+days+"days ";
-			onOffText.setText(dayString+pad(hours)+":"+pad(minutes)+":"+pad(seconds));
+			onOffText.setText(dayString+pad(hours)+":"+pad(minutes)+":"+pad(seconds) + (timerAppendStar ? "*" : ""));
 		}
 		private String pad(int input){
 			if (input < 10) return "0"+input;
 			else return ""+input;
 		}
     }
-	
-//	private class SafeModeLLC implements LicenseCheckerCallback{
-//		@Override
-//		public void allow() {
-//			//Proceed as usual
-//			Log.i("SAFEMODE","Licensing success");
-//		}
-//		@Override
-//		public void dontAllow() {
-//			Toast.makeText(getApplicationContext(), "You don't have a license. Sorry, bro", Toast.LENGTH_SHORT).show();
-//			finish();
-//		}
-//		@Override
-//		public void applicationError(ApplicationErrorCode errorCode) {
-//			Toast.makeText(getApplicationContext(), "Failed to load license.\nServer returned: "+errorCode, Toast.LENGTH_SHORT).show();
-//			finish();
-//		}
-//	}
     
 }

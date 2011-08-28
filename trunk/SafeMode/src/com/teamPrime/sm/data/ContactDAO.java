@@ -29,6 +29,7 @@ import android.app.Activity;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.os.RemoteException;
@@ -191,7 +192,7 @@ public class ContactDAO {
 		return result;
     }
     
-    private static void saveContacts(Activity activity, List<ContactData> contacts){
+    private static void saveContacts(Context activity, List<ContactData> contacts){
     	ByteArrayOutputStream baos = new ByteArrayOutputStream();
     	ObjectOutputStream oos = null;
     	FileOutputStream fos = null;
@@ -221,7 +222,7 @@ public class ContactDAO {
     }
     
     @SuppressWarnings("unchecked")
-	private static List<ContactData> readContacts(Activity activity){
+	private static List<ContactData> readContacts(Context activity){
     	List<ContactData> result = null;
     	ObjectInputStream ois = null;
     	try {
@@ -263,14 +264,14 @@ public class ContactDAO {
 		return result;
     }
     
-    public static List<ContactData> hideContacts(Activity activity, List<Long> contactIds) throws DataAccessException{
+    public static List<ContactData> hideContacts(Context activity, List<Long> contactIds) throws DataAccessException{
     	if (lastHid) throw new DataAccessException("Last batch of contacts was not revealed.  Cannot hide more.");
     	List<ContactData> dataList = getDataForContacts(activity.getContentResolver(), contactIds);
     	saveContacts(activity, dataList);
     	deleteData(activity.getContentResolver(), contactIds);
     	return dataList;
     }
-    public static int revealContacts(Activity activity){
+    public static int revealContacts(Context activity){
     	List<ContactData> dataList = readContacts(activity);
     	return insertData(activity.getContentResolver(), dataList);
     }

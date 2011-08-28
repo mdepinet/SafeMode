@@ -53,25 +53,28 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	public static final int READ_IDS_MODE = 1;
 	public static final int HIDE_CONTACTS_MODE = 2; //Note that this must also read ids
 	public static final int REVEAL_CONTACTS_MODE = 3;
+	public static final int RESUME_CALL_TEXT_BLOCKING = 4;
+	public static final int END_CALL_TEXT_BLOCKING = 5;
 	
 	public static final int SafeMode_BLOCKED_SMS_RESPONSE_CODE = 101;
 	
 	private static final String fileName = "SAFEMODE_contactIds.bin";
 	private static final String smsUri = "content://sms";
 	
-	private Activity mActivity;
+	private Context mActivity;
 	private int mode;
 	private List<Long> contactIds;
 	private Handler mHandler;
 	private CallInterceptor callInt;
 	private SmsInterceptor smsInt;
+	private boolean running = true;
 	
-	public BlackListIOTask(Activity activity, List<Long> contactIds, int mode){
+	public BlackListIOTask(Context activity, List<Long> contactIds, int mode){
 		mActivity = activity;
 		this.contactIds = contactIds;
 		this.mode = mode;
 	}
-	public void setActivity(Activity activity){
+	public void setActivity(Context activity){
 		mActivity = activity;
 	}
 	
@@ -118,15 +121,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 				 //Remove from database
 				 List<ContactData> blockedData = ContactDAO.hideContacts(mActivity, contactIds);
 				 Collection<String> blockedNums = ContactDAO.getPhoneNumbersForContacts(blockedData);
-				 
-				 //Register receiver to explicitly block outgoing calls
-				 IntentFilter filter = new IntentFilter();
-			     filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
-			     filter.setPriority(IntentFilter.SYSTEM_LOW_PRIORITY+1);
-				 mActivity.registerReceiver(callInt = new CallInterceptor(blockedNums), filter);
-				 
-				 //Register content observer to explicitly block outgoing sms messages
-				 mActivity.getContentResolver().registerContentObserver(Uri.parse(smsUri),true, smsInt = new SmsInterceptor(mHandler,blockedNums));
+				 startCallTextBlocking(blockedNums);
 			 } catch (DataAccessException e) {
 				 Log.e("SAFEMODE - ContactsIO", "Failed to hide contacts",e);
 			 }
@@ -140,6 +135,12 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			 List<Long> result2 = new LinkedList<Long>();
 			 result2.add((long) j);
 			 return result2;
+		 case RESUME_CALL_TEXT_BLOCKING:
+			 running = true;
+			 return null;
+		 case END_CALL_TEXT_BLOCKING:
+			 running = false;
+			 return null;
 		 }
 		 return null;
 	 }
@@ -159,6 +160,17 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 		 }
 	 }
 	 
+	 private void startCallTextBlocking(Collection<String> blockedNums){
+		 //Register receiver to explicitly block outgoing calls
+		 IntentFilter filter = new IntentFilter();
+	     filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
+	     filter.setPriority(IntentFilter.SYSTEM_LOW_PRIORITY+1);
+		 mActivity.registerReceiver(callInt = new CallInterceptor(blockedNums), filter);
+		 
+		 //Register content observer to explicitly block outgoing sms messages
+		 mActivity.getContentResolver().registerContentObserver(Uri.parse(smsUri),true, smsInt = new SmsInterceptor(mHandler,blockedNums));
+	 }
+	 
 	 
 
 		public class CallInterceptor extends BroadcastReceiver{
@@ -169,6 +181,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			}
 			@Override
 			public void onReceive(Context c, Intent i){
+				if (!running) return;
 				if (i.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)){
 					String phoneNumber = (String) i.getExtras().get(Intent.EXTRA_PHONE_NUMBER);
 					if (isBlocked(phoneNumber, blockedNums)){
@@ -192,6 +205,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			
 			@Override
 			public void onChange(boolean selfChange){
+				if (!running) return;
 				Uri uriSMSURI = Uri.parse(smsUri);
 				Cursor cur = mActivity.getContentResolver().query(uriSMSURI, new String[]{"protocol","address","_id","body","date"}, null, null, null);
 				while(cur.moveToNext()){
