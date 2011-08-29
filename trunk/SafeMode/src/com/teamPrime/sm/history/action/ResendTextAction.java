@@ -60,7 +60,7 @@ public class ResendTextAction implements HistAction{
                 switch (getResultCode())
                 {
                     case Activity.RESULT_OK:
-                        Toast.makeText(activity.getBaseContext(), "Location sent to " + "contact name...", 
+                        Toast.makeText(activity.getBaseContext(), "Text resent", 
                                 Toast.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_GENERIC_FAILURE:

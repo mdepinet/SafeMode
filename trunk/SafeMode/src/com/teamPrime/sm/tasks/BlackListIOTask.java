@@ -64,10 +64,12 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	private Context mActivity;
 	private int mode;
 	private List<Long> contactIds;
-	private Handler mHandler;
-	private CallInterceptor callInt;
-	private SmsInterceptor smsInt;
-	private boolean running = true;
+	
+	private static Handler mHandler;
+	private static CallInterceptor callInt;
+	private static SmsInterceptor smsInt;
+	private static boolean running = true;
+	private static Collection<String> blockedNums = null;
 	
 	public BlackListIOTask(Context activity, List<Long> contactIds, int mode){
 		mActivity = activity;
@@ -92,6 +94,11 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	 // Runs on main thread.
 	 @Override
 	 protected void onPostExecute(List<Long> result) {
+		 switch(mode){
+		 case HIDE_CONTACTS_MODE:
+			 startCallTextBlocking();
+			 break;
+		 }
 	 }
 	
 	 @Override
@@ -120,8 +127,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			 try {
 				 //Remove from database
 				 List<ContactData> blockedData = ContactDAO.hideContacts(mActivity, contactIds);
-				 Collection<String> blockedNums = ContactDAO.getPhoneNumbersForContacts(blockedData);
-				 startCallTextBlocking(blockedNums);
+				 blockedNums = ContactDAO.getPhoneNumbersForContacts(blockedData);
 			 } catch (DataAccessException e) {
 				 Log.e("SAFEMODE - ContactsIO", "Failed to hide contacts",e);
 			 }
@@ -141,8 +147,9 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 		 case END_CALL_TEXT_BLOCKING:
 			 running = false;
 			 return null;
+		 default:
+			 return null;
 		 }
-		 return null;
 	 }
 	 
 	 @SuppressWarnings("unchecked")
@@ -160,24 +167,21 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 		 }
 	 }
 	 
-	 private void startCallTextBlocking(Collection<String> blockedNums){
+	 private void startCallTextBlocking(){
 		 //Register receiver to explicitly block outgoing calls
 		 IntentFilter filter = new IntentFilter();
 	     filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
 	     filter.setPriority(IntentFilter.SYSTEM_LOW_PRIORITY+1);
-		 mActivity.registerReceiver(callInt = new CallInterceptor(blockedNums), filter);
+		 mActivity.registerReceiver(callInt = new CallInterceptor(), filter);
 		 
 		 //Register content observer to explicitly block outgoing sms messages
-		 mActivity.getContentResolver().registerContentObserver(Uri.parse(smsUri),true, smsInt = new SmsInterceptor(mHandler,blockedNums));
+		 mActivity.getContentResolver().registerContentObserver(Uri.parse(smsUri),true, smsInt = new SmsInterceptor(mHandler));
 	 }
 	 
 	 
 
 		public class CallInterceptor extends BroadcastReceiver{
-			private Collection<String> blockedNums;
-			
-			public CallInterceptor(Collection<String> blockedNums){
-				this.blockedNums = blockedNums;
+			public CallInterceptor(){
 			}
 			@Override
 			public void onReceive(Context c, Intent i){
@@ -195,12 +199,10 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 		}
 		
 		public class SmsInterceptor extends ContentObserver{
-			private Collection<String> blockedNums;
 			private final long startTime = System.currentTimeMillis(); //Don't delete messages sent before this
 			
-			public SmsInterceptor(Handler handler, Collection<String> blockedNums) {
+			public SmsInterceptor(Handler handler) {
 				super(handler);
-				this.blockedNums = blockedNums;
 			}
 			
 			@Override

@@ -16,7 +16,7 @@ public abstract class HistoryItem implements Serializable, DialogCreator{
 	private static final long serialVersionUID = -7064460474245401203L;
 	
 	public static final String DATE_FORMAT = "M/d/yyyy hh:mm aa";
-	protected Date creationDate = new Date();
+	private Date creationDate = new Date();
 	
 	protected List<HistAction> actions; //Actions available for this item
 	protected HistoryActivity activity; //Used for dialog creation

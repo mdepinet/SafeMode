@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.app.Dialog;
@@ -122,7 +122,6 @@ public class HistoryActivity extends ListActivity {
 		SharedPreferences data = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
 		items = new ArrayList<HistoryItem>();
 		int numItems = data.getInt("numItems", 0);
-		String lastDate = null;
 		for (int i = 1; i<=numItems; i++){
 			ObjectInputStream ois = null;
 			FileInputStream fis = null;
@@ -135,12 +134,6 @@ public class HistoryActivity extends ListActivity {
 					ois = new ObjectInputStream(bais);
 					HistoryItem hi = (HistoryItem) ois.readObject();
 					hi.setActivity(this);
-					if (lastDate == null || !lastDate.equals(hi.getDate())){
-						DateItem dateLabel = new DateItem(null,null);
-						lastDate = hi.getDate();
-						dateLabel.setCreationDate(new SimpleDateFormat(HistoryItem.DATE_FORMAT.substring(0,HistoryItem.DATE_FORMAT.indexOf(" "))).parse(hi.getDate()));
-						items.add(dateLabel);
-					}
 					items.add(hi);
 
 				}
@@ -150,40 +143,32 @@ public class HistoryActivity extends ListActivity {
 				Log.e("SafeMode","Failed to load items",ex);
 			} catch (IOException ex) {
 				Log.e("SafeMode","Failed to load items",ex);
-			} catch (ParseException ex) {
-				Log.e("SafeMode","Failed to load items",ex);
 			} finally {
 				try{fis.close();ois.close();} catch (Throwable t){}
 			}
 		}
+		sortAndDateItems();
 		if (items.isEmpty()) items.add(emptyItem);
 	}
 	
-//	private void saveItems(){
-//		if (items == null || items.isEmpty()) return;
-//		SharedPreferences data = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-//		Editor edit = data.edit();
-//		edit.putInt("numItems", items.size());
-//		int i = 0;
-//		items.remove(emptyItem);
-//		for (HistoryItem hi : items){
-//			ObjectOutputStream oos = null;
-//			FileOutputStream fos = null;
-//			try{
-//				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//				oos = new ObjectOutputStream(baos);
-//				hi.setActivity(null);
-//				oos.writeObject(hi);
-//				fos = openFileOutput(FILE_NAME_PREFIX+(++i), MODE_PRIVATE);
-//				fos.write(baos.toByteArray());
-//			} catch (IOException ex) {
-//				ex.printStackTrace();
-//			} finally{
-//				try{fos.close(); oos.close();} catch(Throwable t){}
-//			}
-//		}
-//		edit.commit();
-//	}
+	private void sortAndDateItems(){
+		Collections.sort(items,new Comparator<HistoryItem>(){
+			@Override
+			public int compare(HistoryItem hi1, HistoryItem hi2) {
+				return new Long(hi1.getCreationDate().getTime() - hi2.getCreationDate().getTime()).intValue();
+			}
+		});
+		long lastDate = 0;
+		for (int i = 0; i<items.size(); i++){
+			HistoryItem hi = items.get(i);
+			if (lastDate == 0 || hi.getCreationDate().getTime() - lastDate > 86400000){
+				DateItem dateLabel = new DateItem(null,null);
+				lastDate = hi.getCreationDate().getTime() - hi.getCreationDate().getTime()%86400000;
+				dateLabel.setCreationDate(hi.getCreationDate());
+				items.add(i++,dateLabel);
+			}
+		}
+	}
 	
 	public static int addItem(Context c, HistoryItem hi){
 		SharedPreferences data = c.getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
