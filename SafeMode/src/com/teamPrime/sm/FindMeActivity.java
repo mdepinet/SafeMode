@@ -99,8 +99,8 @@ public class FindMeActivity extends ListActivity {
 		  //GPS_Provider or NETWORK_PROVIDER?
 		  locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 		  
-		  //check if location update is taking too long, 35 seconds?
-	    new CountDownTimer(35000, 50000){
+		  //check if location update is taking too long, 24 seconds?
+	    new CountDownTimer(24000, 50000){
 			@Override
 			public void onFinish() {
 				if(!locationFound){
