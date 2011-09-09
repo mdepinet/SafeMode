@@ -36,6 +36,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -51,7 +53,6 @@ import com.teamPrime.sm.history.action.ViewTextAction;
 import com.teamPrime.sm.tasks.PopulateTaskFindMe;
 
 public class FindMeActivity extends ListActivity {
-	private static final int STARTING_CALLBACK_DIALOG_ID = -1;
 	private static final String SHARED_PREF_NAME = "SafeMode - FindMe";
 	
 	private ProgressDialog loading;
@@ -63,6 +64,8 @@ public class FindMeActivity extends ListActivity {
 	private List<Address> currentAddressList;
 	private Address currentAddress;
 	private String phoneNumber;
+	private String currentName;
+	private String enteredText;
 	private double currentLat;
 	private double currentLong;
 	private boolean locationFound;
@@ -82,6 +85,25 @@ public class FindMeActivity extends ListActivity {
 		locationManager		= 	(LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		locationFound		=	false;
 		mEditText			=	(EditText) findViewById(R.id.findme_contact_text);
+		getListView().setTextFilterEnabled(true);
+		mEditText.addTextChangedListener(new TextWatcher(){
+
+			@Override
+			public void afterTextChanged(Editable s) { 
+				enteredText = s.toString();
+				mArrayAdapter.getFilter().filter(enteredText);
+				Log.e("FindMeActivity", "afterTextChanged = " + s.toString() + ", enteredText = " + enteredText);
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) { }
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) { }
+		});
+		
 		instantiateList();
 	}
 
@@ -95,12 +117,13 @@ public class FindMeActivity extends ListActivity {
 				while (phones.moveToNext()) {
 
 				//find number associated with chosen contact
+				currentName = mArrayAdapter.getItem(position);
 				phoneNumber = phones.getString(
 				phones.getColumnIndex(
 				ContactsContract.CommonDataKinds.Phone.NUMBER));}
 				phones.close();
 				
-		getLocationAndSendSMS();
+		getLocationAndSendSMS(); 
 	}
 	
 	public void getLocationAndSendSMS(){
@@ -208,7 +231,9 @@ public class FindMeActivity extends ListActivity {
 	                switch (getResultCode())
 	                {
 	                    case Activity.RESULT_OK:
-	                        Toast.makeText(getBaseContext(), "Location sent to " + "contact name...", 
+	                        if (currentName == null)
+	                        	currentName = "undetermined contact";
+	                    	Toast.makeText(getBaseContext(), "Location sent to " + currentName, 
 	                                Toast.LENGTH_SHORT).show();
 	                        break;
 	                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
