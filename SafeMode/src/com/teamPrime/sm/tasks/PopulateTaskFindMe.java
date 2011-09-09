@@ -48,7 +48,6 @@ public class PopulateTaskFindMe extends AsyncTask<Void, Integer, Void> {
     protected void onPostExecute(Void result) {
     	//mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     	mActivity.populateList();
-    	mActivity.setArrayAdapter(new ArrayAdapter<String>(mActivity,android.R.layout.simple_dropdown_item_1line,mActivity.getContactNames()));
         try{
         	loading.dismiss();
         }
