@@ -241,66 +241,12 @@ public class SafeLaunchActivity extends Activity{
             	startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
             	break;
             case R.id.dashboard_find_me:
-            	try{
-            		//sends message but does not add it to sent messages:
-            		//String phoneNumber = "3057789281"; //temporary number
-            		String phoneNumber = "8329717948";
-            		String address = "30837 NE 25th ave"; //temporary address
-            		String message = "I am at " + address;
-            		sendSMS(phoneNumber, message);
-            	}
-            	catch(Exception e){
-            		Log.e("message send error", e.getMessage());
-            		//Toast.makeText(getApplicationContext(), "I'm sorry, tablets do not support texting", Toast.LENGTH_SHORT).show();
-            	} 
+            	startActivity(new Intent(getApplicationContext(), FindMeActivity.class));
             	break;
         }
     }
-    
-    private void sendSMS(final String phoneNumber, final String message) {        
-    	String SENT = "SMS_SENT";
-        String DELIVERED = "SMS_DELIVERED";
- 
-        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
-            new Intent(SENT), 0);
- 
-        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
-            new Intent(DELIVERED), 0);
- 
-        //---when the SMS has been sent---
-        registerReceiver(new BroadcastReceiver(){
-            @Override
-            public void onReceive(Context arg0, Intent arg1) {
-                switch (getResultCode())
-                {
-                    case Activity.RESULT_OK:
-                        Toast.makeText(getBaseContext(), "Location sent to " + "contact name...", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                        Toast.makeText(getBaseContext(), "An error occured, please try again", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_NO_SERVICE:
-                        Toast.makeText(getBaseContext(), "No service", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_RADIO_OFF:
-                        Toast.makeText(getBaseContext(), "Radio off, unable to send message", 
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                //Add to history
-                HistAction viewText = new ViewTextAction(phoneNumber, message, getResultCode());
-                HistAction resendText = new ResendTextAction(phoneNumber, message, true);
-                HistoryItem item = new FindMeItem(null, phoneNumber, viewText, resendText);
-                HistoryActivity.addItem(getBaseContext(), item);
-            }
-        }, new IntentFilter(SENT));    
- 
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);        
-    }
+
+   
     
     private void handleTimes(boolean fromLong, boolean updateDate){
     	if (fromLong && updateDate) handleTimes(true,false); //Before we can update the date, our current values need to be set.
