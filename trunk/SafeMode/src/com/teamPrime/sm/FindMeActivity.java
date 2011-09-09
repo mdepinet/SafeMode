@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -153,11 +154,18 @@ public class FindMeActivity extends ListActivity {
 		    public void onProviderDisabled(String provider) {}
 		  };
 		  
-		  //GPS_Provider or NETWORK_PROVIDER?
-		  locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+		  //find best provider of location, GPS_Provider or NETWORK_PROVIDER
+		  Criteria criteria = new Criteria();
+		  criteria.setAccuracy(Criteria.ACCURACY_FINE);
+		  String bestProvider = locationManager.getBestProvider(criteria, true);
+		  
+		  if (bestProvider.equals("network"))
+			  locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+		  else
+			  locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 		  
 		  //check if location update is taking too long, 20 seconds?
-	    new CountDownTimer(20000, 50000){
+		  new CountDownTimer(20000, 50000){
 			@Override
 			public void onFinish() {
 				if(!locationFound){
