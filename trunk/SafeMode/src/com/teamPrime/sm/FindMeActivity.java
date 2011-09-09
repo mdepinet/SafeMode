@@ -21,6 +21,7 @@ import java.util.TreeMap;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -38,7 +39,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -52,6 +53,9 @@ import com.teamPrime.sm.tasks.PopulateTaskFindMe;
 public class FindMeActivity extends ListActivity {
 	private static final int STARTING_CALLBACK_DIALOG_ID = -1;
 	private static final String SHARED_PREF_NAME = "SafeMode - FindMe";
+	
+	private ProgressDialog loading;
+	private EditText mEditText;
 	
 	private LocationManager locationManager;
 	private LocationListener locationListener;
@@ -77,7 +81,7 @@ public class FindMeActivity extends ListActivity {
 		
 		locationManager		= 	(LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		locationFound		=	false;
-		
+		mEditText			=	(EditText) findViewById(R.id.findme_contact_text);
 		instantiateList();
 	}
 
@@ -90,7 +94,7 @@ public class FindMeActivity extends ListActivity {
 				null, null);
 				while (phones.moveToNext()) {
 
-				//store numbers and display a dialog letting the user select which.
+				//find number associated with chosen contact
 				phoneNumber = phones.getString(
 				phones.getColumnIndex(
 				ContactsContract.CommonDataKinds.Phone.NUMBER));}
@@ -98,14 +102,14 @@ public class FindMeActivity extends ListActivity {
 				
 		getLocationAndSendSMS();
 	}
-
 	
 	public void getLocationAndSendSMS(){
 		locationFound = false;
+		loading = ProgressDialog.show(this, "", getString(R.string.loading_location), true);
 		locationListener = new LocationListener() {
 		    public void onLocationChanged(Location location) {
 		    	Log.e("FindMeActivity", "onLocationChanged called, location = " + location);
-		    	//Toast.makeText(getApplicationContext(), "location = " + location.toString(), Toast.LENGTH_LONG).show();
+		    	loading.dismiss();
 		    	locationFound = true;
 		    	currentLocation = location;
 		    	locationManager.removeUpdates(locationListener);
@@ -129,11 +133,12 @@ public class FindMeActivity extends ListActivity {
 		  //GPS_Provider or NETWORK_PROVIDER?
 		  locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 		  
-		  //check if location update is taking too long, 24 seconds?
-	    new CountDownTimer(24000, 50000){
+		  //check if location update is taking too long, 20 seconds?
+	    new CountDownTimer(20000, 50000){
 			@Override
 			public void onFinish() {
 				if(!locationFound){
+					loading.dismiss();
 					Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 					Log.e("FindMeActivity", "lastKnownLocation = " + lastKnownLocation);
 					//if last know location is available
@@ -171,8 +176,6 @@ public class FindMeActivity extends ListActivity {
 	
 	public void initiateSMS(){
 		try{
-			//sends message but does not add it to sent messages:
-			//String phoneNumber = "3057789281"; //temporary number
 			if (phoneNumber == null)
 				phoneNumber = "";
 			String address = "an undetermined location";

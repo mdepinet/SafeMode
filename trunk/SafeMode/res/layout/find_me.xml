@@ -14,10 +14,18 @@
 <!-- 		android:textStyle="bold" -->
 <!-- 		android:text="find me!" -->
 <!-- 		android:onClick="onClick"/> -->
+    <EditText
+    	android:id="@+id/findme_contact_text" 
+    	android:hint="@string/blacklist_add" 
+    	android:layout_alignParentBottom="true"
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+    	/>  
     <ListView 
     	android:layout_width="fill_parent" 
     	android:id="@android:id/list"  
     	android:layout_height="fill_parent" 
-    	android:layout_alignParentTop="true">
-    </ListView>  
+    	android:layout_alignParentTop="true"
+    	android:layout_above="@id/findme_contact_text"/>
+    
 </RelativeLayout>
