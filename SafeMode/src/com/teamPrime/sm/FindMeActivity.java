@@ -252,7 +252,7 @@ public class FindMeActivity extends ListActivity {
 	                //Add to history
 	                HistAction viewText = new ViewTextAction(phoneNumber, message, getResultCode());
 	                HistAction resendText = new ResendTextAction(phoneNumber, message, true);
-	                HistoryItem item = new FindMeItem(null, phoneNumber, viewText, resendText);
+	                HistoryItem item = new FindMeItem(null, phoneNumber, currentName, viewText, resendText);
 	                HistoryActivity.addItem(getBaseContext(), item);
 	            }
 	        }, new IntentFilter(SENT));    
