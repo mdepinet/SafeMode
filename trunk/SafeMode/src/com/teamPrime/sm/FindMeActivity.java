@@ -152,7 +152,7 @@ public class FindMeActivity extends ListActivity {
 	
 	public void populateCustomMessages(){
 		customMessages = new String [] {"I'm at <location>", 
-				"Meet me I'm at <location>", 
+				"Meet me at <location>", 
 				"Come to <location>",
 				currentFirstName + ", I'm at <location>, come get me!", 
 				"I don't know how to get home! I'm at <location>",
