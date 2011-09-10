@@ -19,13 +19,16 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.location.Address;
 import android.location.Criteria;
@@ -44,6 +47,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.teamPrime.sm.history.FindMeItem;
@@ -56,7 +60,7 @@ import com.teamPrime.sm.tasks.PopulateTaskFindMe;
 public class FindMeActivity extends ListActivity {
 	private static final String SHARED_PREF_NAME = "SafeMode - FindMe";
 	
-	private ProgressDialog loading;
+//	private ProgressDialog loading;
 	private EditText mEditText;
 	
 	private LocationManager locationManager;
@@ -66,10 +70,13 @@ public class FindMeActivity extends ListActivity {
 	private Address currentAddress;
 	private String phoneNumber;
 	private String currentName;
+	private String currentFirstName;
 	private String enteredText;
+	private String currentMessage;
 	private double currentLat;
 	private double currentLong;
 	private boolean locationFound;
+	private String[] customMessages;
 	
 	private List<Long> contactIds = new LinkedList<Long>();
 	private Map<String, Long> nameToIdMap = new TreeMap<String, Long>();
@@ -83,12 +90,15 @@ public class FindMeActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.find_me);
 		
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		locationManager		= 	(LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		locationFound		=	false;
 		mEditText			=	(EditText) findViewById(R.id.findme_contact_text);
+		
+		instantiateList();
+		
 		getListView().setTextFilterEnabled(true);
 		mEditText.addTextChangedListener(new TextWatcher(){
-
 			@Override
 			public void afterTextChanged(Editable s) { 
 				enteredText = s.toString();
@@ -105,9 +115,17 @@ public class FindMeActivity extends ListActivity {
 					int count) { }
 		});
 		
-		instantiateList();
+		
 	}
 
+	public void onResume(){
+		super.onResume();
+	}
+	
+	public void onPause(){
+		super.onPause();
+	}
+	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Cursor phones = getContentResolver().query(
@@ -119,21 +137,50 @@ public class FindMeActivity extends ListActivity {
 
 				//find number associated with chosen contact
 				currentName = mArrayAdapter.getItem(position);
+				if (currentName.contains(" ")){
+					currentFirstName = currentName.substring(0, currentName.indexOf(" "));
+				}
+				else currentFirstName = currentName;
 				phoneNumber = phones.getString(
 				phones.getColumnIndex(
 				ContactsContract.CommonDataKinds.Phone.NUMBER));}
 				phones.close();
-				
-		getLocationAndSendSMS(); 
+		
+		createOptionsDialog();	
+		//getLocationAndSendSMS(); 
+	}
+	
+	public void populateCustomMessages(){
+		customMessages = new String [] {"I'm at <location>", 
+				"Meet me I'm at <location>", 
+				"Come to <location>",
+				currentFirstName + ", I'm at <location>, come get me!", 
+				"I don't know how to get home! I'm at <location>",
+				"Hey " + currentFirstName + "! I just woke up at <location> and " + "could really use some help getting home!"};
+	}
+	
+	public void createOptionsDialog(){
+		populateCustomMessages();
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Which message would you like to send to " + currentName + "?");
+		builder.setItems(customMessages, new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int item) {
+		        currentMessage = customMessages[item];
+		    	getLocationAndSendSMS();
+		    }
+		});
+		
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
 	
 	public void getLocationAndSendSMS(){
 		locationFound = false;
-		loading = ProgressDialog.show(this, "", getString(R.string.loading_location), true);
+//		loading = ProgressDialog.show(this, "", getString(R.string.loading_location), true);
 		locationListener = new LocationListener() {
 		    public void onLocationChanged(Location location) {
 		    	Log.e("FindMeActivity", "onLocationChanged called, location = " + location);
-		    	loading.dismiss();
+//		    	loading.dismiss();
 		    	locationFound = true;
 		    	currentLocation = location;
 		    	locationManager.removeUpdates(locationListener);
@@ -141,7 +188,6 @@ public class FindMeActivity extends ListActivity {
 					updateAddress();
 				} 
 				catch (IOException e) {
-					// TODO Auto-generated catch block
 					Log.e("FindMeActivity", e.getMessage());
 				}
 				initiateSMS();
@@ -169,7 +215,7 @@ public class FindMeActivity extends ListActivity {
 			@Override
 			public void onFinish() {
 				if(!locationFound){
-					loading.dismiss();
+//					loading.dismiss();
 					Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 					Log.e("FindMeActivity", "lastKnownLocation = " + lastKnownLocation);
 					//if last know location is available
@@ -179,7 +225,6 @@ public class FindMeActivity extends ListActivity {
 							updateAddress();
 						} 
 						catch (IOException e) {
-							// TODO Auto-generated catch block
 							Log.e("FindMeActivity", e.getMessage());
 						}
 					}
@@ -212,13 +257,14 @@ public class FindMeActivity extends ListActivity {
 			String address = "an undetermined location";
 			if (currentAddress != null)
 				address = currentAddress.getAddressLine(0) + "\n" + currentAddress.getAddressLine(1);
-			String message = "I am at " + address;
-			Log.e("FindMeActivity", "about to send sms, currentAddress = " + currentAddress);
-			sendSMS(phoneNumber, message);
+			if (currentMessage == null)
+				currentMessage = "I am at <location>";
+			currentMessage = currentMessage.replace("<location>", address);
+			Log.e("FindMeActivity", currentMessage);
+			sendSMS(phoneNumber, currentMessage);
 		}
 		catch(Exception e){
 			Log.e("message send error", e.getMessage());
-			//Toast.makeText(getApplicationContext(), "I'm sorry, tablets do not support texting", Toast.LENGTH_SHORT).show();
 		}
 	}
 
