@@ -19,13 +19,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
@@ -43,7 +41,9 @@ import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -76,7 +76,7 @@ public class FindMeActivity extends ListActivity {
 	private double currentLat;
 	private double currentLong;
 	private boolean locationFound;
-	private String[] customMessages;
+	private LinkedList<String> customMessages;
 	
 	private List<Long> contactIds = new LinkedList<Long>();
 	private Map<String, Long> nameToIdMap = new TreeMap<String, Long>();
@@ -151,27 +151,42 @@ public class FindMeActivity extends ListActivity {
 	}
 	
 	public void populateCustomMessages(){
-		customMessages = new String [] {"I'm at <location>", 
-				"Meet me at <location>", 
-				"Come to <location>",
-				currentFirstName + ", I'm at <location>, come get me!", 
-				"I don't know how to get home! I'm at <location>",
-				"Hey " + currentFirstName + "! I just woke up at <location> and " + "could really use some help getting home!"};
+		customMessages = new LinkedList<String>();
+		customMessages.add("I'm at _________."); 
+		customMessages.add("Meet me at _________.");
+		customMessages.add("Come to _________.");
+		customMessages.add(currentFirstName + ", I'm at _________, come get me!"); 
+		customMessages.add("I don't know how to get home! I'm at _________.");
+		customMessages.add("Hey " + currentFirstName + "! I just woke up at _________ and " + "could really use some help getting home!");
 	}
 	
 	public void createOptionsDialog(){
 		populateCustomMessages();
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Which message would you like to send to " + currentName + "?");
-		builder.setItems(customMessages, new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int item) {
-		        currentMessage = customMessages[item];
-		    	getLocationAndSendSMS();
-		    }
-		});
 		
-		AlertDialog alert = builder.create();
-		alert.show();
+		Dialog dialog = new Dialog(this, R.style.CustomMessagesDialogTheme);
+
+		ListView messagesList = new ListView(this);
+		
+		dialog.setContentView(messagesList);
+		dialog.setTitle("Which message would you like to send to " + currentFirstName +"?");
+
+//		ListView messagesList = (ListView) dialog.findViewById(R.id.messages_list);
+		MessageAdapter messagesListAdapter = new MessageAdapter(this, R.layout.find_me_messages, customMessages);
+        messagesList.setAdapter(messagesListAdapter);
+		
+		dialog.show();
+		
+//		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//		builder.setTitle("Which message would you like to send to " + currentName + "?");
+//		builder.setItems(customMessages, new DialogInterface.OnClickListener() {
+//		    public void onClick(DialogInterface dialog, int item) {
+//		        currentMessage = customMessages[item];
+//		    	getLocationAndSendSMS();
+//		    }
+//		});
+//		
+//		AlertDialog alert = builder.create();
+//		alert.show();
 	}
 	
 	public void getLocationAndSendSMS(){
@@ -258,8 +273,8 @@ public class FindMeActivity extends ListActivity {
 			if (currentAddress != null)
 				address = currentAddress.getAddressLine(0) + "\n" + currentAddress.getAddressLine(1);
 			if (currentMessage == null)
-				currentMessage = "I am at <location>";
-			currentMessage = currentMessage.replace("<location>", address);
+				currentMessage = "I am at _________";
+			currentMessage = currentMessage.replace("_________", address);
 			Log.e("FindMeActivity", currentMessage);
 			sendSMS(phoneNumber, currentMessage);
 		}
@@ -360,6 +375,36 @@ public class FindMeActivity extends ListActivity {
 		return addedContacts;
 	}
 	 
+    private class MessageAdapter extends ArrayAdapter<String> {
+
+        private final List<String> items;
+
+        public MessageAdapter(Context context, int textViewResourceId, List<String> items) {
+                super(context, textViewResourceId, items);
+                this.items = items;
+        }
+        
+        @Override
+        public View getView(int position, View view, ViewGroup parent) {
+                View v = view;
+                TextView messageTextView;
+                
+                final String messageItem = items.get(position);
+                
+                if (v == null) {
+                    LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    v = inflater.inflate(R.layout.find_me_messages, null);
+                
+                if (messageItem != null) {
+                    //set content
+               		messageTextView = (TextView) v.findViewById(R.id.message_text_view);
+                    if (messageTextView != null) {
+                    	messageTextView.setText(messageItem);
+                        }
+               	}
+               
+               }
+               return v;
+       }
+   }
 }
-
-
