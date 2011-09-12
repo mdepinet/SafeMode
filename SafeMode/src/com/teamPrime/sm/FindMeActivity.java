@@ -44,6 +44,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -163,18 +165,30 @@ public class FindMeActivity extends ListActivity {
 	public void createOptionsDialog(){
 		populateCustomMessages();
 		
-		Dialog dialog = new Dialog(this, R.style.CustomMessagesDialogTheme);
+		final Dialog messagesDialog = new Dialog(this, R.style.CustomMessagesDialogTheme);
 
 		ListView messagesList = new ListView(this);
 		
-		dialog.setContentView(messagesList);
-		dialog.setTitle("Which message would you like to send to " + currentFirstName +"?");
+		messagesDialog.setContentView(messagesList);
+		messagesDialog.setTitle("Which message would you like to send to " + currentFirstName +"?");
 
 //		ListView messagesList = (ListView) dialog.findViewById(R.id.messages_list);
 		MessageAdapter messagesListAdapter = new MessageAdapter(this, R.layout.find_me_messages, customMessages);
         messagesList.setAdapter(messagesListAdapter);
-		
-		dialog.show();
+		messagesList.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				currentMessage = (String) ((TextView) ((ViewGroup) arg1).getChildAt(0)).getText();
+				messagesDialog.dismiss();
+		    	getLocationAndSendSMS();
+				
+			}
+			
+		});
+        
+        messagesDialog.show();
 		
 //		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 //		builder.setTitle("Which message would you like to send to " + currentName + "?");
@@ -191,6 +205,7 @@ public class FindMeActivity extends ListActivity {
 	
 	public void getLocationAndSendSMS(){
 		locationFound = false;
+		Toast.makeText(getApplicationContext(), getString(R.string.loading_location), Toast.LENGTH_SHORT).show();
 //		loading = ProgressDialog.show(this, "", getString(R.string.loading_location), true);
 		locationListener = new LocationListener() {
 		    public void onLocationChanged(Location location) {
