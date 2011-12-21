@@ -10,7 +10,7 @@ public class DateItem extends HistoryItem {
 	}
 	
 	public String toString(){
-		return "This is a date item";
+		return "Date: "+getDate();
 	}
 	
 	public String getTitle(){

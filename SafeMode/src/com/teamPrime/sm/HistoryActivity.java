@@ -9,15 +9,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,7 +45,7 @@ public class HistoryActivity extends ListActivity {
 	//private ArrayAdapter<HistoryItem> adapter;
 	private HistoryAdapter historyAdapter;
 	private static List<HistoryItem> items;
-	private static HistoryItem emptyItem = new HistoryItem(null,null){
+	private static final HistoryItem emptyItem = new HistoryItem(null,null){
 		private static final long serialVersionUID = -7634608861370557155L;
 		public String toString(){
 			return "Your history is empty.";
@@ -71,9 +74,10 @@ public class HistoryActivity extends ListActivity {
 	@Override
 	public void onResume(){
 		super.onResume();
-		populateItems();
+		new PopulateHistoryTask(this).execute((Void[])null);
+	}
+	/*package*/ void setUpAdapter(){
 		historyAdapter = new HistoryAdapter(this, R.layout.history_row, items);
-		//adapter = new ArrayAdapter<HistoryItem>(this,android.R.layout.simple_list_item_1,items);
 		setListAdapter(historyAdapter);
 	}
 	
@@ -118,9 +122,9 @@ public class HistoryActivity extends ListActivity {
 		hi.onClick();
 	}
 	
-	private void populateItems(){
+	/*package*/ void populateItems(){
 		SharedPreferences data = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-		items = new ArrayList<HistoryItem>();
+		items = Collections.synchronizedList(new ArrayList<HistoryItem>());
 		int numItems = data.getInt("numItems", 0);
 		for (int i = 1; i<=numItems; i++){
 			ObjectInputStream ois = null;
@@ -158,12 +162,19 @@ public class HistoryActivity extends ListActivity {
 				return new Long(hi1.getCreationDate().getTime() - hi2.getCreationDate().getTime()).intValue();
 			}
 		});
-		long lastDate = 0;
+		Calendar lastDate = Calendar.getInstance();
+		lastDate.setTimeInMillis(0);
 		for (int i = 0; i<items.size(); i++){
 			HistoryItem hi = items.get(i);
-			if (lastDate == 0 || hi.getCreationDate().getTime() - lastDate > 86400000){
+			Calendar creationDate = Calendar.getInstance();
+			creationDate.setTime(hi.getCreationDate());
+			creationDate.set(Calendar.HOUR_OF_DAY, 0);
+			creationDate.set(Calendar.MINUTE, 0);
+			creationDate.set(Calendar.SECOND, 0);
+			creationDate.set(Calendar.MILLISECOND, 0);
+			if (lastDate.getTimeInMillis() == 0 || lastDate.before(creationDate)){
 				DateItem dateLabel = new DateItem(null,null);
-				lastDate = hi.getCreationDate().getTime() - hi.getCreationDate().getTime()%86400000;
+				lastDate = creationDate;
 				dateLabel.setCreationDate(hi.getCreationDate());
 				items.add(i++,dateLabel);
 			}
@@ -210,7 +221,8 @@ public class HistoryActivity extends ListActivity {
         
         @Override
         public View getView(int position, View view, ViewGroup parent) {
-                RelativeLayout v = (RelativeLayout) view;
+                //RelativeLayout v = (RelativeLayout) view;
+        		RelativeLayout v = null; //Using the view that's passed in causes strange problems (Issue 22)
                 TextView dateView;
                 TextView title;
                 TextView description;
@@ -259,6 +271,32 @@ public class HistoryActivity extends ListActivity {
         }
     }
 
+}
+
+class PopulateHistoryTask extends AsyncTask<Void,Void,Void>{
+	private HistoryActivity mActivity;
+	ProgressDialog loading;
+	
+	public PopulateHistoryTask(HistoryActivity activity){
+		mActivity = activity;
+	}
+
+	@Override
+    protected void onPreExecute() {
+    	loading = ProgressDialog.show(mActivity, "",mActivity.getString(R.string.loading_hist), true); 
+    }
+	@Override
+	protected Void doInBackground(Void... arg0) {
+		mActivity.populateItems();
+		return null;
+	}
+	@Override
+    protected void onPostExecute(Void result) {
+		mActivity.setUpAdapter();
+		try{loading.dismiss();}
+		catch(Exception ex){}
+	}
+	
 }
 
 

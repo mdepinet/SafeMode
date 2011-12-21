@@ -23,10 +23,10 @@ public abstract class HistoryItem implements Serializable, DialogCreator{
 	
 	public HistoryItem(HistoryActivity activity, HistAction defaultAction, HistAction... acts){
 		this.activity = activity;
-		this.actions = new ArrayList<HistAction>();
+		actions = new ArrayList<HistAction>();
 		actions.add(defaultAction);
 		for (HistAction ha : acts){
-			this.actions.add(ha);
+			actions.add(ha);
 		}
 	}
 	
@@ -44,6 +44,15 @@ public abstract class HistoryItem implements Serializable, DialogCreator{
 	}
 
 	public Dialog createDialog(final HistoryActivity activity, int subDialogId){
+		if (actions == null || actions.isEmpty()) return null;
+		boolean allNull = true;
+		for (HistAction hist : actions){
+			if (hist != null){
+				allNull = false;
+				break;
+			}
+		}
+		if (allNull) return null;
 		final HistAction[] combinedActions = new HistAction[actions.size()];
 		String[] titles = new String[combinedActions.length];
 		for (int i = 0; i<actions.size(); i++){

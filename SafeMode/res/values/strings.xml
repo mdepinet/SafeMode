@@ -22,6 +22,7 @@
     <string name="turn_off">SafeMode has been turned off</string>
     <string name="wrong_ans">Sorry, wrong answer...</string>
     <string name="loading">Loading contacts...</string>
+    <string name="loading_hist">Loading history...</string>
     <string name="loading_location">Determining location...</string>
     
     <string name="bl_err_incor_name">Incorrect contact name</string>
