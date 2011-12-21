@@ -55,6 +55,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	public static final int REVEAL_CONTACTS_MODE = 3;
 	public static final int RESUME_CALL_TEXT_BLOCKING = 4;
 	public static final int END_CALL_TEXT_BLOCKING = 5;
+	public static final int CONTINUE_CONTACTS_REVEAL = 6;
 	
 	public static final int SafeMode_BLOCKED_SMS_RESPONSE_CODE = 101;
 	
@@ -147,6 +148,10 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 		 case END_CALL_TEXT_BLOCKING:
 			 running = false;
 			 return null;
+		 case CONTINUE_CONTACTS_REVEAL:
+			 List<Long> result3 = new LinkedList<Long>();
+			 result3.add((long) ContactDAO.continueReveal(mActivity));
+			 return result3;
 		 default:
 			 return null;
 		 }

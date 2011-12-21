@@ -19,7 +19,7 @@ public class SafeModeOnOffItem extends HistoryItem {
 	}
 	
 	public String toString(){
-		return "SafeMode "+ (on ? "activated" : temp ? "paused" : "deactivated");
+		return "SafeMode "+ (on ? "activated" : temp ? "paused" : "deactivated") + "\n" + getDate();
 	}
 	public String getTitle(){
 		return "SafeMode "+ (on ? "activated" : temp ? "paused" : "deactivated");

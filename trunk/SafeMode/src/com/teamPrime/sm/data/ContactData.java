@@ -10,6 +10,7 @@
 package com.teamPrime.sm.data;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import android.provider.ContactsContract;
 
@@ -23,6 +24,7 @@ import android.provider.ContactsContract;
  */
 public interface ContactData extends Serializable{
 	long getRawContactId();
+	long getContactId();
 	int isPrimary();
 	int isSuperPrimary();
 	int getDataVersion();
@@ -34,21 +36,23 @@ public interface ContactData extends Serializable{
 class ContactDataGeneric implements ContactData{
 	private static final long serialVersionUID = -1521014230297655541L;
 	private String mimeType;
+	private long contactId;
 	private long rawContactId;
 	private int isPrimary;
 	private int isSuperPrimary;
 	private int dataVersion;
 	private Object[] data;
 	
-	public ContactDataGeneric(String mimeType, long rawContactId, int isPrimary, int isSuperPrimary, int dataVersion){
+	public ContactDataGeneric(String mimeType, long contactId, long rawContactId, int isPrimary, int isSuperPrimary, int dataVersion){
 		this.mimeType = mimeType;
+		this.contactId = contactId;
 		this.rawContactId = rawContactId;
 		this.isPrimary = isPrimary;
 		this.isSuperPrimary = isSuperPrimary;
 		this.dataVersion = dataVersion;
 	}
-	public ContactDataGeneric(String mimeType, long rawContactId, int isPrimary, int isSuperPrimary, int dataVersion, Object... data){
-		this(mimeType, rawContactId, isPrimary, isSuperPrimary, dataVersion);
+	public ContactDataGeneric(String mimeType, long contactId, long rawContactId, int isPrimary, int isSuperPrimary, int dataVersion, Object... data){
+		this(mimeType, contactId, rawContactId, isPrimary, isSuperPrimary, dataVersion);
 		this.data = new Object[Math.min(15, data.length)]; //Throw out anything over 15 data columns since the table only has 15
 		for (int i = 0; i<this.data.length; i++){
 			this.data[i] = data[i];
@@ -61,6 +65,9 @@ class ContactDataGeneric implements ContactData{
 	}
 	public long getRawContactId(){
 		return rawContactId;
+	}
+	public long getContactId(){
+		return contactId;
 	}
 	public int isPrimary(){
 		return isPrimary;
@@ -97,5 +104,14 @@ class ContactDataGeneric implements ContactData{
 		else if (ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE.equals(mimeType)) s = "EMAIL: "+s;
 		else if (ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE.equals(mimeType)) s = "IM: "+s;
 		return s;
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		if (!(obj instanceof ContactDataGeneric)) return false;
+		ContactDataGeneric cd = (ContactDataGeneric)obj;
+		return getMimeType() == cd.getMimeType() && getRawContactId() == cd.getRawContactId()
+			&& getContactId() == cd.getContactId() && isPrimary() == cd.isPrimary() && isSuperPrimary() == cd.isSuperPrimary()
+			&& getDataVersion() == cd.getDataVersion() && Arrays.equals(data, cd.data);
 	}
 }

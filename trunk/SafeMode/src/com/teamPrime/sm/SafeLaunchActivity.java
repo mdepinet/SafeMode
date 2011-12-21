@@ -22,15 +22,12 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
@@ -39,12 +36,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.teamPrime.sm.history.FindMeItem;
-import com.teamPrime.sm.history.HistAction;
-import com.teamPrime.sm.history.HistoryItem;
 import com.teamPrime.sm.history.SafeModeOnOffItem;
-import com.teamPrime.sm.history.action.ResendTextAction;
-import com.teamPrime.sm.history.action.ViewTextAction;
 import com.teamPrime.sm.tasks.BlackListIOTask;
 import com.teamPrime.sm.tasks.DateWaitTask;
 
@@ -118,8 +110,14 @@ public class SafeLaunchActivity extends Activity{
         handleTimes(true,true);
         seenNotice = data.getBoolean("seenNotice",false);
         boolean tempOff = data.getBoolean("tempOff", false);
+        boolean writingContacts = data.getBoolean("writingContacts", false);
         data = getSharedPreferences(SafeLaunchActivity.class.getName(), MODE_PRIVATE);
         privateOnState = data.getBoolean("onState", false);
+        
+        if (writingContacts){
+        	BlackListIOTask finIO = new BlackListIOTask(this,null,BlackListIOTask.CONTINUE_CONTACTS_REVEAL);
+        	finIO.execute((Void[])(null));
+        }
         
         if (!seenNotice) showDialog(NOTICE_ID);
         
