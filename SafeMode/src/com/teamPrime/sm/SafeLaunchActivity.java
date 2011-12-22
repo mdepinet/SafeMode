@@ -24,6 +24,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -68,6 +69,16 @@ public class SafeLaunchActivity extends Activity{
 	private BlackListIOTask ioTask;
 	
 	public static final int LockedNotificationId = 1;
+	
+	OnCancelListener dateTimeCancel = new OnCancelListener(){
+		@Override
+		public void onCancel(DialogInterface arg0) {
+			if (mTask != null) mTask.cancel(true);
+			try{dismissDialog(TIME_ID);} catch(Exception ex){}
+			try{dismissDialog(DATE_ID);} catch(Exception ex){}
+			onOffText.setText(getString(R.string.start_button));
+		}
+	};
 	
     /** Called when the activity is first created. */
     @Override
@@ -176,6 +187,14 @@ public class SafeLaunchActivity extends Activity{
         		Calendar c = Calendar.getInstance();
         		d = new TimePickerDialog(this, mTimeSetListener, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false);
         	}
+        	((TimePickerDialog) d).setButton(DialogInterface.BUTTON_NEGATIVE,
+                    getString(android.R.string.cancel),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+        	d.setOnCancelListener(dateTimeCancel);
             break;
         case DATE_ID:
         	dateUpdated = false;
@@ -185,6 +204,14 @@ public class SafeLaunchActivity extends Activity{
         		Calendar c = Calendar.getInstance();
         		d = new DatePickerDialog(this, mDateSetListener, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         	}
+        	((DatePickerDialog) d).setButton(DialogInterface.BUTTON_NEGATIVE,
+                    getString(android.R.string.cancel),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+        	d.setOnCancelListener(dateTimeCancel);
         	break;
         case NOTICE_ID:
         	d = new AlertDialog.Builder(this).setMessage(getString(R.string.init_notice)).setCancelable(false)
@@ -290,15 +317,15 @@ public class SafeLaunchActivity extends Activity{
     		onOffText.setText(getString(R.string.start_button));
     		return;
     	}
-    	ioTask = new BlackListIOTask(this,null,BlackListIOTask.HIDE_CONTACTS_MODE);
-    	ioTask.execute((Void[])(null));
-    	
 		applicationOnState = true;
 		privateOnState = true;
         
 		onOffButton.setImageDrawable(getResources().getDrawable(R.drawable.dashboard_unlock));
 		onOffText.setText(getString(R.string.end_button));
 		blacklistText.setText(getString(R.string.view_blacklist));
+		
+		ioTask = new BlackListIOTask(this,null,BlackListIOTask.HIDE_CONTACTS_MODE);
+    	ioTask.execute((Void[])(null));
         
         showIcon();
         
