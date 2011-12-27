@@ -10,13 +10,20 @@
 package com.teamPrime.sm;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -42,6 +49,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -58,13 +67,10 @@ import com.teamPrime.sm.history.HistoryItem;
 import com.teamPrime.sm.history.action.ResendTextAction;
 import com.teamPrime.sm.history.action.ViewTextAction;
 import com.teamPrime.sm.tasks.PopulateTaskFindMe;
+import com.teamPrime.sm.tasks.TemplateLoadingTask;
 
-public class FindMeActivity extends ListActivity {
-	private static final String SHARED_PREF_NAME = "SafeMode - FindMe";
-	
-//	private ProgressDialog loading;
-	private EditText mEditText;
-	
+public class FindMeActivity extends ListActivity {	
+	private EditText mEditText;	
 	private LocationManager locationManager;
 	private LocationListener locationListener;
 	private Location currentLocation;
@@ -73,12 +79,14 @@ public class FindMeActivity extends ListActivity {
 	private String phoneNumber;
 	private String currentName;
 	private String currentFirstName;
+	private String currentLastName;
 	private String enteredText;
 	private String currentMessage;
 	private double currentLat;
 	private double currentLong;
 	private boolean locationFound;
-	private LinkedList<String> customMessages;
+	private List<String> customMessages;
+	private TemplateLoadingTask templateLoadingTask;
 	
 	private List<Long> contactIds = new LinkedList<Long>();
 	private Map<String, Long> nameToIdMap = new TreeMap<String, Long>();
@@ -87,6 +95,8 @@ public class FindMeActivity extends ListActivity {
 	private ArrayAdapter<String> mArrayAdapter;
 	private PopulateTaskFindMe mTask;
 	
+	private static final int MESSAGES_DIALOG_ID = 0;
+			
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -105,7 +115,6 @@ public class FindMeActivity extends ListActivity {
 			public void afterTextChanged(Editable s) { 
 				enteredText = s.toString();
 				mArrayAdapter.getFilter().filter(enteredText);
-				Log.e("FindMeActivity", "afterTextChanged = " + s.toString() + ", enteredText = " + enteredText);
 			}
 
 			@Override
@@ -116,14 +125,17 @@ public class FindMeActivity extends ListActivity {
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) { }
 		});
-		
-		
 	}
 
+	@Override
 	public void onResume(){
 		super.onResume();
+		customMessages = new LinkedList<String>();
+		templateLoadingTask = new TemplateLoadingTask(this, customMessages, TemplateLoadingTask.READ_MODE);
+		templateLoadingTask.execute((Void[]) null);
 	}
 	
+	@Override
 	public void onPause(){
 		super.onPause();
 	}
@@ -140,77 +152,176 @@ public class FindMeActivity extends ListActivity {
 				//find number associated with chosen contact
 				currentName = mArrayAdapter.getItem(position);
 				if (currentName.contains(" ")){
-					currentFirstName = currentName.substring(0, currentName.indexOf(" "));
+					currentFirstName = currentName.substring(0, currentName.lastIndexOf(" "));
+					currentLastName = currentName.substring(currentName.lastIndexOf(" ")+1);
 				}
-				else currentFirstName = currentName;
+				else{
+					currentFirstName = currentName;
+					currentLastName = currentName;
+				}
 				phoneNumber = phones.getString(
 				phones.getColumnIndex(
 				ContactsContract.CommonDataKinds.Phone.NUMBER));}
 				phones.close();
 		
-		createOptionsDialog();	
+		showDialog(MESSAGES_DIALOG_ID);	
 		//getLocationAndSendSMS(); 
 	}
 	
 	public void populateCustomMessages(){
-		customMessages = new LinkedList<String>();
-		customMessages.add("I'm at _________."); 
-		customMessages.add("Meet me at _________.");
-		customMessages.add("Come to _________.");
-		customMessages.add(currentFirstName + ", I'm at _________, come get me!"); 
-		customMessages.add("I don't know how to get home! I'm at _________.");
-		customMessages.add("Hey " + currentFirstName + "! I just woke up at _________ and " + "could really use some help getting home!");
+		try {
+			templateLoadingTask.get(4500, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			Log.w("SAFEMODE", "Failed to load templates in time", e);
+			templateLoadingTask.cancel(true);
+		} catch (ExecutionException e) {
+			Log.w("SAFEMODE", "Failed to load templates in time", e);
+			templateLoadingTask.cancel(true);
+		} catch (TimeoutException e) {
+			Log.w("SAFEMODE", "Failed to load templates in time", e);
+			templateLoadingTask.cancel(true);
+		}
+		if (customMessages.isEmpty()){
+			customMessages.add(getString(R.string.find_defText1));
+			customMessages.add(getString(R.string.find_defText2));
+			customMessages.add(getString(R.string.find_defText3));
+			customMessages.add(getString(R.string.find_defText4));
+			customMessages.add(getString(R.string.find_defText5));
+			customMessages.add(getString(R.string.find_defText6));
+		}
+	}
+	private List<String> customizeMessages(){
+		if (customMessages == null || customMessages.isEmpty()) populateCustomMessages();
+		List<String> newMessages = new LinkedList<String>();
+		Pattern escapePattern = Pattern.compile("%[%sfntdl]");
+		for (String s : customMessages){
+			Matcher m = escapePattern.matcher(s);
+			StringBuffer buff = new StringBuffer();
+			int lastEnd = 0;
+			while (m.find()){
+				buff.append(s.substring(lastEnd,m.start()));
+				String match = s.substring(m.start(),m.end());
+				if ("%l".equals(match)) buff.append("_________");
+				else if ("%d".equals(match)) buff.append(DateFormat.getDateInstance().format(new Date()));
+				else if ("%t".equals(match)) buff.append(DateFormat.getTimeInstance().format(new Date()));
+				else if ("%n".equals(match)) buff.append(currentName);
+				else if ("%f".equals(match)) buff.append(currentFirstName);
+				else if ("%s".equals(match)) buff.append(currentLastName);
+				else if ("%%".equals(match)) buff.append("%");
+				lastEnd = m.end();
+			}
+			buff.append(s.substring(lastEnd));
+			newMessages.add(buff.toString());
+		}
+		return newMessages;
 	}
 	
-	public void createOptionsDialog(){
-		populateCustomMessages();
-		
-		final Dialog messagesDialog = new Dialog(this, R.style.CustomMessagesDialogTheme);
-
-		ListView messagesList = new ListView(this);
-		
-		messagesDialog.setContentView(messagesList);
-		messagesDialog.setTitle("Which message would you like to send to " + currentFirstName +"?");
-
-//		ListView messagesList = (ListView) dialog.findViewById(R.id.messages_list);
-		MessageAdapter messagesListAdapter = new MessageAdapter(this, R.layout.find_me_messages, customMessages);
-        messagesList.setAdapter(messagesListAdapter);
-		messagesList.setOnItemClickListener(new OnItemClickListener(){
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				currentMessage = (String) ((TextView) ((ViewGroup) arg1).getChildAt(0)).getText();
-				messagesDialog.dismiss();
-		    	getLocationAndSendSMS();
-				
-			}
-			
-		});
-        
-        messagesDialog.show();
-		
-//		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//		builder.setTitle("Which message would you like to send to " + currentName + "?");
-//		builder.setItems(customMessages, new DialogInterface.OnClickListener() {
-//		    public void onClick(DialogInterface dialog, int item) {
-//		        currentMessage = customMessages[item];
-//		    	getLocationAndSendSMS();
-//		    }
-//		});
-//		
-//		AlertDialog alert = builder.create();
-//		alert.show();
+	@Override
+	public Dialog onCreateDialog(int id){
+		Dialog d = null;
+		switch(id){
+		case MESSAGES_DIALOG_ID:
+			populateCustomMessages(); //This is fine because the dialog will only be created once anyway
+			d = new Dialog(this, R.style.CustomMessagesDialogTheme);
+			break;
+//		case ADD_MESSAGE_DIALOG_ID:
+//			final Dialog addDialog = new Dialog(this, R.layout.add_text_template);
+//			((Button)(addDialog.findViewById(R.id.addTemplateButton))).setOnClickListener(new AddTemplateClickListener(this,addDialog));
+//			d = addDialog;
+//			break;
+//		case DELETE_MESSAGE_DIALOG_ID:
+//			d = new AlertDialog.Builder(this).setMessage(getString(R.string.find_confirm_delete))
+//		           .setCancelable(false)
+//		           .setPositiveButton(getString(R.string.yes), new ConfirmDeleteClickListener(this))
+//		           .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+//		               public void onClick(DialogInterface dialog, int id) {
+//		                    dialog.cancel();
+//		               }
+//		           }).create();
+//			break;
+		}
+		return d;
 	}
+//	class ConfirmDeleteClickListener implements DialogInterface.OnClickListener{
+//		private FindMeActivity mActivity;
+//		public ConfirmDeleteClickListener(FindMeActivity act){
+//			mActivity = act;
+//		}
+//		public void onClick(DialogInterface dialog, int id) {
+//            customMessages.remove(selectedTemplate);
+//            mActivity.dismissDialog(MESSAGES_DIALOG_ID);
+//            dialog.dismiss();
+//            TemplateLoadingTask loadingTask = new TemplateLoadingTask(mActivity, customMessages, TemplateLoadingTask.WRITE_MODE);
+//    		loadingTask.execute((Void[])null);
+//    		try {
+//    			loadingTask.get(4500, TimeUnit.MILLISECONDS); //TODO Should we really only wait 4.5s?
+//    		} catch (InterruptedException e) {
+//    			Log.w("SAFEMODE", "Failed to load templates in time", e);
+//    			loadingTask.cancel(true);
+//    		} catch (ExecutionException e) {
+//    			Log.w("SAFEMODE", "Failed to load templates in time", e);
+//    			loadingTask.cancel(true);
+//    		} catch (TimeoutException e) {
+//    			Log.w("SAFEMODE", "Failed to load templates in time", e);
+//    			loadingTask.cancel(true);
+//    		}
+//       }
+//	}
+//	class AddTemplateClickListener implements OnClickListener{
+//		private FindMeActivity mActivity;
+//		private Dialog d;
+//		public AddTemplateClickListener(FindMeActivity act, Dialog d){
+//			mActivity = act;
+//			this.d = d;
+//		}
+//		@Override
+//		public void onClick(View v) {
+//			List<String> addedTemplate = new LinkedList<String>();
+//			addedTemplate.add(((TextView)(d.findViewById(R.id.newTemplate))).getText().toString());
+//			new TemplateLoadingTask(mActivity, addedTemplate, TemplateLoadingTask.APPEND_MODE).execute((Void[])null);
+//			customMessages.removeAll(addedTemplate);
+//			d.dismiss();
+//		}
+//	}
+	
+	@Override
+	public void onPrepareDialog(int id, final Dialog d){
+		if (id == MESSAGES_DIALOG_ID){
+			ListView messagesList = new ListView(this);
+			d.setContentView(messagesList);
+			d.setTitle("Which message would you like to send to " + currentName +"?");
+	
+			List<String> messages = customizeMessages();
+			MessageAdapter messagesListAdapter = new MessageAdapter(this, R.layout.find_me_messages, messages);
+	        messagesList.setAdapter(messagesListAdapter);
+			messagesList.setOnItemClickListener(new OnItemClickListener(){
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+					currentMessage = (String) ((TextView) ((ViewGroup) arg1).getChildAt(0)).getText();
+					d.dismiss();
+			    	getLocationAndSendSMS();
+				}
+			});
+		}
+	}
+	
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	boolean result = super.onCreateOptionsMenu(menu);
+    	menu.add(Menu.NONE, Menu.NONE, Menu.NONE, getString(R.string.find_manage_templates));
+        return result;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	startActivity(new Intent(getApplicationContext(), TextTemplateManagementActivity.class));
+        return super.onOptionsItemSelected(item);
+    }
 	
 	public void getLocationAndSendSMS(){
 		locationFound = false;
 		Toast.makeText(getApplicationContext(), getString(R.string.loading_location), Toast.LENGTH_SHORT).show();
-//		loading = ProgressDialog.show(this, "", getString(R.string.loading_location), true);
 		locationListener = new LocationListener() {
 		    public void onLocationChanged(Location location) {
-		    	Log.e("FindMeActivity", "onLocationChanged called, location = " + location);
-//		    	loading.dismiss();
 		    	locationFound = true;
 		    	currentLocation = location;
 		    	locationManager.removeUpdates(locationListener);
@@ -245,9 +356,7 @@ public class FindMeActivity extends ListActivity {
 			@Override
 			public void onFinish() {
 				if(!locationFound){
-//					loading.dismiss();
 					Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-					Log.e("FindMeActivity", "lastKnownLocation = " + lastKnownLocation);
 					//if last know location is available
 					if(lastKnownLocation != null){
 						currentLocation = lastKnownLocation;
@@ -290,7 +399,7 @@ public class FindMeActivity extends ListActivity {
 			if (currentMessage == null)
 				currentMessage = "I am at _________";
 			currentMessage = currentMessage.replace("_________", address);
-			Log.e("FindMeActivity", currentMessage);
+			Log.i("FindMeActivity", "Sending text: " + currentMessage);
 			sendSMS(phoneNumber, currentMessage);
 		}
 		catch(Exception e){
@@ -423,3 +532,5 @@ public class FindMeActivity extends ListActivity {
        }
    }
 }
+
+

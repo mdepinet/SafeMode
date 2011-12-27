@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
     <string name="hello">Hello World, SafeLaunchActivity!</string>
     <string name="app_name">SafeMode</string>
     <string name="start_button">Start SafeMode</string>
@@ -36,6 +38,16 @@
     <string name="hist_view_button">View History</string>
     
     <string name="find_button">Find Me</string>
+    <string name="find_loading">Loading templates...</string>
+    <string name ="find_confirm_delete">Do you want to delete this message?</string>
+    <string name="find_manage_templates">Manage templates</string>
+    <string name="find_add_template">Add template</string>
+    <string name="find_defText1" formatted="false">I\'m at %l.</string>
+    <string name="find_defText2" formatted="false">Meet me at %l.</string>
+    <string name="find_defText3" formatted="false">Hey %f! I just woke up at %l and could really use some help getting home!</string>
+    <string name="find_defText4" formatted="false">%f, I\'m at %l, come get me!</string>
+    <string name="find_defText5" formatted="false">I don\'t know how to get home! I\'m at %l.</string>
+    <string name="find_defText6" formatted="false">Hey %f! Who did I leave with last night?</string>
     
     <string name="init_notice">Welcome to SafeMode! (v1.0)\n\nCopyright 2011 Mike Depinet and Boris Treskunov\n\n\n
     To get started, select contacts to add to your blacklist (by using the \"Edit Blacklist\" option in the menu).
