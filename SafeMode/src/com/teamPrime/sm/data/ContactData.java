@@ -110,7 +110,7 @@ class ContactDataGeneric implements ContactData{
 	public boolean equals(Object obj){
 		if (!(obj instanceof ContactDataGeneric)) return false;
 		ContactDataGeneric cd = (ContactDataGeneric)obj;
-		return getMimeType() == cd.getMimeType() && getRawContactId() == cd.getRawContactId()
+		return getMimeType().equals(cd.getMimeType()) && getRawContactId() == cd.getRawContactId()
 			&& getContactId() == cd.getContactId() && isPrimary() == cd.isPrimary() && isSuperPrimary() == cd.isSuperPrimary()
 			&& getDataVersion() == cd.getDataVersion() && Arrays.equals(data, cd.data);
 	}
