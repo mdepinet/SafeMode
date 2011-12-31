@@ -118,7 +118,8 @@ public class ContactDAO {
     	
     	int numOps = 0;
     	boolean failedLast = false;
-    	while (!data.isEmpty()){
+    	int numAttempts = 0;
+    	while (!data.isEmpty() && numAttempts < 5){  //Keep trying until we get it right, but if it takes 5 attempts something is wrong.  Try again next time SafeMode starts.
     		Map<Long, Integer> s2vmLimited = limitS2VM(data);
 	    	for (Map.Entry<Long, Integer> entry : s2vmLimited.entrySet()){
 	    		ContentValues cv = new ContentValues();
@@ -162,11 +163,12 @@ public class ContactDAO {
 			List<ContactData> written = getDataForContacts(cr, ids);
 			for (ContactData writtenContact : written){
 				if (!data.contains(writtenContact)){
-					Log.e("SAFEMODE - ContactDAO","Inconsistent Contact ID",new IllegalStateException("Contact Changed ID"));
+					Log.i("SAFEMODE - ContactDAO","Duplicate contact data.  Ignoring...");
 				}
 				else data.remove(writtenContact);
 			}
 			saveContacts(activity, data, tpcTempLoc1, tpcTempLoc2);
+			numAttempts++;
     	}
 
     	edit = activity.getSharedPreferences("SAFEMODE", Context.MODE_PRIVATE).edit();
