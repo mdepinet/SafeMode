@@ -140,10 +140,13 @@ public class SafeLaunchActivity extends Activity{
         	if (privateOnState){ //SafeMode is on and we know it
 	        	long timeLeft = 0;
 	        	timeLeft = offTime - System.currentTimeMillis();
-	        	allowTimer = true;
-	        	if (timer != null) timer.cancel();
-	        	timer = new SimpleTimer(timeLeft,1000);
-	            timer.start();
+	        	if (timeLeft <= 0) turnOff(); //Perhaps someone turned off their phone while SafeMode was running
+	        	else{
+		        	allowTimer = true;
+		        	if (timer != null) timer.cancel();
+		        	timer = new SimpleTimer(timeLeft,1000);
+		            timer.start();
+	        	}
         	}
         	else{ //If the application was started from a different activity
         		turnOn();
