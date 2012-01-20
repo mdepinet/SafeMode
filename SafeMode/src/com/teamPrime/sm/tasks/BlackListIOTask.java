@@ -67,6 +67,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	private List<Long> contactIds;
 	
 	private static Handler mHandler;
+	private static Context callTextBlockActivity;
 	private static CallInterceptor callInt;
 	private static SmsInterceptor smsInt;
 	private static boolean running = true;
@@ -84,7 +85,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	 //Runs on main thread.
 	 @Override
 	 protected void onPreExecute() {
-		 mHandler = new Handler();
+		 if (mHandler == null) mHandler = new Handler();
 	 }
 
   // Runs on main thread.
@@ -144,6 +145,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			 return result2;
 		 case RESUME_CALL_TEXT_BLOCKING:
 			 running = true;
+			 if (smsInt != null) smsInt.resetStartTime();
 			 return null;
 		 case END_CALL_TEXT_BLOCKING:
 			 running = false;
@@ -173,14 +175,16 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	 }
 	 
 	 private void startCallTextBlocking(){
+		 if (callTextBlockActivity == null) callTextBlockActivity = mActivity;
+		 
 		 //Register receiver to explicitly block outgoing calls
 		 IntentFilter filter = new IntentFilter();
 	     filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
 	     filter.setPriority(IntentFilter.SYSTEM_LOW_PRIORITY+1);
-		 mActivity.registerReceiver(callInt = new CallInterceptor(), filter);
+	     callTextBlockActivity.registerReceiver(callInt = new CallInterceptor(), filter);
 		 
 		 //Register content observer to explicitly block outgoing sms messages
-		 mActivity.getContentResolver().registerContentObserver(Uri.parse(smsUri),true, smsInt = new SmsInterceptor(mHandler));
+	     callTextBlockActivity.getContentResolver().registerContentObserver(Uri.parse(smsUri),true, smsInt = new SmsInterceptor(mHandler));
 	 }
 	 
 	 
@@ -204,16 +208,21 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 		}
 		
 		public class SmsInterceptor extends ContentObserver{
-			private final long startTime = System.currentTimeMillis(); //Don't delete messages sent before this
+			private long startTime = System.currentTimeMillis(); //Don't delete messages sent before this
 			
 			public SmsInterceptor(Handler handler) {
 				super(handler);
+			}
+			
+			public void resetStartTime(){
+				startTime = System.currentTimeMillis();
 			}
 			
 			@Override
 			public void onChange(boolean selfChange){
 				if (!running) return;
 				Uri uriSMSURI = Uri.parse(smsUri);
+				//TODO This could definitely be more efficient
 				Cursor cur = mActivity.getContentResolver().query(uriSMSURI, new String[]{"protocol","address","_id","body","date"}, null, null, null);
 				while(cur.moveToNext()){
 					String protocol = cur.getString(0);
