@@ -79,7 +79,6 @@ public class ContactDAO {
     				 	Data.DATA1, Data.DATA2, Data.DATA3, Data.DATA4, Data.DATA5, Data.DATA6, Data.CONTACT_ID},
     		         Data.RAW_CONTACT_ID + "=? AND "+Data.MIMETYPE + " in "+supportedDataTypes, new String[] {String.valueOf(rawCursor.getLong(0))}, null);
     		 while (dataCursor.moveToNext()){
-    			 Log.i("SAFEMODE - ContactDAO", "Mimetype is "+dataCursor.getString(0));
 				ContactData dataRow = new ContactDataGeneric(dataCursor.getString(0), dataCursor.getLong(11), dataCursor.getLong(1),
 						 dataCursor.getInt(2), dataCursor.getInt(3), dataCursor.getInt(4),
 						 getWithType(dataCursor,5), getWithType(dataCursor,6), getWithType(dataCursor,7),

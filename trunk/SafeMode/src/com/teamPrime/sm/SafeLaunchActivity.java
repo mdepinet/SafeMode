@@ -29,7 +29,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
@@ -279,7 +278,6 @@ public class SafeLaunchActivity extends Activity{
     private void handleTimes(boolean fromLong, boolean updateDate){
     	if (fromLong && updateDate) handleTimes(true,false); //Before we can update the date, our current values need to be set.
     	Calendar c = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
-    	Log.v("SAFEMODE - times", "Curr: "+System.currentTimeMillis()+". Off: "+offTime);
     	if (updateDate){
     		int currYear, currMonth, currDay;
     		currYear = c.get(Calendar.YEAR);
