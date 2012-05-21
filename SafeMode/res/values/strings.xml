@@ -20,25 +20,36 @@
     <string name="options">Options</string>
     <string name="remove_all_button">Remove All</string>
     <string name="future_reqd">Time to turn off must be in the future!</string>
-    <string name="waiting_user">Waiting for user input...</string>
+    <string name="waiting_user">Waiting for user input&#8230;</string>
     <string name="turn_off">SafeMode has been turned off</string>
-    <string name="wrong_ans">Sorry, wrong answer...</string>
-    <string name="loading">Loading contacts...</string>
-    <string name="loading_hist">Loading history...</string>
-    <string name="loading_location">Determining location...</string>
+    <string name="wrong_ans">Sorry, wrong answer&#8230;</string>
+    <string name="loading">Loading contacts&#8230;</string>
+    <string name="loading_hist">Loading history&#8230;</string>
+    <string name="loading_location">Determining location&#8230;</string>
     
     <string name="bl_err_incor_name">Incorrect contact name</string>
     <string name="bl_err_contact_present">Contact already in blacklist</string>
     <string name="bl_err_all_present">All contacts already in blacklist</string>
     <string name="bl_err_not_present">Contact is not in blacklist</string>
     <string name="bl_state_all_rem">All contacts removed from blacklist</string>
-    <string name="bl_list_empty">Your blacklist is currently empty...</string>
+    <string name="bl_list_empty">Your blacklist is currently empty&#8230;</string>
     
     <string name="hist_clear">Clear History</string>
     <string name="hist_view_button">View History</string>
+    <string name="hist_empty">Your History is Currently Empty&#8230;</string>
+    <string name="hist_bCall_bCallTo">Blocked Call to</string>
+    <string name="hist_bCall_bCall">Blocked Call</string>
+    <string name="hist_bText_bTextTo">Blocked Text to</string>
+    <string name="hist_bText_bText">Blocked Text</string>
+    <string name="hist_date">Date: </string>
+    <string name="hist_fmText_fmTextTo">FindMe Text to</string>
+    <string name="hist_fmText_fmText">FindMe Text</string>
+    <string name="hist_activated">activated</string>
+    <string name="hist_deactivated">deactivated</string>
+    <string name="hist_paused">paused</string>
     
     <string name="find_button">Find Me</string>
-    <string name="find_loading">Loading templates...</string>
+    <string name="find_loading">Loading templates&#8230;</string>
     <string name ="find_confirm_delete">Do you want to delete this message?</string>
     <string name="find_manage_templates">Manage templates</string>
     <string name="find_add_template">Add template</string>
@@ -48,7 +59,14 @@
     <string name="find_defText4" formatted="false">%f, I\'m at %l, come get me!</string>
     <string name="find_defText5" formatted="false">I don\'t know how to get home! I\'m at %l.</string>
     <string name="find_defText6" formatted="false">Hey %f! Who did I leave with last night?</string>
-    
+    <string name="find_selTemp_pre">Which message would you like to send to </string>
+	<string name="find_locFail">Unable to determine location</string>
+	<string name="find_unknownLoc">an undetermined location</string>
+	<string name="find_sendFail">An error occured, please try again</string>
+	<string name="find_sendSuccess">Location sent to </string>
+	
+	<string name ="stop_attemptsExceeded">Too many failed attempts!</string>
+	    
     <string name="init_notice">Welcome to SafeMode! (v1.0)\n\nCopyright 2011 Mike Depinet and Boris Treskunov\n\n\n
     To get started, select contacts to add to your blacklist (by using the \"Edit Blacklist\" option in the menu).
     \n\nThen you can start SafeMode by pushing the \"Start SafeMode\" button.  This will ask you for a time at which SafeMode will turn off automatically.
@@ -56,7 +74,7 @@
     \n\nTo turn off SafeMode early, you may push the \"End SafeMode\" button.  This will require you to prove sobriety, then turn off SafeMode.
     \n\nNow then, enjoy your party!
     \n
-    \nSafeMode --Keeping you responsible while you\'re being irresponsible.
+    \nSafeMode &#8212; Keeping you responsible while you\'re being irresponsible.
 	\n
 	\n\nLicensed under the Apache License, Version 2.0 (the \"License\");
 	you may not use this application except in compliance with the License.

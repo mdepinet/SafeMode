@@ -3,9 +3,8 @@ package com.teamPrime.sm.history;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import android.telephony.PhoneNumberUtils;
-
 import com.teamPrime.sm.HistoryActivity;
+import com.teamPrime.sm.R;
 
 public class FindMeItem extends HistoryItem {
 	private static final long serialVersionUID = -361038583952900332L;
@@ -20,11 +19,11 @@ public class FindMeItem extends HistoryItem {
 	}
 	
 	public String toString(){
-		return "Find Me Text to " + phoneNumber + "\n" + new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate);
+		return (activity==null?"Find Me Text to ":activity.getString(R.string.hist_fmText_fmTextTo)) + phoneNumber + "\n" + new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate);
 	}
 	
 	public String getTitle(){
-		return "Find Me Text";
+		return activity==null?"Find Me Text":activity.getString(R.string.hist_fmText_fmText);
 	}
 	
 	public String getDescription(){

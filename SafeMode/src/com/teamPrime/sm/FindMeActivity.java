@@ -289,7 +289,7 @@ public class FindMeActivity extends ListActivity {
 		if (id == MESSAGES_DIALOG_ID){
 			ListView messagesList = new ListView(this);
 			d.setContentView(messagesList);
-			d.setTitle("Which message would you like to send to " + currentName +"?");
+			d.setTitle(getString(R.string.find_selTemp_pre) + currentName + "?");
 	
 			List<String> messages = customizeMessages();
 			MessageAdapter messagesListAdapter = new MessageAdapter(this, R.layout.find_me_messages, messages);
@@ -368,7 +368,7 @@ public class FindMeActivity extends ListActivity {
 						}
 					}
 					else
-						Toast.makeText(getApplicationContext(), "Unable to determine location", Toast.LENGTH_LONG).show();
+						Toast.makeText(getApplicationContext(), getString(R.string.find_locFail), Toast.LENGTH_LONG).show();
 					locationManager.removeUpdates(locationListener);
 					initiateSMS();
 				}
@@ -393,7 +393,7 @@ public class FindMeActivity extends ListActivity {
 		try{
 			if (phoneNumber == null)
 				phoneNumber = "";
-			String address = "an undetermined location";
+			String address = getString(R.string.find_unknownLoc);
 			if (currentAddress != null)
 				address = currentAddress.getAddressLine(0) + "\n" + currentAddress.getAddressLine(1);
 			if (currentMessage == null)
@@ -426,20 +426,23 @@ public class FindMeActivity extends ListActivity {
 	                    case Activity.RESULT_OK:
 	                        if (currentName == null)
 	                        	currentName = "undetermined contact";
-	                    	Toast.makeText(getBaseContext(), "Location sent to " + currentName, 
+	                    	Toast.makeText(getBaseContext(), getString(R.string.find_sendSuccess) + currentName, 
 	                                Toast.LENGTH_SHORT).show();
 	                        break;
 	                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-	                        Toast.makeText(getBaseContext(), "An error occured, please try again", 
+	                        Toast.makeText(getBaseContext(), getString(R.string.find_sendFail), 
 	                                Toast.LENGTH_SHORT).show();
+	                        Log.i("SafeMode","Failed to send message - general error");
 	                        break;
 	                    case SmsManager.RESULT_ERROR_NO_SERVICE:
-	                        Toast.makeText(getBaseContext(), "No service", 
+	                        Toast.makeText(getBaseContext(), getString(R.string.find_sendFail), 
 	                                Toast.LENGTH_SHORT).show();
+	                        Log.i("SafeMode","Failed to send message - no service");
 	                        break;
 	                    case SmsManager.RESULT_ERROR_RADIO_OFF:
-	                        Toast.makeText(getBaseContext(), "Radio off, unable to send message", 
+	                        Toast.makeText(getBaseContext(), getString(R.string.find_sendFail), 
 	                                Toast.LENGTH_SHORT).show();
+	                        Log.i("SafeMode","Failed to send message - radio off");
 	                        break;
 	                }
 	                //Add to history
