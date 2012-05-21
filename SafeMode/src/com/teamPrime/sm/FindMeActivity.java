@@ -289,7 +289,7 @@ public class FindMeActivity extends ListActivity {
 		if (id == MESSAGES_DIALOG_ID){
 			ListView messagesList = new ListView(this);
 			d.setContentView(messagesList);
-			d.setTitle(getString(R.string.find_selTemp_pre) + currentName + "?");
+			d.setTitle(getString(R.string.find_selTemp_pre) + " " + currentName + "?");
 	
 			List<String> messages = customizeMessages();
 			MessageAdapter messagesListAdapter = new MessageAdapter(this, R.layout.find_me_messages, messages);
@@ -513,25 +513,19 @@ public class FindMeActivity extends ListActivity {
         
         @Override
         public View getView(int position, View view, ViewGroup parent) {
-                View v = view;
-                TextView messageTextView;
-                
-                final String messageItem = items.get(position);
-                
-                if (v == null) {
-                    LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    v = inflater.inflate(R.layout.find_me_messages, null);
-                
-                if (messageItem != null) {
-                    //set content
-               		messageTextView = (TextView) v.findViewById(R.id.message_text_view);
-                    if (messageTextView != null) {
-                    	messageTextView.setText(messageItem);
-                        }
-               	}
-               
-               }
-               return v;
+		    View v = view;
+		    TextView messageTextView;
+		    final String messageItem = items.get(position);
+		    
+		    if (v == null) {
+		        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		        v = inflater.inflate(R.layout.find_me_messages, null);
+		    }
+	        if (messageItem != null) {
+	       		messageTextView = (TextView) v.findViewById(R.id.message_text_view);
+	            if (messageTextView != null) messageTextView.setText(messageItem);
+	       	}
+		    return v;
        }
    }
 }

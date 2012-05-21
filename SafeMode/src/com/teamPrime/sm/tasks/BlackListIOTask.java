@@ -135,8 +135,12 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			 return result;
 		 case REVEAL_CONTACTS_MODE:
 			 int j = ContactDAO.revealContacts(mActivity);
-			 if (callInt != null) mActivity.unregisterReceiver(callInt);
-			 if (smsInt != null) mActivity.getContentResolver().unregisterContentObserver(smsInt);
+			 try{
+				 if (callInt != null) mActivity.unregisterReceiver(callInt);
+			 } catch (IllegalArgumentException ex){} //If it is not registered
+			 try{
+				 if (smsInt != null) mActivity.getContentResolver().unregisterContentObserver(smsInt);
+			 } catch (IllegalArgumentException ex){} //If it is not registered
 			 List<Long> result2 = new LinkedList<Long>();
 			 result2.add((long) j);
 			 return result2;
