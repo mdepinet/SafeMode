@@ -252,7 +252,7 @@ public class SafeLaunchActivity extends Activity{
             	if (!applicationOnState) turnOn();
             	else{
             		int numAttempts = getSharedPreferences("SAFEMODE",MODE_PRIVATE).getInt("failedAttempts", 0);
-            		if (numAttempts > MathStopActivity.MAX_ATTEMPTS) Toast.makeText(getApplicationContext(), "Too many failed attempts!", Toast.LENGTH_SHORT).show();
+            		if (numAttempts > MathStopActivity.MAX_ATTEMPTS) Toast.makeText(getApplicationContext(), R.string.stop_attemptsExceeded, Toast.LENGTH_SHORT).show();
             		else{
             			Intent i = new Intent(getApplicationContext(), MathStopActivity.class);
             			i.putExtra("fullOff", true);

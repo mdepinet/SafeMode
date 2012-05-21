@@ -47,7 +47,7 @@ public class MathStopActivity extends Activity{
         numAttempts = data.getInt("failedAttempts", 0);
         if (!onState) finish(); //Don't even run if SAFEMODE is off.  This should return the user to the main screen
         if (numAttempts >= MAX_ATTEMPTS){
-        	Toast.makeText(getBaseContext(), "Too many failed attempts!", Toast.LENGTH_SHORT).show();
+        	Toast.makeText(getBaseContext(), getString(R.string.stop_attemptsExceeded), Toast.LENGTH_SHORT).show();
         	finish();
         }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);

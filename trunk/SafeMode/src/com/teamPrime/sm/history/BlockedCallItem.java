@@ -6,6 +6,7 @@ import java.util.Date;
 import android.telephony.PhoneNumberUtils;
 
 import com.teamPrime.sm.HistoryActivity;
+import com.teamPrime.sm.R;
 
 public class BlockedCallItem extends HistoryItem {
 	private static final long serialVersionUID = -361038583952900332L;
@@ -18,11 +19,11 @@ public class BlockedCallItem extends HistoryItem {
 	}
 	
 	public String toString(){
-		return "Blocked Call to " + phoneNumber + "\n" + new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate);
+		return (activity==null?"Blocked call to ":activity.getString(R.string.hist_bCall_bCallTo)) + phoneNumber + "\n" + new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate);
 	}
 	
 	public String getTitle(){
-		return "Blocked Call";
+		return activity==null?"Blocked Call":activity.getString(R.string.hist_bCall_bCall);
 	}
 	
 	public String getDescription(){

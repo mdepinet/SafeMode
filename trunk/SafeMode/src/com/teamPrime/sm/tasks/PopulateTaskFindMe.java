@@ -12,8 +12,6 @@ package com.teamPrime.sm.tasks;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 
 import com.teamPrime.sm.FindMeActivity;
 import com.teamPrime.sm.R;

@@ -1,6 +1,7 @@
 package com.teamPrime.sm.history;
 
 import com.teamPrime.sm.HistoryActivity;
+import com.teamPrime.sm.R;
 
 public class DateItem extends HistoryItem {
 	private static final long serialVersionUID = -361038583952900332L;
@@ -10,7 +11,7 @@ public class DateItem extends HistoryItem {
 	}
 	
 	public String toString(){
-		return "Date: "+getDate();
+		return (activity==null?"Date: ":activity.getString(R.string.hist_date)) +getDate();
 	}
 	
 	public String getTitle(){

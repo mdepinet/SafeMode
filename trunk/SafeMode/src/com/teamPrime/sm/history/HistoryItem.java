@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 
 import com.teamPrime.sm.HistoryActivity;
+import com.teamPrime.sm.R;
 
 public abstract class HistoryItem implements Serializable, DialogCreator{
 	private static final long serialVersionUID = -7064460474245401203L;
@@ -75,7 +76,7 @@ public abstract class HistoryItem implements Serializable, DialogCreator{
 	}
 	
 	public String getDescription(){
-		return "Your History is Currently Empty...";
+		return activity==null?"Your History is Currently Empty...":activity.getString(R.string.hist_empty);
 	}
 	
 	public Date getCreationDate(){
