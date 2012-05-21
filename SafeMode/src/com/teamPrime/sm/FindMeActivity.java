@@ -403,7 +403,7 @@ public class FindMeActivity extends ListActivity {
 			sendSMS(phoneNumber, currentMessage);
 		}
 		catch(Exception e){
-			Log.e("message send error", e.getMessage());
+			Log.e("SafeMode - message send", e.getMessage());
 		}
 	}
 
@@ -432,17 +432,17 @@ public class FindMeActivity extends ListActivity {
 	                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
 	                        Toast.makeText(getBaseContext(), getString(R.string.find_sendFail), 
 	                                Toast.LENGTH_SHORT).show();
-	                        Log.i("SafeMode","Failed to send message - general error");
+	                        Log.w("SafeMode","Failed to send message - general error");
 	                        break;
 	                    case SmsManager.RESULT_ERROR_NO_SERVICE:
 	                        Toast.makeText(getBaseContext(), getString(R.string.find_sendFail), 
 	                                Toast.LENGTH_SHORT).show();
-	                        Log.i("SafeMode","Failed to send message - no service");
+	                        Log.w("SafeMode","Failed to send message - no service");
 	                        break;
 	                    case SmsManager.RESULT_ERROR_RADIO_OFF:
 	                        Toast.makeText(getBaseContext(), getString(R.string.find_sendFail), 
 	                                Toast.LENGTH_SHORT).show();
-	                        Log.i("SafeMode","Failed to send message - radio off");
+	                        Log.w("SafeMode","Failed to send message - radio off");
 	                        break;
 	                }
 	                //Add to history
