@@ -63,7 +63,6 @@ public class SafeLaunchActivity extends Activity{
 	private boolean timeUpdated, dateUpdated = false;
 	private DateWaitTask mTask;
 	private boolean allowTimer = false;
-	private static boolean timerAppendStar = false;
 	
 	private BlackListIOTask ioTask;
 	
@@ -119,7 +118,6 @@ public class SafeLaunchActivity extends Activity{
         offTime = data.getLong("offTime", System.currentTimeMillis());
         handleTimes(true,true);
         seenNotice = data.getBoolean("seenNotice",false);
-        boolean tempOff = data.getBoolean("tempOff", false);
         boolean writingContacts = data.getBoolean("writingContacts", false);
         data = getSharedPreferences(SafeLaunchActivity.class.getName(), MODE_PRIVATE);
         privateOnState = data.getBoolean("onState", false);
@@ -151,7 +149,6 @@ public class SafeLaunchActivity extends Activity{
         		turnOn();
         	}
         	
-        	timerAppendStar = tempOff;
         }
         else{
         	if (!privateOnState){
@@ -254,7 +251,6 @@ public class SafeLaunchActivity extends Activity{
             		if (numAttempts > MathStopActivity.MAX_ATTEMPTS) Toast.makeText(getApplicationContext(), R.string.stop_attemptsExceeded, Toast.LENGTH_SHORT).show();
             		else{
             			Intent i = new Intent(getApplicationContext(), MathStopActivity.class);
-            			i.putExtra("fullOff", true);
             			startActivity(i);
             		}
             	}
@@ -375,10 +371,6 @@ public class SafeLaunchActivity extends Activity{
     	NotificationManager notMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notMgr.cancel(LockedNotificationId);
     }
-    
-    public static void setTimerAppendStar(boolean starAppended) {
-		timerAppendStar = starAppended;
-	}
 
 	//Getters and Setters for time related variables
     public int getHour() {return hour;}
@@ -406,7 +398,7 @@ public class SafeLaunchActivity extends Activity{
     	}
 		@Override
 		public void onFinish() {
-			onOffText.setText(new Date(0).toString().substring(11,19) + (timerAppendStar ? "*" : ""));
+			onOffText.setText(new Date(0).toString().substring(11,19));
 			turnOff();
 		}
 		@Override
@@ -420,7 +412,7 @@ public class SafeLaunchActivity extends Activity{
 			millisLeft %= 60000;
 			int seconds = (int) (millisLeft/1000);
 			String dayString = days == 0 ? "" : ""+days+"days ";
-			onOffText.setText(dayString+pad(hours)+":"+pad(minutes)+":"+pad(seconds) + (timerAppendStar ? "*" : ""));
+			onOffText.setText(dayString+pad(hours)+":"+pad(minutes)+":"+pad(seconds));
 		}
 		private String pad(int input){
 			if (input < 10) return "0"+input;
