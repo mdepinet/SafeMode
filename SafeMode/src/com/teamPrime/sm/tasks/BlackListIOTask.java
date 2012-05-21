@@ -53,8 +53,6 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	public static final int READ_IDS_MODE = 1;
 	public static final int HIDE_CONTACTS_MODE = 2; //Note that this must also read ids
 	public static final int REVEAL_CONTACTS_MODE = 3;
-	public static final int RESUME_CALL_TEXT_BLOCKING = 4;
-	public static final int END_CALL_TEXT_BLOCKING = 5;
 	public static final int CONTINUE_CONTACTS_REVEAL = 6;
 	
 	public static final int SafeMode_BLOCKED_SMS_RESPONSE_CODE = 101;
@@ -70,7 +68,6 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	private static Context callTextBlockActivity;
 	private static CallInterceptor callInt;
 	private static SmsInterceptor smsInt;
-	private static boolean running = true;
 	private static Collection<String> blockedNums = null;
 	
 	public BlackListIOTask(Context activity, List<Long> contactIds, int mode){
@@ -143,13 +140,6 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			 List<Long> result2 = new LinkedList<Long>();
 			 result2.add((long) j);
 			 return result2;
-		 case RESUME_CALL_TEXT_BLOCKING:
-			 running = true;
-			 if (smsInt != null) smsInt.resetStartTime();
-			 return null;
-		 case END_CALL_TEXT_BLOCKING:
-			 running = false;
-			 return null;
 		 case CONTINUE_CONTACTS_REVEAL:
 			 List<Long> result3 = new LinkedList<Long>();
 			 result3.add((long) ContactDAO.continueReveal(mActivity));
@@ -194,7 +184,6 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			}
 			@Override
 			public void onReceive(Context c, Intent i){
-				if (!running) return;
 				if (i.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)){
 					String phoneNumber = (String) i.getExtras().get(Intent.EXTRA_PHONE_NUMBER);
 					if (isBlocked(phoneNumber, blockedNums)){
@@ -220,7 +209,6 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			
 			@Override
 			public void onChange(boolean selfChange){
-				if (!running) return;
 				Uri uriSMSURI = Uri.parse(smsUri);
 				//TODO This could definitely be more efficient
 				Cursor cur = mActivity.getContentResolver().query(uriSMSURI, new String[]{"protocol","address","_id","body","date"}, null, null, null);

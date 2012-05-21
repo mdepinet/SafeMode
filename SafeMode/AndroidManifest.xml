@@ -33,12 +33,5 @@
          			android:label="@string/app_name" />
          <activity	android:name=".TextTemplateManagementActivity"
          			android:label="@string/app_name" />
-         			
-        <receiver android:exported="true" android:name=".UserPresentReceiver">
-			<intent-filter>
-				<action android:name="android.intent.action.USER_PRESENT" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</receiver>
 	</application>
 </manifest>
