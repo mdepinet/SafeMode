@@ -2,7 +2,6 @@
 <resources>
 	<string name="yes">Yes</string>
 	<string name="no">No</string>
-    <string name="hello">Hello World, SafeLaunchActivity!</string>
     <string name="app_name">SafeMode</string>
     <string name="start_button">Start SafeMode</string>
     <string name="end_button">End SafeMode</string>
@@ -12,7 +11,7 @@
     <string name="remove_button">Remove</string>
     <string name="select_all_button">Add All</string>
     <string name="notif_locked_message">Contacts protected by SafeMode</string>
-    <string name="notif_click_here">Click here to temporarily turn off SafeMode</string>
+    <string name="notif_click_here">Click here to turn off SafeMode</string>
     <string name="notif_locked_short">SafeMode on</string>
     <string name="edit_blacklist">Edit Blacklist</string>
     <string name="view_blacklist">View Blacklist</string>
@@ -62,12 +61,12 @@
     <string name="find_selTemp_pre">Which message would you like to send to </string>
 	<string name="find_locFail">Unable to determine location</string>
 	<string name="find_unknownLoc">an undetermined location</string>
-	<string name="find_sendFail">An error occured, please try again</string>
+	<string name="find_sendFail">An error occurred. please try again</string>
 	<string name="find_sendSuccess">Location sent to </string>
 	
 	<string name ="stop_attemptsExceeded">Too many failed attempts!</string>
 	    
-    <string name="init_notice">Welcome to SafeMode! (v1.0)\n\nCopyright 2011 Mike Depinet and Boris Treskunov\n\n\n
+    <string name="init_notice">Welcome to SafeMode! (v2.0)\n\nCopyright 2012 Mike Depinet and Boris Treskunov\n\n\n
     To get started, select contacts to add to your blacklist (by using the \"Edit Blacklist\" option in the menu).
     \n\nThen you can start SafeMode by pushing the \"Start SafeMode\" button.  This will ask you for a time at which SafeMode will turn off automatically.
     \n\nUntil the time selected, the contacts in your blacklist will be unavailable (so that you cannot call, text, email, or IM them).
