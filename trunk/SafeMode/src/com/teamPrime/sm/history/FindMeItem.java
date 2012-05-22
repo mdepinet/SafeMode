@@ -19,7 +19,7 @@ public class FindMeItem extends HistoryItem {
 	}
 	
 	public String toString(){
-		return (activity==null?"Find Me Text to ":activity.getString(R.string.hist_fmText_fmTextTo)) + phoneNumber + "\n" + new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate);
+		return (activity==null?"Find Me Text to ":activity.getString(R.string.hist_fmText_fmTextTo)+" ") + phoneNumber + "\n" + new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate);
 	}
 	
 	public String getTitle(){

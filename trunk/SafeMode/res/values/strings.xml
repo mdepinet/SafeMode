@@ -19,7 +19,7 @@
     <string name="options">Options</string>
     <string name="remove_all_button">Remove All</string>
     <string name="future_reqd">Time to turn off must be in the future!</string>
-    <string name="waiting_user">Waiting for user input&#8230;</string>
+    <string name="waiting_user">Waiting for user</string>
     <string name="turn_off">SafeMode has been turned off</string>
     <string name="wrong_ans">Sorry, wrong answer&#8230;</string>
     <string name="loading">Loading contacts&#8230;</string>

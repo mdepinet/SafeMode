@@ -2,6 +2,7 @@ package com.teamPrime.sm.history.action;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.telephony.PhoneNumberUtils;
 
 import com.teamPrime.sm.HistoryActivity;
 import com.teamPrime.sm.history.HistAction;
@@ -13,10 +14,12 @@ public class RedialAction implements HistAction{
 	
 	public RedialAction(String phoneNumber){
 		this.phoneNumber = phoneNumber;
+		if (!this.phoneNumber.contains("-")) this.phoneNumber = PhoneNumberUtils.formatNumber(phoneNumber);
 	}
 
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+		if (!this.phoneNumber.contains("-")) this.phoneNumber = PhoneNumberUtils.formatNumber(phoneNumber);
 	}
 	
 	public void execute(final HistoryActivity activity){
