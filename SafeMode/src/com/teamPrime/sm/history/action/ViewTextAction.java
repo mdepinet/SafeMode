@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
 
 import com.teamPrime.sm.HistoryActivity;
@@ -22,6 +23,7 @@ public class ViewTextAction implements HistAction, DialogCreator {
 		this.phoneNumber = phoneNumber;
 		this.messageText = messageText;
 		this.responseCode = responseCode;
+		if (!this.phoneNumber.contains("-")) this.phoneNumber = PhoneNumberUtils.formatNumber(phoneNumber);
 	}
 	
 	public void setMessageText(String messageText) {
@@ -29,6 +31,7 @@ public class ViewTextAction implements HistAction, DialogCreator {
 	}
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+		if (!this.phoneNumber.contains("-")) this.phoneNumber = PhoneNumberUtils.formatNumber(phoneNumber);
 	}
 	public void setResponseCode(int responseCode) {
 		this.responseCode = responseCode;

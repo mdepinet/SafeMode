@@ -17,10 +17,11 @@ public class BlockedTextItem extends HistoryItem {
 	public BlockedTextItem(HistoryActivity activity, String phoneNumber, HistAction defaultAction, HistAction... acts) {
 		super(activity, defaultAction, acts);
 		this.phoneNumber = phoneNumber;
+		if (!this.phoneNumber.contains("-")) this.phoneNumber = PhoneNumberUtils.formatNumber(phoneNumber);
 	}
 	
 	public String toString(){
-		return (activity==null?"Blocked text to ":activity.getString(R.string.hist_bText_bTextTo)) + phoneNumber + "\n" + new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate);
+		return (activity==null?"Blocked text to ":activity.getString(R.string.hist_bText_bTextTo)+" ") + phoneNumber + "\n" + new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate);
 	}
 	
 	public String getTitle(){

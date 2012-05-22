@@ -16,10 +16,11 @@ public class BlockedCallItem extends HistoryItem {
 	public BlockedCallItem(HistoryActivity activity, String phoneNumber, HistAction defaultAction, HistAction... acts) {
 		super(activity, defaultAction, acts);
 		this.phoneNumber = phoneNumber;
+		if (!this.phoneNumber.contains("-")) this.phoneNumber = android.telephony.PhoneNumberUtils.formatNumber(phoneNumber);
 	}
 	
 	public String toString(){
-		return (activity==null?"Blocked call to ":activity.getString(R.string.hist_bCall_bCallTo)) + phoneNumber + "\n" + new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate);
+		return (activity==null?"Blocked call to ":activity.getString(R.string.hist_bCall_bCallTo)+" ") + phoneNumber + "\n" + new SimpleDateFormat(HistoryItem.DATE_FORMAT).format(creationDate);
 	}
 	
 	public String getTitle(){
