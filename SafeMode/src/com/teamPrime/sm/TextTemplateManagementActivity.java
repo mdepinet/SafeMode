@@ -129,7 +129,7 @@ public class TextTemplateManagementActivity extends ListActivity {
 		public void onClick(View v) {
 			if (!addTemplate) d.cancel();
 			else{
-				String s = ((TextView)(((View)v.getParent()).findViewById(R.id.newTemplate))).getText().toString();
+				String s = ((TextView)(((View)((View)v.getParent()).getParent()).findViewById(R.id.newTemplate))).getText().toString();
 				templatesAdapter.add(s);
 				d.dismiss();
 			}
