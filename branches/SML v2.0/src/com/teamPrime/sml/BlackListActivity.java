@@ -9,7 +9,7 @@
 
 //onSavedInstanceState()
 
-package com.teamPrime.sm;
+package com.teamPrime.sml;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,8 +32,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.teamPrime.sm.tasks.BlackListIOTask;
-import com.teamPrime.sm.tasks.PopulateTask;
+import com.teamPrime.sml.tasks.BlackListIOTask;
+import com.teamPrime.sml.tasks.PopulateTask;
 
 /**
  * This is the main activity for the blacklist

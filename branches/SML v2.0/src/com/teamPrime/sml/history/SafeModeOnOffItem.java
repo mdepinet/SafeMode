@@ -1,7 +1,7 @@
-package com.teamPrime.sm.history;
+package com.teamPrime.sml.history;
 
-import com.teamPrime.sm.HistoryActivity;
-import com.teamPrime.sm.R;
+import com.teamPrime.sml.HistoryActivity;
+import com.teamPrime.sml.R;
 
 public class SafeModeOnOffItem extends HistoryItem {
 	private static final long serialVersionUID = 6608424493099107410L;

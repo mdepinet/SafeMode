@@ -7,7 +7,7 @@
  * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package com.teamPrime.sm.tasks;
+package com.teamPrime.sml.tasks;
 
 
 import java.io.FileNotFoundException;
@@ -31,15 +31,15 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.teamPrime.sm.HistoryActivity;
-import com.teamPrime.sm.data.ContactDAO;
-import com.teamPrime.sm.data.ContactDAO.DataAccessException;
-import com.teamPrime.sm.data.ContactData;
-import com.teamPrime.sm.history.BlockedCallItem;
-import com.teamPrime.sm.history.BlockedTextItem;
-import com.teamPrime.sm.history.action.RedialAction;
-import com.teamPrime.sm.history.action.ResendTextAction;
-import com.teamPrime.sm.history.action.ViewTextAction;
+import com.teamPrime.sml.HistoryActivity;
+import com.teamPrime.sml.data.ContactDAO;
+import com.teamPrime.sml.data.ContactData;
+import com.teamPrime.sml.data.ContactDAO.DataAccessException;
+import com.teamPrime.sml.history.BlockedCallItem;
+import com.teamPrime.sml.history.BlockedTextItem;
+import com.teamPrime.sml.history.action.RedialAction;
+import com.teamPrime.sml.history.action.ResendTextAction;
+import com.teamPrime.sml.history.action.ViewTextAction;
 
 /**
  * BlackListIOTask takes care of calling ContactDAO in the

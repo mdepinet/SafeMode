@@ -1,4 +1,4 @@
-package com.teamPrime.sm.history;
+package com.teamPrime.sml.history;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -10,8 +10,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 
-import com.teamPrime.sm.HistoryActivity;
-import com.teamPrime.sm.R;
+import com.teamPrime.sml.HistoryActivity;
+import com.teamPrime.sml.R;
 
 public abstract class HistoryItem implements Serializable, DialogCreator{
 	private static final long serialVersionUID = -7064460474245401203L;

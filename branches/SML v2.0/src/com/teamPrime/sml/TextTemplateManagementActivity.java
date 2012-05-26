@@ -1,4 +1,4 @@
-package com.teamPrime.sm;
+package com.teamPrime.sml;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.teamPrime.sm.tasks.TemplateLoadingTask;
+import com.teamPrime.sml.tasks.TemplateLoadingTask;
 
 public class TextTemplateManagementActivity extends ListActivity {
 	private static final int CONFIRM_DELETE_DIALOG_ID = 0;

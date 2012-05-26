@@ -1,12 +1,12 @@
-package com.teamPrime.sm.history;
+package com.teamPrime.sml.history;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.telephony.PhoneNumberUtils;
 
-import com.teamPrime.sm.HistoryActivity;
-import com.teamPrime.sm.R;
+import com.teamPrime.sml.HistoryActivity;
+import com.teamPrime.sml.R;
 
 public class BlockedCallItem extends HistoryItem {
 	private static final long serialVersionUID = -361038583952900332L;

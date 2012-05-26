@@ -1,11 +1,11 @@
-package com.teamPrime.sm.history.action;
+package com.teamPrime.sml.history.action;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.telephony.PhoneNumberUtils;
 
-import com.teamPrime.sm.HistoryActivity;
-import com.teamPrime.sm.history.HistAction;
+import com.teamPrime.sml.HistoryActivity;
+import com.teamPrime.sml.history.HistAction;
 
 public class RedialAction implements HistAction{
 	private static final long serialVersionUID = -3193720366235758845L;

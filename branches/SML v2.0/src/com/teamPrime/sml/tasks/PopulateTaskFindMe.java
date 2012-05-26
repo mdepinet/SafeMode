@@ -7,14 +7,14 @@
  * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package com.teamPrime.sm.tasks;
+package com.teamPrime.sml.tasks;
 
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
-import com.teamPrime.sm.FindMeActivity;
-import com.teamPrime.sm.R;
+import com.teamPrime.sml.FindMeActivity;
+import com.teamPrime.sml.R;
 
 public class PopulateTaskFindMe extends AsyncTask<Void, Integer, Void> {
 	private FindMeActivity mActivity;

@@ -7,7 +7,7 @@
  * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package com.teamPrime.sm.tasks;
+package com.teamPrime.sml.tasks;
 
 
 import android.app.ProgressDialog;
@@ -15,8 +15,8 @@ import android.os.AsyncTask;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
-import com.teamPrime.sm.BlackListActivity;
-import com.teamPrime.sm.R;
+import com.teamPrime.sml.BlackListActivity;
+import com.teamPrime.sml.R;
 
 /**
  * PopulateTask populates the auto complete behind

@@ -7,7 +7,7 @@
  * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package com.teamPrime.sm;
+package com.teamPrime.sml;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -36,9 +36,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.teamPrime.sm.history.SafeModeOnOffItem;
-import com.teamPrime.sm.tasks.BlackListIOTask;
-import com.teamPrime.sm.tasks.DateWaitTask;
+import com.teamPrime.sml.history.SafeModeOnOffItem;
+import com.teamPrime.sml.tasks.BlackListIOTask;
+import com.teamPrime.sml.tasks.DateWaitTask;
 
 /**
  * This is our main activity.  It allows the user to start and stop the app, as well as 

@@ -1,4 +1,4 @@
-package com.teamPrime.sm.history.action;
+package com.teamPrime.sml.history.action;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -7,10 +7,10 @@ import android.content.DialogInterface;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
 
-import com.teamPrime.sm.HistoryActivity;
-import com.teamPrime.sm.history.DialogCreator;
-import com.teamPrime.sm.history.HistAction;
-import com.teamPrime.sm.tasks.BlackListIOTask;
+import com.teamPrime.sml.HistoryActivity;
+import com.teamPrime.sml.history.DialogCreator;
+import com.teamPrime.sml.history.HistAction;
+import com.teamPrime.sml.tasks.BlackListIOTask;
 
 public class ViewTextAction implements HistAction, DialogCreator {
 	private static final long serialVersionUID = 8408088951105555088L;
