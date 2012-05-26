@@ -3,7 +3,7 @@
 <!-- These are the strings used in Spanish -->
 	<string name="yes">Si</string>
 	<string name="no">No</string>
-    <string name="app_name">SafeMode</string>
+    <string name="app_name">SafeMode Lite</string>
     <string name="start_button">Comenzar SafeMode</string>
     <string name="end_button">Terminar SafeMode</string>
     <string name="submit_button">Presentar</string>
@@ -24,8 +24,7 @@
     <string name="turn_off">SafeMode se ha apagado</string>
     <string name="wrong_ans">Lo sentimos, respuesta equivocada&#8230;</string>
     <string name="loading">Contactos de carga&#8230;</string>
-    <string name="loading_hist">Carga de la historia&#8230;</string>
-    <string name="loading_location">La determinación de la ubicación&#8230;</string>
+    <string name="sm_only">Lo sentimos, esta función sólo está disponible en la versión completa.</string>
     
     <string name="bl_err_incor_name">Nombre de contacto incorrecta</string>
     <string name="bl_err_contact_present">Contacto ya en la lista negra</string>
@@ -34,36 +33,5 @@
     <string name="bl_state_all_rem">Todos los contactos fueron retirados de la lista negra</string>
     <string name="bl_list_empty">Su lista negra está vacío&#8230;</string>
     
-    <string name="hist_clear">Borrar historial</string>
-    <string name="hist_view_button">Ver el historial</string>
-    <string name="hist_empty">Su historia está actualmente vacía&#8230;</string>
-    <string name="hist_bCall_bCallTo">Llamada bloqueada para</string>
-    <string name="hist_bCall_bCall">Llamada bloqueada</string>
-    <string name="hist_bText_bTextTo">Texto bloqueado para</string>
-    <string name="hist_bText_bText">Texto bloqueado</string>
-    <string name="hist_date">Fecha: </string>
-    <string name="hist_fmText_fmTextTo">Encuéntrame Texto para</string>
-    <string name="hist_fmText_fmText">Encuéntrame Texto</string>
-    <string name="hist_activated">activado</string>
-    <string name="hist_deactivated">desactivado</string>
-    <string name="hist_paused">hizo una pausa</string>
-    
-    <string name="find_button">Encuéntrame</string>
-    <string name="find_loading">plantillas de carga&#8230;</string>
-    <string name ="find_confirm_delete">¿Quieres borrar este mensaje?</string>
-    <string name="find_manage_templates">Administrar plantillas</string>
-    <string name="find_add_template">Añadir plantilla</string>
-    <string name="find_defText1" formatted="false">Estoy en %l.</string>
-    <string name="find_defText2" formatted="false">Nos vemos en %l.</string>
-    <string name="find_defText3" formatted="false">Hola %f! Me desperté en el %l y podría usar un poco de ayuda de llegar a casa!</string>
-    <string name="find_defText4" formatted="false">%f, estoy en %l, ven a por mí!</string>
-    <string name="find_defText5" formatted="false">No sé cómo volver a casa! Estoy en %l.</string>
-    <string name="find_defText6" formatted="false">Hola %f! ¿A quién os dejo la última noche?</string>
-    <string name="find_selTemp_pre">¿Qué mensaje le gustaría enviar a </string>
-	<string name="find_locFail">No se puede determinar la ubicación</string>
-	<string name="find_unknownLoc">un lugar indeterminado</string>
-	<string name="find_sendFail">Se produjo un error. inténtalo de nuevo</string>
-	<string name="find_sendSuccess">Localización enviado a </string>
-	
 	<string name ="stop_attemptsExceeded">Demasiados intentos fallidos!</string>
 </resources>
