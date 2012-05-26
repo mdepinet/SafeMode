@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!-- These are the strings used in Spanish -->
+	<string name="yes">Si</string>
+	<string name="no">No</string>
+    <string name="app_name">SafeMode Lite</string>
+    <string name="start_button">Comenzar SafeMode</string>
+    <string name="end_button">Terminar SafeMode</string>
+    <string name="submit_button">Presentar</string>
+    <string name="blacklist_add">(Escriba el nombre de un contacto!)</string>
+    <string name="add_button">Añadir</string>
+    <string name="remove_button">Quitar</string>
+    <string name="select_all_button">Añadir\nTodos</string>
+    <string name="notif_locked_message">Contactos protegidos por SafeMode</string>
+    <string name="notif_click_here">Haga clic aquí para desactivar SafeMode</string>
+    <string name="notif_locked_short">SafeMode en</string>
+    <string name="edit_blacklist">Editar la Lista Nigra</string>
+    <string name="view_blacklist">Ver la Lista Nigra</string>
+    <string name="math_question">Que es </string>
+    <string name="options">Opciones</string>
+    <string name="remove_all_button">Quitar\nTodos</string>
+    <string name="future_reqd">Tiempo para apagar debe ser en el futuro!</string>
+    <string name="waiting_user">La espera de la entrada del usuario&#8230;</string>
+    <string name="turn_off">SafeMode se ha apagado</string>
+    <string name="wrong_ans">Lo sentimos, respuesta equivocada&#8230;</string>
+    <string name="loading">Contactos de carga&#8230;</string>
+    <string name="sm_only">Lo sentimos, esta función sólo está disponible en la versión completa.</string>
+    
+    <string name="bl_err_incor_name">Nombre de contacto incorrecta</string>
+    <string name="bl_err_contact_present">Contacto ya en la lista negra</string>
+    <string name="bl_err_all_present">Todos los contactos que ya están en lista negra</string>
+    <string name="bl_err_not_present">Contacto no aparece en la lista negra</string>
+    <string name="bl_state_all_rem">Todos los contactos fueron retirados de la lista negra</string>
+    <string name="bl_list_empty">Su lista negra está vacío&#8230;</string>
+    
+	<string name ="stop_attemptsExceeded">Demasiados intentos fallidos!</string>
+</resources>
