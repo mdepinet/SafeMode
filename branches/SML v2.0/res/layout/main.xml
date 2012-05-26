@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:background="@drawable/background">
+    <Button
+    android:text="@string/start_button"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:id="@+id/onOffButton"
+    android:onClick="onClick"
+    ></Button>
+    <TextView
+    android:text=""
+    android:id="@+id/countdownTimer"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:textColor="#FF0000"/>
+</LinearLayout> -->
+<com.google.android.apps.iosched.ui.widget.DashboardLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
+    
+    <LinearLayout android:orientation="vertical" android:gravity="center"
+    	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	    <ImageButton 
+	    	android:src="@drawable/dashboard_lock" 
+	    	android:layout_width="wrap_content" 
+	    	android:layout_height="wrap_content"
+	        android:id="@+id/dashboard_onOff"
+	        android:onClick="onClick" 
+	        android:scaleType="center"
+	        android:background="@android:color/black"
+	        />
+	    <TextView 
+	    	android:text="Start SafeMode" 
+	    	android:id="@+id/dashboard_onOff_text" 
+	    	android:textColor="#FFFFFF"
+	    	android:textStyle="bold"
+	    	android:layout_height="wrap_content" 
+	    	android:layout_width="wrap_content" />
+    </LinearLayout>
+    
+    <LinearLayout android:orientation="vertical" android:gravity="center"
+    	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	    <ImageButton 
+	    	android:src="@drawable/dashboard_blacklist" 
+	    	android:layout_width="wrap_content" 
+	    	android:layout_height="wrap_content"
+	        android:id="@+id/dashboard_blacklist"
+	        android:onClick="onClick" 
+	        android:scaleType="center"
+	        android:background="@android:color/black" />
+	    <TextView 
+	    	android:text="Edit Blacklist" 
+	    	android:id="@+id/dashboard_blacklist_text" 
+	    	android:textColor="#FFFFFF"
+	    	android:textStyle="bold"
+	    	android:layout_height="wrap_content" 
+	    	android:layout_width="wrap_content" />
+    </LinearLayout>
+    
+    <LinearLayout android:orientation="vertical" android:gravity="center"
+    	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	    <ImageButton 
+	    	android:src="@drawable/dashboard_history" 
+	    	android:layout_width="wrap_content" 
+	    	android:layout_height="wrap_content"
+	        android:id="@+id/dashboard_history"
+	        android:onClick="onClick" 
+	        android:scaleType="center"
+	        android:background="@android:color/black" />
+	    <TextView 
+	    	android:text="View History" 
+	    	android:id="@+id/dashboard_history_text" 
+	    	android:textColor="#FFFFFF"
+	    	android:textStyle="bold"
+	    	android:layout_height="wrap_content" 
+	    	android:layout_width="wrap_content" />
+    </LinearLayout>
+    
+	    <Button 
+	    	android:drawableTop="@drawable/dashboard_map" 
+	    	android:layout_width="wrap_content" 
+	    	android:layout_height="wrap_content"
+	        android:id="@+id/dashboard_find_me"
+	        android:onClick="onClick" 
+	        android:scaleType="center"
+			android:text="Find me" 
+	    	android:textColor="@android:color/white"
+	    	android:textStyle="bold"
+	    	android:background="@android:color/black" />
+</com.google.android.apps.iosched.ui.widget.DashboardLayout>
