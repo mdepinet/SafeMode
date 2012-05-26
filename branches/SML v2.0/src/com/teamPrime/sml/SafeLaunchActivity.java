@@ -36,7 +36,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.teamPrime.sml.history.SafeModeOnOffItem;
 import com.teamPrime.sml.tasks.BlackListIOTask;
 import com.teamPrime.sml.tasks.DateWaitTask;
 
@@ -261,10 +260,10 @@ public class SafeLaunchActivity extends Activity{
             	startActivity(i);
             	break;
             case R.id.dashboard_history:
-            	startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+            	Toast.makeText(this, getString(R.string.sm_only), Toast.LENGTH_SHORT).show();
             	break;
             case R.id.dashboard_find_me:
-            	startActivity(new Intent(getApplicationContext(), FindMeActivity.class));
+            	Toast.makeText(this, getString(R.string.sm_only), Toast.LENGTH_SHORT).show();
             	break;
         }
     }
@@ -332,8 +331,6 @@ public class SafeLaunchActivity extends Activity{
     	timer = new SimpleTimer(timeLeft,1000);
         timer.start();
         timeUpdated = dateUpdated = false;
-		
-		HistoryActivity.addItem(getApplicationContext(), new SafeModeOnOffItem(true, null, null));
     }
     
     private void turnOff(){
@@ -355,8 +352,6 @@ public class SafeLaunchActivity extends Activity{
 		SharedPreferences.Editor editor = getSharedPreferences("SAFEMODE",MODE_PRIVATE).edit();
 		editor.putInt("failedAttempts", 0);
 		editor.commit();
-		
-		HistoryActivity.addItem(getApplicationContext(), new SafeModeOnOffItem(false, null, null));
     }
     
     private void showIcon(){

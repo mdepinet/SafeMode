@@ -31,15 +31,9 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.teamPrime.sml.HistoryActivity;
 import com.teamPrime.sml.data.ContactDAO;
-import com.teamPrime.sml.data.ContactData;
 import com.teamPrime.sml.data.ContactDAO.DataAccessException;
-import com.teamPrime.sml.history.BlockedCallItem;
-import com.teamPrime.sml.history.BlockedTextItem;
-import com.teamPrime.sml.history.action.RedialAction;
-import com.teamPrime.sml.history.action.ResendTextAction;
-import com.teamPrime.sml.history.action.ViewTextAction;
+import com.teamPrime.sml.data.ContactData;
 
 /**
  * BlackListIOTask takes care of calling ContactDAO in the
@@ -193,8 +187,6 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 					if (isBlocked(phoneNumber, blockedNums)){
 						setResultData(null); //Don't make the call
 						Toast.makeText(c, "Call blocked by SafeMode", Toast.LENGTH_SHORT).show();
-						RedialAction ra = new RedialAction(phoneNumber);
-						HistoryActivity.addItem(c, new BlockedCallItem(null, phoneNumber, ra));
 					}
 				}
 			}
@@ -227,9 +219,6 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 						if (recTime < startTime) continue;
 						mActivity.getContentResolver().delete(uriSMSURI, "_id=?", new String[]{ID}); //Don't send it hopefully
 						Toast.makeText(mActivity, "SMS blocked by SafeMode", Toast.LENGTH_SHORT).show();
-						ViewTextAction vta = new ViewTextAction(number, body, SafeMode_BLOCKED_SMS_RESPONSE_CODE);
-						ResendTextAction rta = new ResendTextAction(number, body, false);
-						HistoryActivity.addItem(mActivity, new BlockedTextItem(null,number,vta,rta));
 						break; //Don't delete all the messages that have been sent!
 					}
 				}
