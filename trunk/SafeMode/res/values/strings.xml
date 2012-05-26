@@ -61,7 +61,7 @@
     <string name="find_selTemp_pre">Which message would you like to send to </string>
 	<string name="find_locFail">Unable to determine location</string>
 	<string name="find_unknownLoc">an undetermined location</string>
-	<string name="find_sendFail">An error occurred. please try again</string>
+	<string name="find_sendFail">An error occurred. Please try again.</string>
 	<string name="find_sendSuccess">Location sent to </string>
 	
 	<string name ="stop_attemptsExceeded">Too many failed attempts!</string>
