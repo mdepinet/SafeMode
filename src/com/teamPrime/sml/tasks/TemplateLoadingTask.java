@@ -1,4 +1,4 @@
-package com.teamPrime.sm.tasks;
+package com.teamPrime.sml.tasks;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
-import com.teamPrime.sm.R;
+import com.teamPrime.sml.R;
 
 public class TemplateLoadingTask extends AsyncTask<Void, Void, Integer>{
 	public static final int READ_MODE = 0;

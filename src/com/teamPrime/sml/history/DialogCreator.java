@@ -1,8 +1,8 @@
-package com.teamPrime.sm.history;
+package com.teamPrime.sml.history;
 
 import android.app.Dialog;
 
-import com.teamPrime.sm.HistoryActivity;
+import com.teamPrime.sml.HistoryActivity;
 
 public interface DialogCreator {
 	public Dialog createDialog(HistoryActivity activity, int dialogSubId);

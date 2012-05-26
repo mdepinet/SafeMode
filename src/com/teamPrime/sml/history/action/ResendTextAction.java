@@ -1,4 +1,4 @@
-package com.teamPrime.sm.history.action;
+package com.teamPrime.sml.history.action;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -10,8 +10,8 @@ import android.content.SharedPreferences;
 import android.telephony.SmsManager;
 import android.widget.Toast;
 
-import com.teamPrime.sm.HistoryActivity;
-import com.teamPrime.sm.history.HistAction;
+import com.teamPrime.sml.HistoryActivity;
+import com.teamPrime.sml.history.HistAction;
 
 public class ResendTextAction implements HistAction{
 	private static final long serialVersionUID = -2975499624925840868L;

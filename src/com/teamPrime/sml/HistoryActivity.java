@@ -1,4 +1,4 @@
-package com.teamPrime.sm;
+package com.teamPrime.sml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,9 +33,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.teamPrime.sm.history.DateItem;
-import com.teamPrime.sm.history.DialogCreator;
-import com.teamPrime.sm.history.HistoryItem;
+import com.teamPrime.sml.history.DateItem;
+import com.teamPrime.sml.history.DialogCreator;
+import com.teamPrime.sml.history.HistoryItem;
 
 public class HistoryActivity extends ListActivity {
 	private static final int STARTING_CALLBACK_DIALOG_ID = -1;

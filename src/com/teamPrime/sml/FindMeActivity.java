@@ -7,7 +7,7 @@
  * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package com.teamPrime.sm;
+package com.teamPrime.sml;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -61,13 +61,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.teamPrime.sm.history.FindMeItem;
-import com.teamPrime.sm.history.HistAction;
-import com.teamPrime.sm.history.HistoryItem;
-import com.teamPrime.sm.history.action.ResendTextAction;
-import com.teamPrime.sm.history.action.ViewTextAction;
-import com.teamPrime.sm.tasks.PopulateTaskFindMe;
-import com.teamPrime.sm.tasks.TemplateLoadingTask;
+import com.teamPrime.sml.history.FindMeItem;
+import com.teamPrime.sml.history.HistAction;
+import com.teamPrime.sml.history.HistoryItem;
+import com.teamPrime.sml.history.action.ResendTextAction;
+import com.teamPrime.sml.history.action.ViewTextAction;
+import com.teamPrime.sml.tasks.PopulateTaskFindMe;
+import com.teamPrime.sml.tasks.TemplateLoadingTask;
 
 public class FindMeActivity extends ListActivity {	
 	private EditText mEditText;	

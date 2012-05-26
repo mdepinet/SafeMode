@@ -7,7 +7,7 @@
  * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package com.teamPrime.sm;
+package com.teamPrime.sml;
 
 import java.util.Random;
 
