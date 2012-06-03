@@ -205,22 +205,25 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			
 			@Override
 			public void onChange(boolean selfChange){
-				Uri uriSMSURI = Uri.parse(smsUri);
-				//TODO This could definitely be more efficient
-				Cursor cur = mActivity.getContentResolver().query(uriSMSURI, new String[]{"protocol","address","_id","body","date"}, null, null, null);
-				while(cur.moveToNext()){
-					String protocol = cur.getString(0);
-					String number = cur.getString(1);
-					if (protocol != null) continue;
-					if (isBlocked(number, blockedNums)){
-						String ID = cur.getString(2);
-						String body = cur.getString(3);
-						long recTime = cur.getLong(4);
-						if (recTime < startTime) continue;
-						mActivity.getContentResolver().delete(uriSMSURI, "_id=?", new String[]{ID}); //Don't send it hopefully
-						Toast.makeText(mActivity, "SMS blocked by SafeMode", Toast.LENGTH_SHORT).show();
-						break; //Don't delete all the messages that have been sent!
+				try{
+					Uri uriSMSURI = Uri.parse(smsUri);
+					//TODO This could definitely be more efficient
+					Cursor cur = mActivity.getContentResolver().query(uriSMSURI, new String[]{"protocol","address","_id","body","date"}, null, null, null);
+					while(cur.moveToNext()){
+						String protocol = cur.getString(0);
+						String number = cur.getString(1);
+						if (protocol != null) continue;
+						if (isBlocked(number, blockedNums)){
+							String ID = cur.getString(2);
+							long recTime = cur.getLong(4);
+							if (recTime < startTime) continue;
+							mActivity.getContentResolver().delete(uriSMSURI, "_id=?", new String[]{ID}); //Don't send it hopefully
+							Toast.makeText(mActivity, "SMS blocked by SafeMode", Toast.LENGTH_SHORT).show();
+							break; //Don't delete all the messages that have been sent!
+						}
 					}
+				} catch (Throwable t) {
+					Log.w("SAFEMODE - SMS Blocking", "Failed to block text", t);
 				}
 			}
 		}
