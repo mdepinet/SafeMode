@@ -1,5 +1,5 @@
 /**
- * Copyright © 2011 Mike Depinet
+ * Copyright © 2012 Mike Depinet
  * All rights reserved
  * 
  * This file is distributed as a part of the SAFEMODE application for
@@ -44,7 +44,7 @@ import com.teamPrime.sm.tasks.DateWaitTask;
  * This is our main activity.  It allows the user to start and stop the app, as well as 
  * go to the blacklist management activity.
  * @author Mike Depinet
- * @version 1.0
+ * @version 2.0
  */
 public class SafeLaunchActivity extends Activity{	
 	private boolean applicationOnState = false;
