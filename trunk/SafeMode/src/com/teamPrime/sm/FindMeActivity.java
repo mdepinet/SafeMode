@@ -1,5 +1,5 @@
 /**
- * Copyright © 2011 Boris Treskunov
+ * Copyright © 2012 Mike Depinet
  * All rights reserved
  * 
  * This file is distributed as a part of the SAFEMODE application for
@@ -165,7 +165,6 @@ public class FindMeActivity extends ListActivity {
 				phones.close();
 		
 		showDialog(MESSAGES_DIALOG_ID);	
-		//getLocationAndSendSMS(); 
 	}
 	
 	public void populateCustomMessages(){
@@ -224,65 +223,9 @@ public class FindMeActivity extends ListActivity {
 			populateCustomMessages(); //This is fine because the dialog will only be created once anyway
 			d = new Dialog(this, R.style.CustomMessagesDialogTheme);
 			break;
-//		case ADD_MESSAGE_DIALOG_ID:
-//			final Dialog addDialog = new Dialog(this, R.layout.add_text_template);
-//			((Button)(addDialog.findViewById(R.id.addTemplateButton))).setOnClickListener(new AddTemplateClickListener(this,addDialog));
-//			d = addDialog;
-//			break;
-//		case DELETE_MESSAGE_DIALOG_ID:
-//			d = new AlertDialog.Builder(this).setMessage(getString(R.string.find_confirm_delete))
-//		           .setCancelable(false)
-//		           .setPositiveButton(getString(R.string.yes), new ConfirmDeleteClickListener(this))
-//		           .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-//		               public void onClick(DialogInterface dialog, int id) {
-//		                    dialog.cancel();
-//		               }
-//		           }).create();
-//			break;
 		}
 		return d;
 	}
-//	class ConfirmDeleteClickListener implements DialogInterface.OnClickListener{
-//		private FindMeActivity mActivity;
-//		public ConfirmDeleteClickListener(FindMeActivity act){
-//			mActivity = act;
-//		}
-//		public void onClick(DialogInterface dialog, int id) {
-//            customMessages.remove(selectedTemplate);
-//            mActivity.dismissDialog(MESSAGES_DIALOG_ID);
-//            dialog.dismiss();
-//            TemplateLoadingTask loadingTask = new TemplateLoadingTask(mActivity, customMessages, TemplateLoadingTask.WRITE_MODE);
-//    		loadingTask.execute((Void[])null);
-//    		try {
-//    			loadingTask.get(4500, TimeUnit.MILLISECONDS); //TODO Should we really only wait 4.5s?
-//    		} catch (InterruptedException e) {
-//    			Log.w("SAFEMODE", "Failed to load templates in time", e);
-//    			loadingTask.cancel(true);
-//    		} catch (ExecutionException e) {
-//    			Log.w("SAFEMODE", "Failed to load templates in time", e);
-//    			loadingTask.cancel(true);
-//    		} catch (TimeoutException e) {
-//    			Log.w("SAFEMODE", "Failed to load templates in time", e);
-//    			loadingTask.cancel(true);
-//    		}
-//       }
-//	}
-//	class AddTemplateClickListener implements OnClickListener{
-//		private FindMeActivity mActivity;
-//		private Dialog d;
-//		public AddTemplateClickListener(FindMeActivity act, Dialog d){
-//			mActivity = act;
-//			this.d = d;
-//		}
-//		@Override
-//		public void onClick(View v) {
-//			List<String> addedTemplate = new LinkedList<String>();
-//			addedTemplate.add(((TextView)(d.findViewById(R.id.newTemplate))).getText().toString());
-//			new TemplateLoadingTask(mActivity, addedTemplate, TemplateLoadingTask.APPEND_MODE).execute((Void[])null);
-//			customMessages.removeAll(addedTemplate);
-//			d.dismiss();
-//		}
-//	}
 	
 	@Override
 	public void onPrepareDialog(int id, final Dialog d){

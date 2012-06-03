@@ -1,5 +1,5 @@
 /**
- * Copyright © 2011 Mike Depinet
+ * Copyright © 2012 Mike Depinet
  * All rights reserved
  * 
  * This file is distributed as a part of the SAFEMODE application for
@@ -28,8 +28,8 @@ public class MathStopActivity extends Activity{
 	private int corAnswer;
 	private boolean onState;
 	private int numAttempts;
-    /** Called when the activity is first created. */
-    @Override
+
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.math_stop);
@@ -47,7 +47,6 @@ public class MathStopActivity extends Activity{
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
     }
 
-    /** Called upon subsequent calls to Activity **/
     
     @Override
    protected void onResume() {

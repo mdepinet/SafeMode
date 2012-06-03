@@ -1,5 +1,5 @@
 /**
- * Copyright © 2011 Mike Depinet
+ * Copyright © 2012 Mike Depinet
  * All rights reserved
  * 
  * This file is distributed as a part of the SAFEMODE application for
@@ -46,7 +46,7 @@ import android.util.Log;
  * database come through here.
  * 
  * @author Mike Depinet
- * @version 1.0
+ * @version 2.0
  */
 public class ContactDAO {
 	private static final String contactSaveLoc = "SAFEMODE_contactData.bin";

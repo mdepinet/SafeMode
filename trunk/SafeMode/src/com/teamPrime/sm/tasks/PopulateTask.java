@@ -1,5 +1,5 @@
 /**
- * Copyright © 2011 Boris Treskunov
+ * Copyright © 2012 Mike Depinet
  * All rights reserved
  * 
  * This file is distributed as a part of the SAFEMODE application for
@@ -53,7 +53,6 @@ public class PopulateTask extends AsyncTask<Void, Integer, Void> {
     // Runs on main thread.
     @Override
     protected void onPostExecute(Void result) {
-    	//mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     	mActivity.setArrayAdapter(new ArrayAdapter<String>(mActivity,android.R.layout.simple_dropdown_item_1line,mActivity.getContactNames()));
     	mActivity.setAutoComplete((AutoCompleteTextView)mActivity.findViewById(R.id.blacklist_text));
         mActivity.getAutoComplete().setAdapter(mActivity.getArrayAdapter());

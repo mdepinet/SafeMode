@@ -1,5 +1,5 @@
 /**
- * Copyright © 2011 Mike Depinet
+ * Copyright © 2012 Mike Depinet
  * All rights reserved
  * 
  * This file is distributed as a part of the SAFEMODE application for

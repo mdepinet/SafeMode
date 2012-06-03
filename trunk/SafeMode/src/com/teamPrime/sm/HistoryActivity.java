@@ -1,3 +1,12 @@
+/**
+ * Copyright © 2012 Mike Depinet
+ * All rights reserved
+ * 
+ * This file is distributed as a part of the SAFEMODE application for
+ * Android devices.  SAFEMODE is distributed under Apache License 2.0
+ * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package com.teamPrime.sm;
 
 import java.io.ByteArrayInputStream;
@@ -42,7 +51,6 @@ public class HistoryActivity extends ListActivity {
 	private static final String SHARED_PREF_NAME = "SafeMode - History";
 	private static final String FILE_NAME_PREFIX = "HistoryItem ";
 	
-	//private ArrayAdapter<HistoryItem> adapter;
 	private HistoryAdapter historyAdapter;
 	private static List<HistoryItem> items;
 	private static final HistoryItem emptyItem = new HistoryItem(null,null){
@@ -221,7 +229,6 @@ public class HistoryActivity extends ListActivity {
         
         @Override
         public View getView(int position, View view, ViewGroup parent) {
-                //RelativeLayout v = (RelativeLayout) view;
         		RelativeLayout v = null; //Using the view that's passed in causes strange problems (Issue 22)
                 TextView dateView;
                 TextView title;

@@ -1,5 +1,5 @@
 /**
- * Copyright © 2011 Mike Depinet
+ * Copyright © 2012 Mike Depinet
  * All rights reserved
  * 
  * This file is distributed as a part of the SAFEMODE application for
@@ -46,7 +46,7 @@ import com.teamPrime.sm.history.action.ViewTextAction;
  * background with the proper contact ids.
  * 
  * @author Mike Depinet
- * @version 1.0
+ * @version 2.0
  */
 public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	public static final int WRITE_IDS_MODE = 0;
@@ -85,7 +85,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 		 if (mHandler == null) mHandler = new Handler();
 	 }
 
-  // Runs on main thread.
+	 // Runs on main thread.
 	 @Override
 	 protected void onProgressUpdate(Void... arg0) {
 	 }
