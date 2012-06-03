@@ -30,6 +30,7 @@
     <string name="bl_err_contact_present">Kontakt bereits in Blacklist</string>
     <string name="bl_err_all_present">Alle Kontakte, die bereits in Blacklist</string>
     <string name="bl_err_not_present">Kontakt ist nicht in Blacklist</string>
+    <string name="bl_err_limit_reached">Sie können nicht mehr blockieren, ohne Kontakte der Vollversion.</string>
     <string name="bl_state_all_rem">Alle Kontakte von der Blacklist entfernt</string>
     <string name="bl_list_empty">Ihre schwarze Liste ist leer&#8230;</string>
 	

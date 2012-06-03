@@ -41,8 +41,8 @@ import com.teamPrime.sml.tasks.PopulateTask;
  * @author Boris Treskunov
  *  
  */
-public class BlackListActivity extends ListActivity {
-    /** Called when the activity is first created. */
+public class BlackListActivity extends ListActivity {	
+	private static final int MAX_BLOCKED = 1;
 	
 	private Button mAddButton;	
 	private Button mAddAll;
@@ -54,15 +54,9 @@ public class BlackListActivity extends ListActivity {
 	private List<String> blacklistedContacts = new LinkedList<String>();
 	private List<String> addedContacts = new LinkedList<String>();
 	private List<Long> addedContactIds = new LinkedList<Long>();
-//	private List<Contact> contacts = new LinkedList<Contact>();
 	
 	private AutoCompleteTextView mAutoComplete;
 	private ArrayAdapter<String> mArrayAdapterAC;
-	
-//	private ArrayList<String> contactNames = new ArrayList<String>(); 
-//	Map<Long, Triple<String,Integer,String>[]> iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
-//	Map<Long, Triple<String,Integer,String>[]> iDmapPrev = new TreeMap<Long, Triple <String,Integer,String>[]>();
-//	Map<Long, Triple<String,Integer,String>[]> iDmapFull = new TreeMap<Long, Triple <String,Integer,String>[]>();
 	
 	boolean readOnly = false;
 	boolean emptyList = true;
@@ -91,7 +85,6 @@ public class BlackListActivity extends ListActivity {
         	instantiateVariables();
         	mTask = new PopulateTask(this);
         	mTask.execute((Void[])(null));
-        	//populatePeopleList();    
         	restore();
  
 	        mAddButton.setOnClickListener(new OnClickListener(){    	 	
@@ -103,64 +96,36 @@ public class BlackListActivity extends ListActivity {
 	        		else if (addedContacts.contains(name))
 	        			Toast.makeText(getApplicationContext(), getString(R.string.bl_err_contact_present), Toast.LENGTH_SHORT).show();
 	        		else{
-	        			mArrayAdapterBL.add(name);
-	        			addedContacts.add(name);
-	        			//addedContactIds.add(nameToIdMap.get(name));
-	        			if(emptyList){
-		        			mArrayAdapterBL.remove(getString(R.string.bl_list_empty));
-		        			emptyList = false;
-		        		}
-//	        			for(int i = 0; i < contacts.toArray().length; i++){
-//	        				if(contacts.get(i).match(name))
-//	        					iDmap.put(Long.parseLong(contacts.get(i).getID()), contacts.get(i).getNumber());
-//	        			}
-	        			//Log.i("safemode", iDmap.toString());
+	        			if (addedContacts.size() < MAX_BLOCKED){
+		        			mArrayAdapterBL.add(name);
+		        			addedContacts.add(name);
+		        			if(emptyList){
+			        			mArrayAdapterBL.remove(getString(R.string.bl_list_empty));
+			        			emptyList = false;
+			        		}
+	        			}
+	        			else {
+	        				Toast.makeText(getApplicationContext(), getString(R.string.bl_err_limit_reached), Toast.LENGTH_SHORT).show();
+	        			}
 	        		}
 	        		Collections.sort(blacklistedContacts);
 	        		getAutoComplete().setText("");
 	        		}
 	        	}
-	        	});
+	        });
 	
 	        mAddAll.setOnClickListener(new OnClickListener(){    	 	
 	        	public void onClick(View v){	
-	        		if (getArrayAdapter()!=null){
-	        		if(emptyList){
-	        			mArrayAdapterBL.remove(getString(R.string.bl_list_empty));
-	        			emptyList = false;
-	        		}
-	        		int initialSize = addedContacts.size();
-	        		for(String name: contactNames) {
-	        			if (!addedContacts.contains(name)){
-	        				mArrayAdapterBL.add(name);
-	        				addedContacts.add(name);
-	        				//addedContactIds.add(nameToIdMap.get(name));
-	        				}
-	        			if (addedContacts.size()==initialSize) 
-	        				Toast.makeText(getApplicationContext(), getString(R.string.bl_err_all_present), Toast.LENGTH_SHORT).show();
-//	        			iDmap.put(Long.parseLong(contact.getID()), contact.getNumber());
-	        			}
-	        		//Log.i("safemode", iDmap.toString());
-	        		Collections.sort(blacklistedContacts);
-	        		getAutoComplete().setText("");
-	        		}
+	        		Toast.makeText(getApplicationContext(), getString(R.string.sm_only), Toast.LENGTH_SHORT).show();
 	        	}
-	        	});
+	        });
 	
 	       	mRemoveAll.setOnClickListener(new OnClickListener(){    	 	
 	       		public void onClick(View v){ 
 	       			if (getArrayAdapter()!=null){
 	       			mArrayAdapterBL.clear();
-//	        		for (String name:addedContacts){
-//	        			for(int i = 0; i < contacts.toArray().length; i++){
-//	        				if(contacts.get(i).match(name))
-//	        					iDmap.remove(Long.parseLong(contacts.get(i).getID()));
-//	        			}
-//	        		}
 	        		addedContacts.clear();
-	        		//addedContactIds.clear();
 	        		Toast.makeText(getApplicationContext(), getString(R.string.bl_state_all_rem), Toast.LENGTH_SHORT).show();
-//	        		Collections.sort(blacklistedContacts);
 	                if(mArrayAdapterBL.isEmpty()){
 	                	mArrayAdapterBL.add(getString(R.string.bl_list_empty));
 	                	emptyList = true;
@@ -168,7 +133,7 @@ public class BlackListActivity extends ListActivity {
 	        		getAutoComplete().setText("");
 	        		}
 	       		}
-	        	});
+	        });
 	        	
 	       	mRemove.setOnClickListener(new OnClickListener(){    	 	
 	       		public void onClick(View v){
@@ -179,13 +144,7 @@ public class BlackListActivity extends ListActivity {
 	        		else { 
 	       				mArrayAdapterBL.remove(name);
 	       				addedContacts.remove(name);
-	       				//addedContactIds.remove(nameToIdMap.get(name));
-//	        			for(int i = 0; i < contacts.toArray().length; i++){
-//	        				if(contacts.get(i).match(name))
-//	        					iDmap.remove(Long.parseLong(contacts.get(i).getID()));
-//	        			}
 	       			}
-//	        		Collections.sort(blacklistedContacts);
 	                if(mArrayAdapterBL.isEmpty()){
 	                	mArrayAdapterBL.add(getString(R.string.bl_list_empty));
 	                	emptyList = true;
@@ -201,13 +160,8 @@ public class BlackListActivity extends ListActivity {
         	blacklistedContacts = new ArrayList<String>();
         	addedContacts = new LinkedList<String>();
         	addedContactIds = new LinkedList<Long>();
-//        	contacts = new ArrayList<Contact>();
-//        	contactNames = new ArrayList<String>(); 
-//        	iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
-//        	iDmapPrev = new TreeMap<Long, Triple <String,Integer,String>[]>();
             mArrayAdapterBL = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, blacklistedContacts);
             this.setListAdapter(mArrayAdapterBL);
-//            iDmap = new TreeMap<Long, Triple <String,Integer,String>[]>();
     	if (!readOnly){
 	    	mAddButton = (Button) findViewById(R.id.add);
 	        mAddAll = (Button) findViewById(R.id.add_all_button);
@@ -275,7 +229,6 @@ public class BlackListActivity extends ListActivity {
     @Override
     public void onDestroy(){
         super.onDestroy();
-        //saveState();       
     } 
     
     @Override
@@ -285,26 +238,18 @@ public class BlackListActivity extends ListActivity {
     
     @Override
     public void onBackPressed(){
-    	//saveState();
-    	//onPause();
     	super.onBackPressed();
     }
 
     public void restore(){
-    	//if(!savedNull){
     	SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
         int savedInt = data.getInt("length", 0);
         for (int i = 0; i < savedInt;i++){
-//        	for(int j = 0; j < contacts.toArray().length; j++){
-//				if(contacts.get(j).match(data.getString("name" + i, "")))
-//					iDmapPrev.put(Long.parseLong(contacts.get(j).getID()), contacts.get(j).getNumber());
-//				}
         	String nextName = data.getString("name"+i, "");
         	mArrayAdapterBL.add(nextName);
         	addedContacts.add(nextName);
         	addedContactIds.add(nameToIdMap.get(nextName));
     }
-    	//}    
         if(mArrayAdapterBL.isEmpty()){
         	mArrayAdapterBL.add(getString(R.string.bl_list_empty));
         	emptyList = true;
@@ -331,35 +276,3 @@ public class BlackListActivity extends ListActivity {
     }
     
 }
-
-
-/**	
- * this was the code for a popupWindow that may be revived one day...
- * but for now it shall live in comments.
- *
- *SharedPreferences data = getSharedPreferences(getClass().getName(), MODE_PRIVATE);
-        SharedPreferences.Editor editor = data.edit();
-        
-        editor.commit();
-	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
-		keyword = this.getListAdapter().getItem(position).toString();		
-		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	    remove = new PopupWindow(inflater.inflate(R.layout.list, null, false), 200, 200, true);
-	    remove.showAtLocation(this.findViewById(R.id.blacklist_text), Gravity.CENTER, 0, 0);
-	    View pview = inflater.inflate(R.layout.list,(ViewGroup)findViewById(R.layout.main));
-	    Button mRemove=(Button) pview.findViewById(R.id.remove);
-	    
-	    mRemove.setOnClickListener(new OnClickListener(){    	 	
-    		public void onClick(View v){
-    			mArrayAdapter.clear();
-    		}
-    	});
-	    
-
-	}
- *
- */
-
-

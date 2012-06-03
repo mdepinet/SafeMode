@@ -30,6 +30,7 @@
     <string name="bl_err_contact_present">Contactez déjà en liste noire</string>
     <string name="bl_err_all_present">Tous les contacts déjà en liste noire</string>
     <string name="bl_err_not_present">Contactez n\'est pas dans la liste noire</string>
+    <string name="bl_err_limit_reached">Vous ne pouvez pas bloquer anymore contacts sans la version complète.</string>
     <string name="bl_state_all_rem">Tous les contacts supprimés de la liste noire</string>
     <string name="bl_list_empty">Votre liste noire est vide&#8230;</string>
 	
