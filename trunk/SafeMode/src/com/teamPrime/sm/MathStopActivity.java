@@ -9,8 +9,6 @@
 
 package com.teamPrime.sm;
 
-import java.util.Random;
-
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -18,6 +16,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.teamPrime.sm.util.MathUtils;
 
 
 public class MathStopActivity extends Activity{
@@ -91,24 +91,5 @@ public class MathStopActivity extends Activity{
     		}
     		
     	}
-    }
-    
-    
-    static class MathUtils {
-    	
-    	private static final int[] smallChoice = {3, 4, 6, 7, 8, 9};
-    	private static final int[] largeChoice = {12, 13, 14, 16, 17, 18, 19};
-    	private static Random r = new Random();
-    	
-    	public static int genSmallRandom() {
-    		int index = r.nextInt(smallChoice.length);
-    		return smallChoice[index];
-    	}
-    	
-    	public static int genLargeRandom() {
-    		int index = r.nextInt(largeChoice.length);
-    		return largeChoice[index];
-    	}
-
     }
 }
