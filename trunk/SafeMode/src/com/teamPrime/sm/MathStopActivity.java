@@ -9,15 +9,20 @@
 
 package com.teamPrime.sm;
 
+import java.util.Arrays;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.teamPrime.sm.util.MathUtils;
+import com.teamPrime.sm.util.MathUtils.MathUtilException;
+import com.teamPrime.sm.util.Solvable;
 
 
 public class MathStopActivity extends Activity{
@@ -25,7 +30,7 @@ public class MathStopActivity extends Activity{
 	
 	private TextView question;
 	private TextView answer;
-	private int corAnswer;
+	private long corAnswer;
 	private boolean onState;
 	private int numAttempts;
 
@@ -51,18 +56,24 @@ public class MathStopActivity extends Activity{
     @Override
    protected void onResume() {
     	super.onResume();
-        int mult1 = MathUtils.genSmallRandom();
-        int mult2 = MathUtils.genLargeRandom();
-        String mathQuestion = String.format(getString(R.string.math_question)+" %d * %d?", mult1, mult2);
-    	question.setText(mathQuestion);
-    	corAnswer = mult1 * mult2;
+        Solvable equation = MathUtils.generateProblem(Arrays.asList(new MathUtils.Operator[] {MathUtils.Operator.MULTIPLICATION}), 2, 2);
+    	boolean gotValidEquation = false;
+    	while (!gotValidEquation){
+	        try {
+				question.setText(getString(R.string.math_question) + " " + equation.getHumanReadableEquation() + "?");
+				corAnswer = equation.getCorrectAnswer();
+				gotValidEquation = true;
+			} catch (MathUtilException e) {
+				Log.e("SafeMode - eqnGen","Created invalid equation",e);
+			}
+    	}
     }
     
     public void onClick(View v) {
     	if (v.getId() == R.id.submitStopButton) {
     		String drunkAnsString = answer.getText().toString();
     		try {
-    			int drunkAns = Integer.parseInt(drunkAnsString);
+    			long drunkAns = Long.parseLong(drunkAnsString);
     			if (drunkAns == corAnswer) {
 					SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
 					SharedPreferences.Editor editor = data.edit();

@@ -55,21 +55,9 @@ public class MathUtils {
 		}
 	}
 	
-	@Deprecated private static final int[] smallChoice = {3, 4, 6, 7, 8, 9};
-	@Deprecated private static final int[] largeChoice = {12, 13, 14, 16, 17, 18, 19};
 	private static final int[] digitChoices = {3, 4, 6, 7, 8, 9};
 	private static Random r = new Random();
-	
-	@Deprecated public static int genSmallRandom() {
-		int index = r.nextInt(smallChoice.length);
-		return smallChoice[index];
-	}
 
-	@Deprecated public static int genLargeRandom() {
-		int index = r.nextInt(largeChoice.length);
-		return largeChoice[index];
-	}
-	
 	private static int getRandomNDigitInt(int n){
 		return getRandomNDigitInt(n, false);
 	}
@@ -84,6 +72,7 @@ public class MathUtils {
 	}
 	
 	public static Solvable generateProblem(List<Operator> operators, int maxNumDigits, int maxDepth){
+		maxDepth = Math.max(maxDepth, 2); //Must have at least two levels
 		OperationTree root = new OperationTree(operators.get(r.nextInt(operators.size())).getSymbol());
 		Queue<OperationTree> unfilledOperators1 = new LinkedList<OperationTree>();
 		Queue<OperationTree> unfilledOperators2 = new LinkedList<OperationTree>();
@@ -147,7 +136,7 @@ public class MathUtils {
     			return value;
     		}
     		else if (Operator.getSymbolList().contains(value)){
-    			return "(" + left.getHumanReadable() + value + right.getHumanReadable() + ")";
+    			return "(" + left.getHumanReadable() + " " + value + " " + right.getHumanReadable() + ")";
     		}
     		else {
     			throw new MathUtilException("Unknown operator "+value);
