@@ -80,12 +80,13 @@ public class MathUtils {
 		for (int level = 2; level <= maxDepth; level++){ //1 is root
 			while (!unfilledOperators1.isEmpty()){
 				OperationTree next = unfilledOperators1.remove();
-				boolean makeOperator = r.nextFloat() < (float)(maxDepth-level)/(float)(maxDepth);
+				boolean requireOperator = unfilledOperators1.isEmpty() && level < maxDepth;
+				boolean makeOperator = requireOperator || r.nextFloat() < (float)(maxDepth-level)/(float)(maxDepth);
 				if (makeOperator){
 					next.left = new OperationTree(operators.get(r.nextInt(operators.size())).getSymbol());
 					unfilledOperators2.add(next.left);
 				} else {
-					next.left = new OperationTree(Integer.toString(getRandomNDigitInt((int)(r.nextDouble()*maxNumDigits)+1)));
+					next.left = new OperationTree(Integer.toString(getRandomNDigitInt((int)((Math.exp(r.nextDouble())/Math.E)*maxNumDigits)+1)));
 				}
 				makeOperator = r.nextFloat() < (float)(maxDepth-level)/(float)(maxDepth);
 				if (makeOperator){
@@ -136,6 +137,10 @@ public class MathUtils {
     			return value;
     		}
     		else if (Operator.getSymbolList().contains(value)){
+    			if (value.equals(Operator.MULTIPLICATION.getSymbol())) {
+    				//Don't need parentheses for multiplication (unless more operations are added)
+    				return left.getHumanReadable() + " " + value + " " + right.getHumanReadable();
+    			}
     			return "(" + left.getHumanReadable() + " " + value + " " + right.getHumanReadable() + ")";
     		}
     		else {
@@ -149,7 +154,7 @@ public class MathUtils {
     		assert(left != null);
     		assert(right != null);
     		String result = getHumanReadable();
-    		return result.substring(1, result.length()-1); //Strip outtermost parentheses
+    		return value.equals(Operator.MULTIPLICATION.getSymbol()) ? result : result.substring(1, result.length()-1); //Strip outtermost parentheses
     	}
     	
     	@Override

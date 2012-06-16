@@ -9,7 +9,8 @@
 
 package com.teamPrime.sm;
 
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -56,7 +57,12 @@ public class MathStopActivity extends Activity{
     @Override
    protected void onResume() {
     	super.onResume();
-        Solvable equation = MathUtils.generateProblem(Arrays.asList(new MathUtils.Operator[] {MathUtils.Operator.MULTIPLICATION}), 2, 2);
+    	SharedPreferences data = getSharedPreferences("SAFEMODE_Settings", MODE_PRIVATE);
+    	List<MathUtils.Operator> operators = new LinkedList<MathUtils.Operator>();
+    	if (data.getBoolean("includePlus", true)) operators.add(MathUtils.Operator.ADDITION);
+    	if (data.getBoolean("includeMinus", true)) operators.add(MathUtils.Operator.SUBTRACTION);
+    	if (data.getBoolean("includeTimes", true)) operators.add(MathUtils.Operator.MULTIPLICATION);
+        Solvable equation = MathUtils.generateProblem(operators, data.getInt("numDigits", 2), data.getInt("exprLength", 2));
     	boolean gotValidEquation = false;
     	while (!gotValidEquation){
 	        try {
