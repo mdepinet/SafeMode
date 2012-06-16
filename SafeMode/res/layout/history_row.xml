@@ -4,7 +4,7 @@
 	  android:id="@+id/custom_row_no_date"
 	  android:layout_width="fill_parent"
 	  android:layout_height="wrap_content"
-	  android:padding="10px">
+	  android:padding="5dp">
 	  <LinearLayout
 	  	android:layout_width="fill_parent"
 	  	android:layout_height="wrap_content"

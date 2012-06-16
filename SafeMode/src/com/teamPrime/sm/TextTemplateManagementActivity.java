@@ -17,6 +17,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -27,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.teamPrime.sm.tasks.TemplateLoadingTask;
@@ -114,9 +116,15 @@ public class TextTemplateManagementActivity extends ListActivity {
 		case ADD_MESSAGE_DIALOG_ID:
 			final Dialog addDialog = new Dialog(this);
 			addDialog.setContentView(R.layout.add_text_template);
-			addDialog.setTitle(R.string.find_add_template);
+			addDialog.setTitle(R.string.temp_title);
 			addDialog.setCancelable(true);
 			addDialog.setCanceledOnTouchOutside(true);
+			addDialog.setOnDismissListener(new OnDismissListener(){
+				@Override
+				public void onDismiss(DialogInterface arg0) {
+					((EditText) addDialog.findViewById(R.id.newTemplate)).setText("");
+				}
+			});
 			((Button)(addDialog.findViewById(R.id.addTemplateButton))).setOnClickListener(new AddTemplateListener(addDialog,true));
 			((Button)(addDialog.findViewById(R.id.addTemplateCancelButton))).setOnClickListener(new AddTemplateListener(addDialog,false));
 			d = addDialog;
@@ -148,7 +156,7 @@ public class TextTemplateManagementActivity extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	boolean result = super.onCreateOptionsMenu(menu);
-    	menu.add(Menu.NONE, Menu.NONE, Menu.NONE, getString(R.string.find_add_template));
+    	menu.add(Menu.NONE, Menu.NONE, Menu.NONE, getString(R.string.temp_title));
         return result;
     }
     @Override

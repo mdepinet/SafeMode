@@ -10,9 +10,8 @@
   	android:layout_width="fill_parent"
   	android:layout_height="fill_parent"
   	android:textSize="18sp"
-  	android:paddingTop="20px"
-  	android:paddingBottom="20px"
-  	android:paddingLeft="15px"
-  	android:paddingRight="15px"
-  	/>
+  	android:paddingTop="10dp"
+  	android:paddingBottom="10dp"
+  	android:paddingLeft="7dp"
+  	android:paddingRight="7dp"/>
 </LinearLayout>
