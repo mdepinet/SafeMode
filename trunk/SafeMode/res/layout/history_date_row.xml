@@ -11,9 +11,9 @@
 	  	android:background="@drawable/date_background"
 	  	android:textStyle="bold"
 	  	android:textColor="@android:color/white"
-	  	android:text="1/12/2011"
+	  	android:text=""
 	  	android:textSize="15sp"
-	  	android:paddingLeft="10px"
-	  	android:paddingTop="5px"
-	  	android:paddingBottom="5px"/>
+	  	android:paddingLeft="5dp"
+	  	android:paddingTop="2dp"
+	  	android:paddingBottom="2dp"/>
 	</RelativeLayout>

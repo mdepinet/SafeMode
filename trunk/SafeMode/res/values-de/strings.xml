@@ -52,7 +52,6 @@
     <string name="find_loading">Vorlagen wird geladen&#8230;</string>
     <string name ="find_confirm_delete">Wollen Sie diese Nachricht löschen?</string>
     <string name="find_manage_templates">verwalten von Vorlagen</string>
-    <string name="find_add_template">Vorlage hinzufügen</string>
     <string name="find_defText1" formatted="false">Ich bin bei %l.</string>
     <string name="find_defText2" formatted="false">Treffen Sie mich an %l.</string>
     <string name="find_defText3" formatted="false">Hallo %f! Ich wachte bei %l und könnte wirklich etwas Hilfe bekommen zu Hause!</string>

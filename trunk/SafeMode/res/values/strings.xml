@@ -50,7 +50,6 @@
     <string name="find_loading">Loading templates&#8230;</string>
     <string name ="find_confirm_delete">Do you want to delete this message?</string>
     <string name="find_manage_templates">Manage templates</string>
-    <string name="find_add_template">Add template</string>
     <string name="find_defText1" formatted="false">I\'m at %l.</string>
     <string name="find_defText2" formatted="false">Meet me at %l.</string>
     <string name="find_defText3" formatted="false">Hey %f! I just woke up at %l and could really use some help getting home!</string>
@@ -62,6 +61,26 @@
 	<string name="find_unknownLoc">an undetermined location</string>
 	<string name="find_sendFail">An error occurred. Please try again.</string>
 	<string name="find_sendSuccess">Location sent to </string>
+	
+	<string name="temp_title">Add template</string>
+    <string name="find_template_hint">Type template here</string>
+    <string name="temp_esc_title">Escape sequences:</string>
+    <string name="temp_esc_l">%l</string>
+    <string name="temp_esc_l_subst">Your location</string>
+    <string name="temp_esc_d">%d</string>
+    <string name="temp_esc_d_subst">The current date</string>
+    <string name="temp_esc_t">%t</string>
+    <string name="temp_esc_t_subst">The current time</string>
+    <string name="temp_esc_n">%n</string>
+    <string name="temp_esc_n_subst">Contact\'s full name</string>
+    <string name="temp_esc_f">%f</string>
+    <string name="temp_esc_f_subst">Contact\'s first name</string>
+    <string name="temp_esc_s">%s</string>
+    <string name="temp_esc_s_subst">Contact\'s surname</string>
+    <string name="temp_esc_p">%%</string>
+    <string name="temp_esc_p_subst">%</string>
+    <string name="temp_add_button">Add</string>
+    <string name="temp_cancel_button">Cancel</string>
 	
 	<string name="stop_attemptsExceeded">Too many failed attempts!</string>
 	

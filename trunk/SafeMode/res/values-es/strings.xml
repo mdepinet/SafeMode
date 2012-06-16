@@ -52,7 +52,6 @@
     <string name="find_loading">plantillas de carga&#8230;</string>
     <string name ="find_confirm_delete">¿Quieres borrar este mensaje?</string>
     <string name="find_manage_templates">Administrar plantillas</string>
-    <string name="find_add_template">Añadir plantilla</string>
     <string name="find_defText1" formatted="false">Estoy en %l.</string>
     <string name="find_defText2" formatted="false">Nos vemos en %l.</string>
     <string name="find_defText3" formatted="false">Hola %f! Me desperté en el %l y podría usar un poco de ayuda de llegar a casa!</string>
