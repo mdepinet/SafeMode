@@ -29,6 +29,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
@@ -241,6 +243,19 @@ public class SafeLaunchActivity extends Activity{
     	else super.onBackPressed();
     }
     
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+    	//TODO Use a menu inflater
+    	menu.add(getString(R.string.sett_name));
+    	return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	if (applicationOnState) Toast.makeText(getApplicationContext(), R.string.sett_onState, Toast.LENGTH_SHORT).show();
+    	else startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+        return true;
+    }
     
     public void onClick(View v) {
         switch (v.getId()) {
