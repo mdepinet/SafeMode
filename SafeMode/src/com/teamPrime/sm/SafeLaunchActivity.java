@@ -32,9 +32,8 @@ import android.os.CountDownTimer;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -52,9 +51,8 @@ public class SafeLaunchActivity extends Activity{
 	private boolean applicationOnState = false;
 	private boolean privateOnState = false;
 	private long offTime;
-	private ImageButton onOffButton;
-	private TextView onOffText;
-	private TextView blacklistText;
+	private Button onOffButton;
+	private Button blacklistButton;
 	
 	private TimePickerDialog.OnTimeSetListener mTimeSetListener;
 	private DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -76,7 +74,7 @@ public class SafeLaunchActivity extends Activity{
 			if (mTask != null) mTask.cancel(true);
 			try{dismissDialog(TIME_ID);} catch(Exception ex){}
 			try{dismissDialog(DATE_ID);} catch(Exception ex){}
-			onOffText.setText(getString(R.string.start_button));
+			onOffButton.setText(getString(R.string.start_button));
 		}
 	};
 	
@@ -86,9 +84,8 @@ public class SafeLaunchActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        onOffButton = (ImageButton)findViewById(R.id.dashboard_onOff);
-        onOffText = (TextView)findViewById(R.id.dashboard_onOff_text);
-        blacklistText = (TextView)findViewById(R.id.dashboard_blacklist_text);
+        onOffButton = (Button)findViewById(R.id.dashboard_onOff);
+        blacklistButton = (Button)findViewById(R.id.dashboard_blacklist);
 
         mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
         	@Override
@@ -131,9 +128,9 @@ public class SafeLaunchActivity extends Activity{
         
         if (!seenNotice) showDialog(NOTICE_ID);
         
-        onOffButton.setImageDrawable(getResources().getDrawable(applicationOnState ? R.drawable.dashboard_unlock : R.drawable.dashboard_lock));
-        onOffText.setText(getString(applicationOnState ? R.string.end_button : R.string.start_button));
-        blacklistText.setText(getString(applicationOnState ? R.string.view_blacklist : R.string.edit_blacklist));
+        onOffButton.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(applicationOnState ? R.drawable.dashboard_unlock : R.drawable.dashboard_lock), null, null);
+        onOffButton.setText(getString(applicationOnState ? R.string.end_button : R.string.start_button));
+        blacklistButton.setText(getString(applicationOnState ? R.string.view_blacklist : R.string.edit_blacklist));
         
         if (applicationOnState){
         	if (privateOnState){ //SafeMode is on and we know it
@@ -317,7 +314,7 @@ public class SafeLaunchActivity extends Activity{
     }
     
     private void turnOn(){
-    	onOffText.setText(getString(R.string.waiting_user));
+    	onOffButton.setText(getString(R.string.waiting_user));
     	mTask = new DateWaitTask(this);
     	mTask.execute((Void[])(null));
     }
@@ -326,15 +323,15 @@ public class SafeLaunchActivity extends Activity{
     	//Time related variables are now set (by DateWaitTask)
     	if (offTime <= System.currentTimeMillis()){
     		Toast.makeText(getApplicationContext(), getString(R.string.future_reqd), Toast.LENGTH_SHORT).show();
-    		onOffText.setText(getString(R.string.start_button));
+    		onOffButton.setText(getString(R.string.start_button));
     		return;
     	}
 		applicationOnState = true;
 		privateOnState = true;
         
-		onOffButton.setImageDrawable(getResources().getDrawable(R.drawable.dashboard_unlock));
-		onOffText.setText(getString(R.string.end_button));
-		blacklistText.setText(getString(R.string.view_blacklist));
+		onOffButton.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.dashboard_unlock), null, null);
+		onOffButton.setText(getString(R.string.end_button));
+		blacklistButton.setText(getString(R.string.view_blacklist));
 		
 		ioTask = new BlackListIOTask(this,null,BlackListIOTask.HIDE_CONTACTS_MODE);
     	ioTask.execute((Void[])(null));
@@ -361,9 +358,9 @@ public class SafeLaunchActivity extends Activity{
         allowTimer = false;
         if (timer != null) timer.cancel();
         
-    	onOffButton.setImageDrawable(getResources().getDrawable(R.drawable.dashboard_lock));
-        onOffText.setText(getString(R.string.start_button));
-        blacklistText.setText(getString(R.string.edit_blacklist));
+    	onOffButton.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.dashboard_lock), null, null);
+        onOffButton.setText(getString(R.string.start_button));
+        blacklistButton.setText(getString(R.string.edit_blacklist));
 
         hideIcon();
 		
@@ -413,7 +410,7 @@ public class SafeLaunchActivity extends Activity{
     	}
 		@Override
 		public void onFinish() {
-			onOffText.setText(new Date(0).toString().substring(11,19));
+			onOffButton.setText(new Date(0).toString().substring(11,19));
 			turnOff();
 		}
 		@Override
@@ -427,7 +424,7 @@ public class SafeLaunchActivity extends Activity{
 			millisLeft %= 60000;
 			int seconds = (int) (millisLeft/1000);
 			String dayString = days == 0 ? "" : ""+days+"days ";
-			onOffText.setText(dayString+pad(hours)+":"+pad(minutes)+":"+pad(seconds));
+			onOffButton.setText(dayString+pad(hours)+":"+pad(minutes)+":"+pad(seconds));
 		}
 		private String pad(int input){
 			if (input < 10) return "0"+input;

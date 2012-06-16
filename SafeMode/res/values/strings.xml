@@ -16,7 +16,6 @@
     <string name="edit_blacklist">Edit Blacklist</string>
     <string name="view_blacklist">View Blacklist</string>
     <string name="math_question">What is </string>
-    <string name="options">Options</string>
     <string name="remove_all_button">Remove All</string>
     <string name="future_reqd">Time to turn off must be in the future!</string>
     <string name="waiting_user">Waiting for user</string>
