@@ -81,7 +81,10 @@
     To get started, select contacts to add to your blacklist (by using the \"Edit Blacklist\" option in the menu).
     \n\nThen you can start SafeMode by pushing the \"Start SafeMode\" button.  This will ask you for a time at which SafeMode will turn off automatically.
     \n\nUntil the time selected, the contacts in your blacklist will be unavailable (so that you cannot call, text, email, or IM them).
+    \n\nSince version 2.0, even if you remember your contacts\' numbers, attempts to call or text them will still be blocked!
     \n\nTo turn off SafeMode early, you may push the \"End SafeMode\" button.  This will require you to prove sobriety, then turn off SafeMode.
+    \n\nYou can see what you did while SafeMode was on in the \"History\" section and you can ask your friends to come get you with a previously created
+    template using \"Find Me.\"
     \n\nNow then, enjoy your party!
     \n
     \nSafeMode &#8212; Keeping you responsible while you\'re being irresponsible.
