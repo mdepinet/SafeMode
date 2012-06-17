@@ -24,6 +24,7 @@
     <string name="loading">Loading contacts&#8230;</string>
     <string name="loading_hist">Loading history&#8230;</string>
     <string name="loading_location">Determining location&#8230;</string>
+    <string name="turnOff_hint">Type your answer here</string>
     
     <string name="bl_err_incor_name">Incorrect contact name</string>
     <string name="bl_err_contact_present">Contact already in blacklist</string>

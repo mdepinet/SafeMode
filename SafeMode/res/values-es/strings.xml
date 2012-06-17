@@ -17,7 +17,6 @@
     <string name="edit_blacklist">Editar la Lista Nigra</string>
     <string name="view_blacklist">Ver la Lista Nigra</string>
     <string name="math_question">Que es </string>
-    <string name="options">Opciones</string>
     <string name="remove_all_button">Quitar\nTodos</string>
     <string name="future_reqd">Tiempo para apagar debe ser en el futuro!</string>
     <string name="waiting_user">La espera de la entrada del usuario&#8230;</string>
