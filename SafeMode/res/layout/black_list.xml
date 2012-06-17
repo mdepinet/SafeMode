@@ -1,52 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent">
-    <Button
-		android:id="@+id/remove_all_button"
-		android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	   	android:paddingRight="20px"
-	    android:paddingLeft="20px"
-	    android:text="@string/remove_all_button"
-	    android:layout_alignParentBottom="true"
-	    android:layout_alignParentRight="true"
-	    android:onClick="onClick"/>
-	<Button
-		android:id="@+id/add_all_button"
-		android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	   	android:paddingRight="20px"
-	    android:paddingLeft="20px"
-	    android:text="@string/select_all_button"
-	    android:layout_alignParentBottom="true"
-	    android:layout_toLeftOf="@id/remove_all_button"
-	    android:onClick="onClick"/>
-	 <Button
-		android:id="@+id/remove"
-		android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:paddingRight="20px"
-	    android:paddingLeft="20px"
-	    android:text="@string/remove_button"
-	    android:layout_alignParentBottom="true"
-	    android:layout_toLeftOf="@id/add_all_button"
-	    android:onClick="onClick"/>	
-	 <Button
-		android:id="@+id/add"
-		android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:paddingRight="40px"
-	    android:paddingLeft="40px"
-	    android:text="@string/add_button"
-	    android:layout_alignParentBottom="true"
-	    android:layout_toLeftOf="@id/remove"
-	    android:onClick="onClick"/>
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/bl_buttons"
+        android:layout_alignParentBottom="true">
+        <Button
+			android:id="@+id/add"
+			android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight=".21"
+		    android:text="@string/add_button"
+		    android:onClick="onClick"/>
+        <Button
+			android:id="@+id/remove"
+			android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight=".23"
+		    android:text="@string/remove_button"
+		    android:onClick="onClick"/>
+        <Button
+			android:id="@+id/add_all_button"
+			android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight=".25"
+		    android:text="@string/select_all_button"
+		    android:onClick="onClick"/>
+	    <Button
+			android:id="@+id/remove_all_button"
+			android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		   	android:layout_weight=".31"
+		    android:text="@string/remove_all_button"
+		    android:onClick="onClick"/>
+	</LinearLayout>
     <AutoCompleteTextView
     	android:id="@+id/blacklist_text" 
     	android:hint="@string/blacklist_add" 
-    	android:layout_above="@id/add"
+    	android:layout_above="@id/bl_buttons"
     	android:layout_width="fill_parent" 
     	android:layout_height="wrap_content" 
     	>
