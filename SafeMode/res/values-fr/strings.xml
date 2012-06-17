@@ -25,6 +25,7 @@
     <string name="loading">Chargement des contacts&#8230;</string>
     <string name="loading_hist">Chargement histoire&#8230;</string>
     <string name="loading_location">déterminer l\'emplacement&#8230;</string>
+    <string name="turnOff_hint">Tapez votre réponse ici</string>
     
     <string name="bl_err_incor_name">Nom du contact incorrecte</string>
     <string name="bl_err_contact_present">Contactez déjà en liste noire</string>
@@ -63,5 +64,60 @@
 	<string name="find_sendFail">Une erreur s\'est produite. S\'il vous plaît essayez de nouveau</string>
 	<string name="find_sendSuccess">Localisation envoyé à </string>
 	
+	<string name="temp_title">Ajouter modèle</string>
+    <string name="find_template_hint">Modèle de type ici</string>
+    <string name="temp_esc_title">séquences d\'échappement:</string>
+    <string name="temp_esc_l">%l</string>
+    <string name="temp_esc_l_subst">Votre emplacement</string>
+    <string name="temp_esc_d">%d</string>
+    <string name="temp_esc_d_subst">La date actuelle</string>
+    <string name="temp_esc_t">%t</string>
+    <string name="temp_esc_t_subst">L\'heure actuelle</string>
+    <string name="temp_esc_n">%n</string>
+    <string name="temp_esc_n_subst">Nom complet du contact</string>
+    <string name="temp_esc_f">%f</string>
+    <string name="temp_esc_f_subst">Prénom du contact</string>
+    <string name="temp_esc_s">%s</string>
+    <string name="temp_esc_s_subst">Contactez le nom de famille</string>
+    <string name="temp_esc_p">%%</string>
+    <string name="temp_esc_p_subst">%</string>
+    <string name="temp_add_button">ajouter</string>
+    <string name="temp_cancel_button">annuler</string>
+	
 	<string name ="stop_attemptsExceeded">Un trop grand nombre de tentatives infructueuses!</string>
+	
+	<string name="sett_eqn_title">L\'équation de désactivation de SafeMode</string>
+	<string name="sett_addition">+</string>
+	<string name="sett_subtraction">-</string>
+	<string name="sett_multiplication">*</string>
+	<string name="sett_num_digits">Nombre de chiffres</string>
+	<string name="sett_expr_length">Longueur expression</string>
+	<string name="sett_example">expression Exemple</string>
+	<string name="sett_err_expr_gen">Erreur de génération d\'expression</string>
+	<string name="sett_name">Paramètres</string>
+	<string name="sett_onState">Vous ne pouvez pas modifier les paramètres tout en SafeMode est</string>
+	
+	<string name="init_notice">Bienvenue à SafeMode! (v2.0)\n\nDroit d\'auteur 2012 Mike Depinet et Boris Treskunov\n\n\n
+	\n\nPour commencer, sélectionnez les contacts à ajouter à votre liste noire (en utilisant la \"Modifier la Liste Noire\" dans le menu).
+	\n\nEnsuite, vous pouvez commencer à SafeMode en appuyant sur le \"Commencer SafeMode\". Cela vous demander un moment où SafeMode s\'éteindra automatiquement.
+	\n\nJusqu\'à ce que le temps choisi, les contacts dans votre liste noire ne sera pas disponible (de sorte que vous ne pouvez pas appeler, texte, email, IM ou entre eux).
+	\n\nDepuis la version 2.0, même si vous vous rappelez les numéros de vos contacts, tente d\'appeler ou d\'un texte eux auront encore être bloqué!
+	\n\nPour désactiver SafeMode début, vous pouvez appuyer sur le \"Terminer SafeMode\" bouton. Cela vous demander de prouver la sobriété, puis éteignez SafeMode.
+	\n\nVous pouvez voir ce que vous avez fait tout SafeMode était dans la section \"Historique\" et vous pouvez demander à vos amis de venir vous chercher avec un modèle précédemment créé à l\'aide \"Trouve-moi.\"
+
+	\n\nMaintenant, profitez de votre soirée!
+
+	\n\nSafeMode &#8212; Pour vous tenir au responsable tout en vous de façon irresponsable.
+	\n
+	\n\nLicensed under the Apache License, Version 2.0 (the \"License\");
+	you may not use this application except in compliance with the License.
+	You may obtain a copy of the License at
+	\n
+	\n\thttp://www.apache.org/licenses/LICENSE-2.0
+	\n
+	\nUnless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an \"AS IS\" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.</string>
 </resources>
