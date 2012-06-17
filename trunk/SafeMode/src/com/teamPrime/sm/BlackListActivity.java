@@ -39,7 +39,9 @@ import com.teamPrime.sm.tasks.PopulateTask;
  * @author Boris Treskunov
  *  
  */
-public class BlackListActivity extends ListActivity {	
+public class BlackListActivity extends ListActivity {
+	private static final double MAX_BLACKLIST_SIZE = SafeLaunchActivity.FULL_VERSION ? Double.POSITIVE_INFINITY : 1.0;
+	
 	private Button mAddButton;	
 	private Button mAddAll;
 	private Button mRemoveAll;
@@ -92,12 +94,17 @@ public class BlackListActivity extends ListActivity {
 	        		else if (addedContacts.contains(name))
 	        			Toast.makeText(getApplicationContext(), getString(R.string.bl_err_contact_present), Toast.LENGTH_SHORT).show();
 	        		else{
-	        			mArrayAdapterBL.add(name);
-	        			addedContacts.add(name);
-	        			if(emptyList){
-		        			mArrayAdapterBL.remove(getString(R.string.bl_list_empty));
-		        			emptyList = false;
-		        		}
+	        			if (addedContacts.size() < MAX_BLACKLIST_SIZE){
+		        			mArrayAdapterBL.add(name);
+		        			addedContacts.add(name);
+		        			if(emptyList){
+			        			mArrayAdapterBL.remove(getString(R.string.bl_list_empty));
+			        			emptyList = false;
+			        		}
+	        			}
+	        			else {
+	        				Toast.makeText(getApplicationContext(), getString(R.string.bl_err_limit_reached), Toast.LENGTH_SHORT).show();
+	        			}
 	        		}
 	        		Collections.sort(blacklistedContacts);
 	        		getAutoComplete().setText("");
@@ -105,24 +112,32 @@ public class BlackListActivity extends ListActivity {
 	        	}
 	        });
 	
-	        mAddAll.setOnClickListener(new OnClickListener(){    	 	
-	        	public void onClick(View v){	
+	        mAddAll.setOnClickListener(new OnClickListener(){   	 	
+	        	public void onClick(View v){
 	        		if (getArrayAdapter()!=null){
-	        		if(emptyList){
-	        			mArrayAdapterBL.remove(getString(R.string.bl_list_empty));
-	        			emptyList = false;
-	        		}
-	        		int initialSize = addedContacts.size();
-	        		for(String name: contactNames) {
-	        			if (!addedContacts.contains(name)){
-	        				mArrayAdapterBL.add(name);
-	        				addedContacts.add(name);
-	        				}
-	        			if (addedContacts.size()==initialSize) 
+		        		if(emptyList){
+		        			mArrayAdapterBL.remove(getString(R.string.bl_list_empty));
+		        			emptyList = false;
+		        		}
+		        		int initialSize = addedContacts.size();
+		        		for(String name: contactNames) {
+		        			if (!addedContacts.contains(name)){
+		        				if (addedContacts.size() < MAX_BLACKLIST_SIZE) {
+			        				mArrayAdapterBL.add(name);
+			        				addedContacts.add(name);
+		        				}
+		        				else {
+		        					Toast.makeText(getApplicationContext(), getString(R.string.bl_err_limit_reached), Toast.LENGTH_SHORT).show();
+		        					initialSize = -1; //Just don't print other error
+		        					break;
+		        				}
+		        			}
+		        		}
+		        		if (addedContacts.size()==initialSize) {
 	        				Toast.makeText(getApplicationContext(), getString(R.string.bl_err_all_present), Toast.LENGTH_SHORT).show();
-	        			}
-	        		Collections.sort(blacklistedContacts);
-	        		getAutoComplete().setText("");
+		        		}
+		        		Collections.sort(blacklistedContacts);
+		        		getAutoComplete().setText("");
 	        		}
 	        	}
 	        });

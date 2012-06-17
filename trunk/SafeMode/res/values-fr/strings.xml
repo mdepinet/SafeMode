@@ -26,11 +26,13 @@
     <string name="loading_hist">Chargement histoire&#8230;</string>
     <string name="loading_location">déterminer l\'emplacement&#8230;</string>
     <string name="turnOff_hint">Tapez votre réponse ici</string>
+    <string name="sm_only">Désolé, cette fonction est uniquement disponible dans la version complète.</string>
     
     <string name="bl_err_incor_name">Nom du contact incorrecte</string>
     <string name="bl_err_contact_present">Contactez déjà en liste noire</string>
     <string name="bl_err_all_present">Tous les contacts déjà en liste noire</string>
     <string name="bl_err_not_present">Contactez n\'est pas dans la liste noire</string>
+    <string name="bl_err_limit_reached">Vous ne pouvez pas bloquer anymore contacts sans la version complète.</string>
     <string name="bl_state_all_rem">Tous les contacts supprimés de la liste noire</string>
     <string name="bl_list_empty">Votre liste noire est vide&#8230;</string>
     
