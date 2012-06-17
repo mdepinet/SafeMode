@@ -25,11 +25,13 @@
     <string name="loading_hist">Loading history&#8230;</string>
     <string name="loading_location">Determining location&#8230;</string>
     <string name="turnOff_hint">Type your answer here</string>
+    <string name="sm_only">Sorry, this feature is only available in the full version.</string>
     
     <string name="bl_err_incor_name">Incorrect contact name</string>
     <string name="bl_err_contact_present">Contact already in blacklist</string>
     <string name="bl_err_all_present">All contacts already in blacklist</string>
     <string name="bl_err_not_present">Contact is not in blacklist</string>
+    <string name="bl_err_limit_reached">You cannot block anymore contacts without the full version.</string>
     <string name="bl_state_all_rem">All contacts removed from blacklist</string>
     <string name="bl_list_empty">Your blacklist is currently empty&#8230;</string>
     

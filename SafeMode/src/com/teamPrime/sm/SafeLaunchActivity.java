@@ -48,6 +48,8 @@ import com.teamPrime.sm.tasks.DateWaitTask;
  * @version 2.0
  */
 public class SafeLaunchActivity extends Activity{	
+	public static final boolean FULL_VERSION = true;
+	
 	private boolean applicationOnState = false;
 	private boolean privateOnState = false;
 	private long offTime;
@@ -273,10 +275,18 @@ public class SafeLaunchActivity extends Activity{
             	startActivity(i);
             	break;
             case R.id.dashboard_history:
-            	startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+            	if (FULL_VERSION) {
+            		startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+            	} else {
+            		Toast.makeText(this, getString(R.string.sm_only), Toast.LENGTH_SHORT).show();
+            	}
             	break;
             case R.id.dashboard_find_me:
-            	startActivity(new Intent(getApplicationContext(), FindMeActivity.class));
+            	if (FULL_VERSION) {
+            		startActivity(new Intent(getApplicationContext(), FindMeActivity.class));
+            	} else {
+            		Toast.makeText(this, getString(R.string.sm_only), Toast.LENGTH_SHORT).show();
+            	}
             	break;
         }
     }
