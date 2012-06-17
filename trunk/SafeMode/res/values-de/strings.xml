@@ -25,6 +25,7 @@
     <string name="loading">Kontakte werden geladen&#8230;</string>
     <string name="loading_hist">Lädt Geschichte&#8230;</string>
     <string name="loading_location">Ortsbestimmung&#8230;</string>
+    <string name="turnOff_hint">Geben Sie Ihre Antwort hier</string>
     
     <string name="bl_err_incor_name">Falsche Namen des Kontakts</string>
     <string name="bl_err_contact_present">Kontakt bereits in Blacklist</string>
@@ -63,5 +64,60 @@
 	<string name="find_sendFail">Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.</string>
 	<string name="find_sendSuccess">Ort geschickt, um </string>
 	
+	<string name="temp_title">Vorlage hinzufügen</string>
+    <string name="find_template_hint">Geben Sie hier Vorlage</string>
+    <string name="temp_esc_title">Escape-Sequenzen:</string>
+    <string name="temp_esc_l">%l</string>
+    <string name="temp_esc_l_subst">Ihr Standort</string>
+    <string name="temp_esc_d">%d</string>
+    <string name="temp_esc_d_subst">Das aktuelle Datum</string>
+    <string name="temp_esc_t">%t</string>
+    <string name="temp_esc_t_subst">Die aktuelle Zeit</string>
+    <string name="temp_esc_n">%n</string>
+    <string name="temp_esc_n_subst">Kontakt vollständigen Namen</string>
+    <string name="temp_esc_f">%f</string>
+    <string name="temp_esc_f_subst">Kontakt mit Vornamen</string>
+    <string name="temp_esc_s">%s</string>
+    <string name="temp_esc_s_subst">Name des Veranstalters</string>
+    <string name="temp_esc_p">%%</string>
+    <string name="temp_esc_p_subst">%</string>
+    <string name="temp_add_button">hinzufügen</string>
+    <string name="temp_cancel_button">stornieren</string>
+	
 	<string name ="stop_attemptsExceeded">Zu viele Versuche schlugen fehl!</string>
+	
+	<string name="sett_eqn_title">Gleichung zu Turn Off SafeMode</string>
+	<string name="sett_addition">+</string>
+	<string name="sett_subtraction">-</string>
+	<string name="sett_multiplication">*</string>
+	<string name="sett_num_digits">Anzahl der Stellen</string>
+	<string name="sett_expr_length">Expression Länge</string>
+	<string name="sett_example">Beispiel Expression</string>
+	<string name="sett_err_expr_gen">Fehler beim Erzeugen Ausdruck</string>
+	<string name="sett_name">Einstellungen</string>
+	<string name="sett_onState">Können nicht bearbeitet werden, während Einstellungen SafeMode ist auf</string>
+	
+	<string name="init_notice">Willkommen bei SafeMode! (v2.0)\n\nUrheberrecht 2012 Mike Depinet und Boris Treskunov\n\n\n
+	Um zu beginnen, wählen Sie Kontakte zu Ihren Blacklist hinzufügen (indem Sie die \"Bearbeiten Blacklist\"-Option im Menü).
+	\n\nDann können Sie SafeMode durch Drücken der \"Start SafeMode\"-Taste starten. Dadurch werden Sie für einen Zeitpunkt, an dem SafeMode ausschalten automatisch zu fragen.
+	\n\nBis sich die Zeit gewählt, werden die Kontakte in Ihrer Blacklist nicht verfügbar sein (so dass man nicht nennen, Text, E-Mail, IM oder sie).
+	\n\nSeit der Version 2.0, auch wenn Sie Ihre Kontakte \'Zahlen versucht, anzurufen oder ihnen Text wird immer noch blockiert werden, erinnern!
+	\n\nSo schalten Sie SafeMode früh, können Sie die Taste \"Ende SafeMode\"-Taste. Dies erfordert, dass Sie Nüchternheit beweisen, dann schalten Sie SafeMode.
+	\n\nSie können sehen, was Sie während SafeMode war in der \"Geschichte\" und Sie können Ihre Freunde bitten, kommen erhalten Sie mit einem zuvor erstellten Vorlage mit tat \​​"finden mir\".
+
+	\n\nNun denn, genießen Sie Ihre Party!
+
+	\n\nSafeMode &#8212; Halten Sie dafür verantwortlich, während du verantwortungslos sind.
+	\n
+	\n\nLicensed under the Apache License, Version 2.0 (the \"License\");
+	you may not use this application except in compliance with the License.
+	You may obtain a copy of the License at
+	\n
+	\n\thttp://www.apache.org/licenses/LICENSE-2.0
+	\n
+	\nUnless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an \"AS IS\" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.</string>
 </resources>
