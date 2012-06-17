@@ -9,4 +9,12 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">20sp</item>
     </style>
+    <style name="Theme.MartiniBackground" parent="android:Theme">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:background">@drawable/background</item>
+    </style>
+    <style name="Theme.NoBackground" parent="android:Theme">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:background">#000000</item>
+    </style>
 </resources>

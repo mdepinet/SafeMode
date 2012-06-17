@@ -17,7 +17,6 @@
     <string name="edit_blacklist">Bearbeiten Blacklist</string>
     <string name="view_blacklist">Zeige Blacklist</string>
     <string name="math_question">Was ist </string>
-    <string name="options">Optionen</string>
     <string name="remove_all_button">entfernen\nSie alle</string>
     <string name="future_reqd">Zeit zum Ausschalten muss in der Zukunft sein!</string>
     <string name="waiting_user">Warten auf Benutzereingaben&#8230;</string>
