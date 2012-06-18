@@ -21,6 +21,7 @@ import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -155,14 +156,21 @@ public class TextTemplateManagementActivity extends ListActivity {
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	boolean result = super.onCreateOptionsMenu(menu);
-    	menu.add(Menu.NONE, Menu.NONE, Menu.NONE, getString(R.string.temp_title));
-        return result;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.templates, menu);
+        return true;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-    	showDialog(ADD_MESSAGE_DIALOG_ID);
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.menu_addTemplate:
+            	showDialog(ADD_MESSAGE_DIALOG_ID);
+                return true;
+            case R.id.menu_clearTemplates:
+            	templatesAdapter.clear();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
     
     

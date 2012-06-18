@@ -30,6 +30,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -243,17 +244,22 @@ public class SafeLaunchActivity extends Activity{
     }
     
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-    	//TODO Use a menu inflater
-    	menu.add(getString(R.string.sett_name));
-    	return true;
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
     }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-    	if (applicationOnState) Toast.makeText(getApplicationContext(), R.string.sett_onState, Toast.LENGTH_SHORT).show();
-    	else startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-        return true;
+        switch (item.getItemId()) {
+            case R.id.menu_settings:
+            	if (applicationOnState) Toast.makeText(getApplicationContext(), R.string.sett_onState, Toast.LENGTH_SHORT).show();
+            	else startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
     
     public void onClick(View v) {

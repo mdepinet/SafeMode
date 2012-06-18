@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,9 +97,24 @@ public class HistoryActivity extends ListActivity {
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	boolean result = super.onCreateOptionsMenu(menu);
-    	menu.add(Menu.NONE, Menu.NONE, Menu.NONE, getString(R.string.hist_clear));
-        return result;
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.history, menu);
+    	return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_clearHistory:
+            	SharedPreferences data = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
+            	Editor edit = data.edit();
+            	edit.putInt("numItems", 0);
+            	edit.commit();
+            	historyAdapter.clear();
+            	historyAdapter.add(emptyItem);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
     
     @Override
@@ -110,17 +126,6 @@ public class HistoryActivity extends ListActivity {
     		return d;
     	}
     	else return null;
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	SharedPreferences data = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-    	Editor edit = data.edit();
-    	edit.putInt("numItems", 0);
-    	edit.commit();
-    	historyAdapter.clear();
-    	historyAdapter.add(emptyItem);
-        return super.onOptionsItemSelected(item);
     }
     
     @Override

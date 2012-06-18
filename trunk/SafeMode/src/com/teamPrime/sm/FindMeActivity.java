@@ -50,6 +50,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -190,6 +191,7 @@ public class FindMeActivity extends ListActivity {
 		}
 	}
 	private List<String> customizeMessages(){
+		//TODO Make this faster or get it off the main thread
 		if (customMessages == null || customMessages.isEmpty()) populateCustomMessages();
 		List<String> newMessages = new LinkedList<String>();
 		Pattern escapePattern = Pattern.compile("%[%sfntdl]");
@@ -248,17 +250,22 @@ public class FindMeActivity extends ListActivity {
 		}
 	}
 	
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-    	boolean result = super.onCreateOptionsMenu(menu);
-    	menu.add(Menu.NONE, Menu.NONE, Menu.NONE, getString(R.string.find_manage_templates));
-        return result;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	startActivity(new Intent(getApplicationContext(), TextTemplateManagementActivity.class));
-        return super.onOptionsItemSelected(item);
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.find_me, menu);
+	    return true;
+	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case R.id.menu_manageTemplates:
+	        	startActivity(new Intent(getApplicationContext(), TextTemplateManagementActivity.class));
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
 	
 	public void getLocationAndSendSMS(){
 		locationFound = false;
