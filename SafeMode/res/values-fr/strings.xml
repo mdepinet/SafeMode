@@ -85,6 +85,7 @@
     <string name="temp_esc_p_subst">%</string>
     <string name="temp_add_button">ajouter</string>
     <string name="temp_cancel_button">annuler</string>
+    <string name="temp_empty">Vous n\'avez pas de modèles</string>
 	
 	<string name ="stop_attemptsExceeded">Un trop grand nombre de tentatives infructueuses!</string>
 	

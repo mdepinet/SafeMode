@@ -85,6 +85,7 @@
     <string name="temp_esc_p_subst">%</string>
     <string name="temp_add_button">añadir</string>
     <string name="temp_cancel_button">cancelar</string>
+    <string name="temp_empty">Usted no tiene las plantillas</string>
 	
 	<string name ="stop_attemptsExceeded">Demasiados intentos fallidos!</string>
 	

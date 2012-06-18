@@ -19,6 +19,7 @@ import android.os.AsyncTask;
 
 import com.teamPrime.sm.R;
 
+//TODO Read/write synchronization
 public class TemplateLoadingTask extends AsyncTask<Void, Void, Integer>{
 	public static final int READ_MODE = 0;
 	public static final int WRITE_MODE = 1;
