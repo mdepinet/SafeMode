@@ -77,7 +77,13 @@ public class TextTemplateManagementActivity extends ListActivity {
     public void onPause(){
         super.onPause();
         if (mTask.getMode() == TemplateLoadingTask.READ_MODE) mTask.cancel(true);
-        mTask = new TemplateLoadingTask(this,templates,TemplateLoadingTask.WRITE_MODE);
+        if (templates.contains(getString(R.string.temp_empty))) {
+        	List<String> templatesCopy = new LinkedList<String>(templates);
+        	templatesCopy.remove(getString(R.string.temp_empty));
+        	mTask = new TemplateLoadingTask(this,templatesCopy,TemplateLoadingTask.WRITE_MODE);
+        } else {
+        	mTask = new TemplateLoadingTask(this,templates,TemplateLoadingTask.WRITE_MODE);
+        }
         mTask.execute((Void[]) null);
     }
     
@@ -87,6 +93,7 @@ public class TextTemplateManagementActivity extends ListActivity {
     } 
     
     protected boolean onListItemLongClick(View v, int position, long id){
+    	if (getString(R.string.temp_empty).equals(templates.get(position))) return true;
     	selectedItem = position;
     	showDialog(CONFIRM_DELETE_DIALOG_ID);
     	return true;
@@ -101,8 +108,10 @@ public class TextTemplateManagementActivity extends ListActivity {
 		           .setCancelable(false)
 		           .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener(){
 		        	   public void onClick(DialogInterface dialog, int id) {
-		        		   if (selectedItem >= 0 && selectedItem < templates.size())
+		        		   if (selectedItem >= 0 && selectedItem < templates.size()){
 		        			   templatesAdapter.remove(templates.get(selectedItem));
+		        			   if (templatesAdapter.isEmpty()) templatesAdapter.add(getString(R.string.temp_empty));
+		        		   }
 		        		   selectedItem = -1;
 		        		   dialog.dismiss();
 		        	   }
@@ -147,6 +156,7 @@ public class TextTemplateManagementActivity extends ListActivity {
 		public void onClick(View v) {
 			if (!addTemplate) d.cancel();
 			else{
+				if (templates.contains(getString(R.string.temp_empty))) templatesAdapter.clear();
 				String s = ((TextView)(((View)((View)v.getParent()).getParent()).findViewById(R.id.newTemplate))).getText().toString();
 				templatesAdapter.add(s);
 				d.dismiss();
@@ -168,6 +178,7 @@ public class TextTemplateManagementActivity extends ListActivity {
                 return true;
             case R.id.menu_clearTemplates:
             	templatesAdapter.clear();
+            	templatesAdapter.add(getString(R.string.temp_empty));
             default:
                 return super.onOptionsItemSelected(item);
         }

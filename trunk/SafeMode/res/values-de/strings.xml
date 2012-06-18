@@ -85,6 +85,7 @@
     <string name="temp_esc_p_subst">%</string>
     <string name="temp_add_button">hinzufügen</string>
     <string name="temp_cancel_button">stornieren</string>
+    <string name="temp_empty">Sie haben keine Vorlagen</string>
 	
 	<string name ="stop_attemptsExceeded">Zu viele Versuche schlugen fehl!</string>
 	

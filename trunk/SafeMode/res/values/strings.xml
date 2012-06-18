@@ -84,6 +84,7 @@
     <string name="temp_esc_p_subst">%</string>
     <string name="temp_add_button">Add</string>
     <string name="temp_cancel_button">Cancel</string>
+    <string name="temp_empty">You have no templates</string>
 	
 	<string name="stop_attemptsExceeded">Too many failed attempts!</string>
 	
