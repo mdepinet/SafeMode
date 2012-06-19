@@ -252,11 +252,23 @@ public class SafeLaunchActivity extends Activity{
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+    	//TODO Add manual restart of contact re-entry
+    	//On second thought, this would need a lot of work to do properly
+    	//Perhaps we'll put it off for now...
         switch (item.getItemId()) {
             case R.id.menu_settings:
             	if (applicationOnState) Toast.makeText(getApplicationContext(), R.string.sett_onState, Toast.LENGTH_SHORT).show();
             	else startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 return true;
+//            case R.id.menu_reinsertContacts:
+//            	if (applicationOnState) Toast.makeText(getApplicationContext(), R.string.reinsert_err_smOn, Toast.LENGTH_SHORT).show();
+//            	else if (BlackListIOTask.isSavingContacts()) Toast.makeText(getApplicationContext(), R.string.reinsert_err_working, Toast.LENGTH_SHORT).show();
+//            	else {
+//                	BlackListIOTask finIO = new BlackListIOTask(this,null,BlackListIOTask.CONTINUE_CONTACTS_REVEAL);
+//                	finIO.execute((Void[])(null));
+//                	Toast.makeText(getApplicationContext(), R.string.reinsert_start, Toast.LENGTH_SHORT).show();
+//            	}
+//            	return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

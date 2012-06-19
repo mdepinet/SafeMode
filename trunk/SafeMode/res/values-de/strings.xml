@@ -26,6 +26,10 @@
     <string name="loading_hist">Lädt Geschichte&#8230;</string>
     <string name="loading_location">Ortsbestimmung&#8230;</string>
     <string name="turnOff_hint">Geben Sie Ihre Antwort hier</string>
+    <string name="reinsert_contacts">Setzen Sie fehlende Kontakte</string>
+    <string name="reinsert_err_smOn">Kann nicht selbst wieder einlegen Kontakte während SafeMode ist auf</string>
+    <string name="reinsert_err_working">Arbeiten bereits daran</string>
+    <string name="reinsert_start">Wiedereinsetzen Kontakte (Dies kann eine Minute dauern)</string>
     <string name="sm_only">Leider ist dieses Feature nur in der Vollversion.</string>
     
     <string name="bl_err_incor_name">Falsche Namen des Kontakts</string>
