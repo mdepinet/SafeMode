@@ -3,4 +3,7 @@
 	<item android:id="@+id/menu_settings"
           android:icon="@drawable/menu_settings"
           android:title="@string/sett_name"/>
+	<!--<item android:id="@+id/menu_reinsertContacts"
+	      android:icon="@drawable/menu_reinsert"
+	      android:title="@string/reinsert_contacts"/>-->
 </menu>

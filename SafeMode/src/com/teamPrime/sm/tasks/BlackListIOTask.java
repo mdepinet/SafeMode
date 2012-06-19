@@ -57,6 +57,8 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	
 	public static final int SafeMode_BLOCKED_SMS_RESPONSE_CODE = 101;
 	
+//	private static boolean savingContacts = false;
+	
 	private static final String fileName = "SAFEMODE_contactIds.bin";
 	private static final String smsUri = "content://sms";
 	
@@ -70,6 +72,10 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	private static SmsInterceptor smsInt;
 	private static Collection<String> blockedNums = null;
 	
+//	public static boolean isSavingContacts(){
+//		return savingContacts;
+//	}
+	
 	public BlackListIOTask(Context activity, List<Long> contactIds, int mode){
 		mActivity = activity;
 		this.contactIds = contactIds;
@@ -82,7 +88,12 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 	 //Runs on main thread.
 	 @Override
 	 protected void onPreExecute() {
+//		 if (mode > 1 && savingContacts){
+//			 cancel(true); //We actually need a task queue
+//			 return;
+//		 }
 		 if (mHandler == null) mHandler = new Handler();
+//		 if (mode > 1) savingContacts = true;
 	 }
 
 	 // Runs on main thread.
@@ -98,6 +109,7 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			 startCallTextBlocking();
 			 break;
 		 }
+//		 if (mode > 1) savingContacts = false;
 	 }
 	
 	 @Override

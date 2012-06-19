@@ -26,6 +26,10 @@
     <string name="loading_hist">Chargement histoire&#8230;</string>
     <string name="loading_location">déterminer l\'emplacement&#8230;</string>
     <string name="turnOff_hint">Tapez votre réponse ici</string>
+    <string name="reinsert_contacts">Réinsérer contacts manquants</string>
+    <string name="reinsert_err_smOn">Ne peut pas réinsérer contacts tout en SafeMode est</string>
+    <string name="reinsert_err_working">Travaille déjà sur ce</string>
+    <string name="reinsert_start">Contacts réinsérer (cela peut prendre une minute)</string>
     <string name="sm_only">Désolé, cette fonction est uniquement disponible dans la version complète.</string>
     
     <string name="bl_err_incor_name">Nom du contact incorrecte</string>
