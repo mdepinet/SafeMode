@@ -33,7 +33,6 @@ import android.widget.Toast;
 
 import com.teamPrime.sm.HistoryActivity;
 import com.teamPrime.sm.data.ContactDAO;
-import com.teamPrime.sm.data.ContactDAO.DataAccessException;
 import com.teamPrime.sm.data.ContactData;
 import com.teamPrime.sm.history.BlockedCallItem;
 import com.teamPrime.sm.history.BlockedTextItem;
@@ -135,13 +134,9 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			 readContactIds();
 			 
 			 int i = 0;
-			 try {
-				 //Remove from database
-				 List<ContactData> blockedData = ContactDAO.hideContacts(mActivity, contactIds);
-				 blockedNums = ContactDAO.getPhoneNumbersForContacts(blockedData);
-			 } catch (DataAccessException e) {
-				 Log.e("SAFEMODE - ContactsIO", "Failed to hide contacts",e);
-			 }
+			 //Remove from database
+			 List<ContactData> blockedData = ContactDAO.hideContacts(mActivity, contactIds);
+			 blockedNums = ContactDAO.getPhoneNumbersForContacts(blockedData);
 			 List<Long> result = new LinkedList<Long>();
 			 result.add((long) i);
 			 return result;
