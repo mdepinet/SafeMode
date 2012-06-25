@@ -19,13 +19,12 @@ import android.os.AsyncTask;
 
 import com.teamPrime.sm.R;
 
-//TODO Read/write synchronization
 public class TemplateLoadingTask extends AsyncTask<Void, Void, Integer>{
 	public static final int READ_MODE = 0;
 	public static final int WRITE_MODE = 1;
 	public static final int APPEND_MODE = 2;
 	
-	private static final String SAVE_LOC = "SafeMode - FindMe_Text_Templates";
+	static final String SAVE_LOC = "SafeMode - FindMe_Text_Templates";
 	
 	private Activity mActivity;
 	private final List<String> templates;
@@ -53,40 +52,13 @@ public class TemplateLoadingTask extends AsyncTask<Void, Void, Integer>{
 		int numTemplates;
 		switch(mode){
 		case READ_MODE:
-			SharedPreferences info = mActivity.getSharedPreferences(SAVE_LOC, Context.MODE_PRIVATE);
-			numTemplates = info.getInt("numTemplates", 0);
-			for (int i = 1; i<=numTemplates; i++){
-				String template = info.getString("TEMPLATE_"+i, null);
-				if (template != null) templates.add(template);
-			}
-			if (templates.isEmpty()){
-				templates.add(mActivity.getString(R.string.find_defText1));
-				templates.add(mActivity.getString(R.string.find_defText2));
-				templates.add(mActivity.getString(R.string.find_defText3));
-				templates.add(mActivity.getString(R.string.find_defText4));
-				templates.add(mActivity.getString(R.string.find_defText5));
-				templates.add(mActivity.getString(R.string.find_defText6));
-			}
-			else break; //Don't break if templates was empty so that the defaults get written too
+			numTemplates = SynchronizedTemplateAccessor.read(templates, mActivity);
+			break;
 		case WRITE_MODE:
-			SharedPreferences.Editor edit = mActivity.getSharedPreferences(SAVE_LOC, Context.MODE_PRIVATE).edit();
-			numTemplates = templates.size();
-			edit.putInt("numTemplates", numTemplates);
-			for (int i = 1; i<=numTemplates; i++){
-				edit.putString("TEMPLATE_"+i,templates.get(i-1));
-			}
-			edit.commit();
+			numTemplates = SynchronizedTemplateAccessor.write(templates, mActivity);
 			break;
 		case APPEND_MODE:
-			SharedPreferences info2 = mActivity.getSharedPreferences(SAVE_LOC, Context.MODE_PRIVATE);
-			SharedPreferences.Editor edit2 = info2.edit();
-			int start = (numTemplates = info2.getInt("numTemplates", 0))+1;
-			numTemplates += templates.size();
-			edit2.putInt("numTemplates", numTemplates);
-			for (int i = start; i<=numTemplates; i++){
-				edit2.putString("TEMPLATE_"+i, templates.get(i-start));
-			}
-			edit2.commit();
+			numTemplates = SynchronizedTemplateAccessor.append(templates, mActivity);
 			break;
 		default:
 			numTemplates = -1;
@@ -100,5 +72,49 @@ public class TemplateLoadingTask extends AsyncTask<Void, Void, Integer>{
 			try{loading.dismiss();}
 			catch(Exception ex){}
 		}
+	}
+}
+
+class SynchronizedTemplateAccessor {
+	public synchronized static int read(List<String> templates, Context mActivity){
+		SharedPreferences info = mActivity.getSharedPreferences(TemplateLoadingTask.SAVE_LOC, Context.MODE_PRIVATE);
+		int numTemplates = info.getInt("numTemplates", 0);
+		for (int i = 1; i<=numTemplates; i++){
+			String template = info.getString("TEMPLATE_"+i, null);
+			if (template != null) templates.add(template);
+		}
+		if (templates.isEmpty()){
+			templates.add(mActivity.getString(R.string.find_defText1));
+			templates.add(mActivity.getString(R.string.find_defText2));
+			templates.add(mActivity.getString(R.string.find_defText3));
+			templates.add(mActivity.getString(R.string.find_defText4));
+			templates.add(mActivity.getString(R.string.find_defText5));
+			templates.add(mActivity.getString(R.string.find_defText6));
+			write(templates, mActivity);
+		}
+		return numTemplates;
+	}
+	public synchronized static int write(List<String> templates, Context mActivity){
+		SharedPreferences.Editor edit = mActivity.getSharedPreferences(TemplateLoadingTask.SAVE_LOC, Context.MODE_PRIVATE).edit();
+		int numTemplates = templates.size();
+		edit.putInt("numTemplates", numTemplates);
+		for (int i = 1; i<=numTemplates; i++){
+			edit.putString("TEMPLATE_"+i,templates.get(i-1));
+		}
+		edit.commit();
+		return numTemplates;
+	}
+	public synchronized static int append(List<String> templates, Context mActivity){
+		SharedPreferences info = mActivity.getSharedPreferences(TemplateLoadingTask.SAVE_LOC, Context.MODE_PRIVATE);
+		SharedPreferences.Editor edit = info.edit();
+		int numTemplates = info.getInt("numTemplates", 0);
+		int start = numTemplates+1;
+		numTemplates += templates.size();
+		edit.putInt("numTemplates", numTemplates);
+		for (int i = start; i<=numTemplates; i++){
+			edit.putString("TEMPLATE_"+i, templates.get(i-start));
+		}
+		edit.commit();
+		return numTemplates;
 	}
 }
