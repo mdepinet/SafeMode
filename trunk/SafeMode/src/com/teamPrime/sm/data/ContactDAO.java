@@ -54,10 +54,16 @@ public class ContactDAO {
 	private static final String tpcTempLoc1 = "SAFEMODE_twoPhaseCommitContacts.bin";
 	private static final String tpcTempLoc2 = "SAFEMODE_twoPhaseCommitS2VM.bin";
 	private static Map<Long, Integer> sendToVM = new HashMap<Long, Integer>(); //This will now be contact ids (not raw contact ids)
-	private static boolean lastHid = false;
 	private static final String supportedDataTypes = "(\'"+ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE+"\',"
 														+"\'"+ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE+"\',"
 														+"\'"+ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE+"\')";
+	private static boolean revealNext = false;
+	
+	private static ContactDAO INSTANCE;
+	private ContactDAO(){}
+	private static ContactDAO getInstance(){
+		return INSTANCE != null ? INSTANCE : (INSTANCE = new ContactDAO());
+	}
     
     
     private static List<ContactData> getDataForContacts(ContentResolver cr, List<Long> contactIds){
@@ -314,20 +320,29 @@ public class ContactDAO {
 		return result;
     }
     
-    public static List<ContactData> hideContacts(Context activity, List<Long> contactIds) throws DataAccessException{
-    	if (lastHid) throw new DataAccessException("Last batch of contacts was not revealed.  Cannot hide more.");
+    private synchronized List<ContactData> hideContactsInternal(Context activity, List<Long> contactIds){
+    	if (revealNext) revealContactsInternal(activity, contactSaveLoc); //Must reveal before hiding again
     	List<ContactData> dataList = getDataForContacts(activity.getContentResolver(), contactIds);
     	saveContacts(activity, dataList, contactSaveLoc, contactVMSaveLoc);
     	deleteData(activity.getContentResolver(), contactIds);
+    	revealNext = true;
     	return dataList;
     }
-    public static int revealContacts(Context activity){
-    	List<ContactData> dataList = readContacts(activity, contactSaveLoc);
-    	return insertData(activity, dataList);
+    private synchronized int revealContactsInternal(Context activity,  String saveLoc){
+    	List<ContactData> dataList = readContacts(activity, saveLoc);
+    	int result = insertData(activity, dataList);
+    	revealNext = false;
+    	return result;
     }
-    public static int continueReveal(Context activity){
-    	List<ContactData> dataList = readContacts(activity, tpcTempLoc1);
-    	return insertData(activity, dataList);
+    
+    public synchronized static List<ContactData> hideContacts(Context activity, List<Long> contactIds){
+    	return getInstance().hideContactsInternal(activity, contactIds);
+    }
+    public synchronized static int revealContacts(Context activity){
+    	return getInstance().revealContactsInternal(activity, contactSaveLoc);
+    }
+    public synchronized static int continueReveal(Context activity){
+    	return getInstance().revealContactsInternal(activity, tpcTempLoc1);
     }
     
     public static Collection<String> getPhoneNumbersForContacts(Collection<ContactData> allData){
@@ -338,22 +353,5 @@ public class ContactDAO {
     		}
     	}
     	return numbers;
-    }
-    
-    
-    public static class DataAccessException extends Exception{
-    	private static final long serialVersionUID = 7824516446656553631L;
-    	public DataAccessException(){
-    		super();
-    	}
-    	public DataAccessException(String message){
-    		super(message);
-    	}
-    	public DataAccessException(String message, Throwable cause){
-    		super(message, cause);
-    	}
-    	public DataAccessException(Throwable cause){
-    		super(cause);
-    	}
     }
 }
