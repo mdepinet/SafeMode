@@ -222,17 +222,14 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 			public void onChange(boolean selfChange){
 				try{
 					Uri uriSMSURI = Uri.parse(smsUri);
-					//TODO This could definitely be more efficient
-					Cursor cur = mActivity.getContentResolver().query(uriSMSURI, new String[]{"protocol","address","_id","body","date"}, null, null, null);
+					Cursor cur = mActivity.getContentResolver().query(uriSMSURI,
+							new String[]{"address","_id","body"},
+							"protocol IS NULL AND date > ?", new String[] {""+startTime}, null);
 					while(cur.moveToNext()){
-						String protocol = cur.getString(0);
-						String number = cur.getString(1);
-						if (protocol != null) continue;
+						String number = cur.getString(0);
 						if (isBlocked(number, blockedNums)){
-							String ID = cur.getString(2);
-							String body = cur.getString(3);
-							long recTime = cur.getLong(4);
-							if (recTime < startTime) continue;
+							String ID = cur.getString(1);
+							String body = cur.getString(2);
 							mActivity.getContentResolver().delete(uriSMSURI, "_id=?", new String[]{ID}); //Don't send it hopefully
 							Toast.makeText(mActivity, "SMS blocked by SafeMode", Toast.LENGTH_SHORT).show();
 							ViewTextAction vta = new ViewTextAction(number, body, SafeMode_BLOCKED_SMS_RESPONSE_CODE);
