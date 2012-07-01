@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!-- These are the strings used in Spanish -->
+	<string name="yes">Si</string>
+	<string name="no">No</string>
+    <string name="app_name">SafeMode</string>
+    <string name="start_button">Comenzar SafeMode</string>
+    <string name="end_button">Terminar SafeMode</string>
+    <string name="submit_button">Presentar</string>
+    <string name="blacklist_add">(Escriba el nombre de un contacto!)</string>
+    <string name="add_button">Añadir</string>
+    <string name="remove_button">Quitar</string>
+    <string name="select_all_button">Añadir\nTodos</string>
+    <string name="notif_locked_message">Contactos protegidos por SafeMode</string>
+    <string name="notif_click_here">Haga clic aquí para desactivar SafeMode</string>
+    <string name="notif_locked_short">SafeMode en</string>
+    <string name="edit_blacklist">Editar la Lista Nigra</string>
+    <string name="view_blacklist">Ver la Lista Nigra</string>
+    <string name="math_question">Que es </string>
+    <string name="remove_all_button">Quitar\nTodos</string>
+    <string name="future_reqd">Tiempo para apagar debe ser en el futuro!</string>
+    <string name="waiting_user">La espera de la entrada del usuario&#8230;</string>
+    <string name="turn_off">SafeMode se ha apagado</string>
+    <string name="wrong_ans">Lo sentimos, respuesta equivocada&#8230;</string>
+    <string name="loading">Contactos de carga&#8230;</string>
+    <string name="loading_hist">Carga de la historia&#8230;</string>
+    <string name="loading_location">La determinación de la ubicación&#8230;</string>
+    <string name="turnOff_hint">Escriba su respuesta aquí</string>
+    <string name="reinsert_contacts">Vuelva a colocar los contactos</string>
+    <string name="reinsert_err_smOn">No se puede volver a insertar contactos mientras está en SafeMode</string>
+    <string name="reinsert_err_working">Ya trabajando en ello</string>
+    <string name="reinsert_start">Contactos de reinserción (esto puede tardar un minuto)</string>
+    <string name="sm_only">Lo sentimos, esta función sólo está disponible en la versión completa.</string>
+    
+    <string name="bl_err_incor_name">Nombre de contacto incorrecta</string>
+    <string name="bl_err_contact_present">Contacto ya en la lista negra</string>
+    <string name="bl_err_all_present">Todos los contactos que ya están en lista negra</string>
+    <string name="bl_err_not_present">Contacto no aparece en la lista negra</string>
+    <string name="bl_err_limit_reached">No se puede bloquear nunca más contactos sin la versión completa.</string>
+    <string name="bl_state_all_rem">Todos los contactos fueron retirados de la lista negra</string>
+    <string name="bl_list_empty">Su lista negra está vacío&#8230;</string>
+    
+    <string name="hist_clear">Borrar historial</string>
+    <string name="hist_view_button">Ver el historial</string>
+    <string name="hist_empty">Su historia está actualmente vacía&#8230;</string>
+    <string name="hist_bCall_bCallTo">Llamada bloqueada para</string>
+    <string name="hist_bCall_bCall">Llamada bloqueada</string>
+    <string name="hist_bText_bTextTo">Texto bloqueado para</string>
+    <string name="hist_bText_bText">Texto bloqueado</string>
+    <string name="hist_date">Fecha: </string>
+    <string name="hist_fmText_fmTextTo">Encuéntrame Texto para</string>
+    <string name="hist_fmText_fmText">Encuéntrame Texto</string>
+    <string name="hist_activated">activado</string>
+    <string name="hist_deactivated">desactivado</string>
+    <string name="hist_paused">hizo una pausa</string>
+    
+    <string name="find_button">Encuéntrame</string>
+    <string name="find_loading">plantillas de carga&#8230;</string>
+    <string name ="find_confirm_delete">¿Quieres borrar este mensaje?</string>
+    <string name="find_manage_templates">Administrar plantillas</string>
+    <string name="find_defText1" formatted="false">Estoy en %l.</string>
+    <string name="find_defText2" formatted="false">Nos vemos en %l.</string>
+    <string name="find_defText3" formatted="false">Hola %f! Me desperté en el %l y podría usar un poco de ayuda de llegar a casa!</string>
+    <string name="find_defText4" formatted="false">%f, estoy en %l, ven a por mí!</string>
+    <string name="find_defText5" formatted="false">No sé cómo volver a casa! Estoy en %l.</string>
+    <string name="find_defText6" formatted="false">Hola %f! ¿A quién os dejo la última noche?</string>
+    <string name="find_selTemp_pre">¿Qué mensaje le gustaría enviar a </string>
+	<string name="find_locFail">No se puede determinar la ubicación</string>
+	<string name="find_unknownLoc">un lugar indeterminado</string>
+	<string name="find_sendFail">Se produjo un error. inténtalo de nuevo</string>
+	<string name="find_sendSuccess">Localización enviado a </string>
+	
+	<string name="temp_title">Añadir plantilla</string>
+    <string name="find_template_hint">Tipo de plantilla aquí</string>
+    <string name="temp_esc_title">Las secuencias de escape:</string>
+    <string name="temp_esc_l">%l</string>
+    <string name="temp_esc_l_subst">Su lugar de residencia</string>
+    <string name="temp_esc_d">%d</string>
+    <string name="temp_esc_d_subst">La fecha actual</string>
+    <string name="temp_esc_t">%t</string>
+    <string name="temp_esc_t_subst">El tiempo actual</string>
+    <string name="temp_esc_n">%n</string>
+    <string name="temp_esc_n_subst">Nombre completo del contacto</string>
+    <string name="temp_esc_f">%f</string>
+    <string name="temp_esc_f_subst">Nombre del contacto</string>
+    <string name="temp_esc_s">%s</string>
+    <string name="temp_esc_s_subst">Apellido del contacto</string>
+    <string name="temp_esc_p">%%</string>
+    <string name="temp_esc_p_subst">%</string>
+    <string name="temp_add_button">añadir</string>
+    <string name="temp_cancel_button">cancelar</string>
+    <string name="temp_empty">Usted no tiene las plantillas</string>
+	
+	<string name ="stop_attemptsExceeded">Demasiados intentos fallidos!</string>
+	
+	<string name="sett_eqn_title">La ecuación para desactivar SafeMode</string>
+	<string name="sett_addition">+</string>
+	<string name="sett_subtraction">-</string>
+	<string name="sett_multiplication">*</string>
+	<string name="sett_num_digits">Número de dígitos</string>
+	<string name="sett_expr_length">Expresión de longitud</string>
+	<string name="sett_example">Ejemplo de expresión</string>
+	<string name="sett_err_expr_gen">Error al generar la expresión</string>
+	<string name="sett_name">Configuración</string>
+	<string name="sett_onState">No se puede modificar la configuración, mientras está en SafeMode</string>
+	
+	<string name="init_notice">Bienvenido a SafeMode! (v2.0)\n\nDerechos de autor 2012 Mike Depinet y Treskunov Boris\n\n\n
+	Para empezar, seleccione los contactos para agregar a su lista negra (mediante el uso de la \"Editar la Lista Nigra\" en el menú).
+	\n\nEntonces usted puede comenzar SafeMode pulsando el botón \"Comenzar SafeMode\". Esto le preguntará por un momento en el que SafeMode se apagará automáticamente.
+	\n\nHasta el momento elegido, los contactos de su lista negra no estará disponible (para que no se puede llamar, texto, correo electrónico o mensajería instantánea ellos).
+	\n\nDesde la versión 2.0, incluso si usted recordar los números de sus contactos, los intentos de llamada o un texto que aún será bloqueado!
+	\n\nPara desactivar el SafeMode temprano, usted puede pulsar el botón \"Terminar SafeMode\" botón. Para ello será necesario demostrar la sobriedad, a continuación, desactive SafeMode.
+	\n\nUsted puede ver lo que hizo mientras estaba en SafeMode en la sección \"Historia\" y se puede pedir que sus amigos vengan por usted con una plantilla creada previamente con \"Encuéntrame\".
+
+	\n\nAhora bien, disfrutar de su fiesta!
+
+	\n\nSafeMode &#8212; Mantenerse responsable mientras está siendo irresponsable.
+	\n
+	\n\nLicensed under the Apache License, Version 2.0 (the \"License\");
+	you may not use this application except in compliance with the License.
+	You may obtain a copy of the License at
+	\n
+	\n\thttp://www.apache.org/licenses/LICENSE-2.0
+	\n
+	\nUnless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an \"AS IS\" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.</string>
+</resources>

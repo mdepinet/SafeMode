@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
+    <string name="app_name">SafeMode</string>
+    <string name="start_button">Start SafeMode</string>
+    <string name="end_button">End SafeMode</string>
+    <string name="submit_button">Submit</string>
+    <string name="blacklist_add">(Type a contact\'s name!)</string>
+    <string name="add_button">Add</string>
+    <string name="remove_button">Remove</string>
+    <string name="select_all_button">Add All</string>
+    <string name="notif_locked_message">Contacts protected by SafeMode</string>
+    <string name="notif_click_here">Click here to turn off SafeMode</string>
+    <string name="notif_locked_short">SafeMode on</string>
+    <string name="edit_blacklist">Edit Blacklist</string>
+    <string name="view_blacklist">View Blacklist</string>
+    <string name="math_question">What is </string>
+    <string name="remove_all_button">Remove All</string>
+    <string name="future_reqd">Time to turn off must be in the future!</string>
+    <string name="waiting_user">Waiting for user</string>
+    <string name="turn_off">SafeMode has been turned off</string>
+    <string name="wrong_ans">Sorry, wrong answer&#8230;</string>
+    <string name="loading">Loading contacts&#8230;</string>
+    <string name="loading_hist">Loading history&#8230;</string>
+    <string name="loading_location">Determining location&#8230;</string>
+    <string name="turnOff_hint">Type your answer here</string>
+    <string name="reinsert_contacts">Reinsert missing contacts</string>
+    <string name="reinsert_err_smOn">Cannot reinsert contacts while SafeMode is on</string>
+    <string name="reinsert_err_working">Already working on it</string>
+    <string name="reinsert_start">Reinserting contacts (This may take a minute)</string>
+    <string name="sm_only">Sorry, this feature is only available in the full version.</string>
+    
+    <string name="bl_err_incor_name">Incorrect contact name</string>
+    <string name="bl_err_contact_present">Contact already in blacklist</string>
+    <string name="bl_err_all_present">All contacts already in blacklist</string>
+    <string name="bl_err_not_present">Contact is not in blacklist</string>
+    <string name="bl_err_limit_reached">You cannot block anymore contacts without the full version.</string>
+    <string name="bl_state_all_rem">All contacts removed from blacklist</string>
+    <string name="bl_list_empty">Your blacklist is currently empty&#8230;</string>
+    
+    <string name="hist_clear">Clear History</string>
+    <string name="hist_view_button">View History</string>
+    <string name="hist_empty">Your History is Currently Empty&#8230;</string>
+    <string name="hist_bCall_bCallTo">Blocked Call to</string>
+    <string name="hist_bCall_bCall">Blocked Call</string>
+    <string name="hist_bText_bTextTo">Blocked Text to</string>
+    <string name="hist_bText_bText">Blocked Text</string>
+    <string name="hist_date">Date: </string>
+    <string name="hist_fmText_fmTextTo">FindMe Text to</string>
+    <string name="hist_fmText_fmText">FindMe Text</string>
+    <string name="hist_activated">activated</string>
+    <string name="hist_deactivated">deactivated</string>
+    <string name="hist_paused">paused</string>
+    
+    <string name="find_button">Find Me</string>
+    <string name="find_loading">Loading templates&#8230;</string>
+    <string name ="find_confirm_delete">Do you want to delete this message?</string>
+    <string name="find_manage_templates">Manage templates</string>
+    <string name="find_defText1" formatted="false">I\'m at %l.</string>
+    <string name="find_defText2" formatted="false">Meet me at %l.</string>
+    <string name="find_defText3" formatted="false">Hey %f! I just woke up at %l and could really use some help getting home!</string>
+    <string name="find_defText4" formatted="false">%f, I\'m at %l, come get me!</string>
+    <string name="find_defText5" formatted="false">I don\'t know how to get home! I\'m at %l.</string>
+    <string name="find_defText6" formatted="false">Hey %f! Who did I leave with last night?</string>
+    <string name="find_selTemp_pre">Which message would you like to send to </string>
+	<string name="find_locFail">Unable to determine location</string>
+	<string name="find_unknownLoc">an undetermined location</string>
+	<string name="find_sendFail">An error occurred. Please try again.</string>
+	<string name="find_sendSuccess">Location sent to </string>
+	
+	<string name="temp_title">Add template</string>
+    <string name="find_template_hint">Type template here</string>
+    <string name="temp_esc_title">Escape sequences:</string>
+    <string name="temp_esc_l">%l</string>
+    <string name="temp_esc_l_subst">Your location</string>
+    <string name="temp_esc_d">%d</string>
+    <string name="temp_esc_d_subst">The current date</string>
+    <string name="temp_esc_t">%t</string>
+    <string name="temp_esc_t_subst">The current time</string>
+    <string name="temp_esc_n">%n</string>
+    <string name="temp_esc_n_subst">Contact\'s full name</string>
+    <string name="temp_esc_f">%f</string>
+    <string name="temp_esc_f_subst">Contact\'s first name</string>
+    <string name="temp_esc_s">%s</string>
+    <string name="temp_esc_s_subst">Contact\'s surname</string>
+    <string name="temp_esc_p">%%</string>
+    <string name="temp_esc_p_subst">%</string>
+    <string name="temp_add_button">Add</string>
+    <string name="temp_cancel_button">Cancel</string>
+    <string name="temp_empty">You have no templates</string>
+	
+	<string name="stop_attemptsExceeded">Too many failed attempts!</string>
+	
+	<string name="sett_eqn_title">Equation to Turn Off SafeMode</string>
+	<string name="sett_addition">+</string>
+	<string name="sett_subtraction">-</string>
+	<string name="sett_multiplication">*</string>
+	<string name="sett_num_digits">Number of Digits</string>
+	<string name="sett_expr_length">Expression Length</string>
+	<string name="sett_example">Example Expression</string>
+	<string name="sett_err_expr_gen">Error generating expression</string>
+	<string name="sett_name">Settings</string>
+	<string name="sett_onState">You cannot edit settings while SafeMode is on</string>
+	    
+    <string name="init_notice">Welcome to SafeMode! (v2.0)\n\nCopyright 2012 Mike Depinet and Boris Treskunov\n\n\n
+    To get started, select contacts to add to your blacklist (by using the \"Edit Blacklist\" option in the menu).
+    \n\nThen you can start SafeMode by pushing the \"Start SafeMode\" button.  This will ask you for a time at which SafeMode will turn off automatically.
+    \n\nUntil the time selected, the contacts in your blacklist will be unavailable (so that you cannot call, text, email, or IM them).
+    \n\nSince version 2.0, even if you remember your contacts\' numbers, attempts to call or text them will still be blocked!
+    \n\nTo turn off SafeMode early, you may push the \"End SafeMode\" button.  This will require you to prove sobriety, then turn off SafeMode.
+    \n\nYou can see what you did while SafeMode was on in the \"History\" section and you can ask your friends to come get you with a previously created
+    template using \"Find Me.\"
+    \n\nNow then, enjoy your party!
+    \n
+    \nSafeMode &#8212; Keeping you responsible while you\'re being irresponsible.
+	\n
+	\n\nLicensed under the Apache License, Version 2.0 (the \"License\");
+	you may not use this application except in compliance with the License.
+	You may obtain a copy of the License at
+	\n
+	\n\thttp://www.apache.org/licenses/LICENSE-2.0
+	\n
+	\nUnless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an \"AS IS\" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.</string>
+</resources>
