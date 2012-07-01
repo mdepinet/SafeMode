@@ -7,7 +7,7 @@
  * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package com.teamPrime.sm.tasks;
+package com.teamPrime.sml.tasks;
 
 
 import java.io.FileNotFoundException;
@@ -31,14 +31,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.teamPrime.sm.HistoryActivity;
-import com.teamPrime.sm.data.ContactDAO;
-import com.teamPrime.sm.data.ContactData;
-import com.teamPrime.sm.history.BlockedCallItem;
-import com.teamPrime.sm.history.BlockedTextItem;
-import com.teamPrime.sm.history.action.RedialAction;
-import com.teamPrime.sm.history.action.ResendTextAction;
-import com.teamPrime.sm.history.action.ViewTextAction;
+import com.teamPrime.sml.data.ContactDAO;
+import com.teamPrime.sml.data.ContactData;
 
 /**
  * BlackListIOTask takes care of calling ContactDAO in the
@@ -200,8 +194,6 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 					if (isBlocked(phoneNumber, blockedNums)){
 						setResultData(null); //Don't make the call
 						Toast.makeText(c, "Call blocked by SafeMode", Toast.LENGTH_SHORT).show();
-						RedialAction ra = new RedialAction(phoneNumber);
-						HistoryActivity.addItem(c, new BlockedCallItem(null, phoneNumber, ra));
 					}
 				}
 			}
@@ -232,9 +224,6 @@ public class BlackListIOTask extends AsyncTask<Void, Void, List<Long>> {
 							String body = cur.getString(2);
 							mActivity.getContentResolver().delete(uriSMSURI, "_id=?", new String[]{ID}); //Don't send it hopefully
 							Toast.makeText(mActivity, "SMS blocked by SafeMode", Toast.LENGTH_SHORT).show();
-							ViewTextAction vta = new ViewTextAction(number, body, SafeMode_BLOCKED_SMS_RESPONSE_CODE);
-							ResendTextAction rta = new ResendTextAction(number, body, false);
-							HistoryActivity.addItem(mActivity, new BlockedTextItem(null,number,vta,rta));
 							break; //Don't delete all the messages that have been sent!
 						}
 					}

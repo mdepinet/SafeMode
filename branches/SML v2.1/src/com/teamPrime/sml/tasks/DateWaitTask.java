@@ -7,12 +7,12 @@
  * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package com.teamPrime.sm.tasks;
+package com.teamPrime.sml.tasks;
 
 
 import android.os.AsyncTask;
 
-import com.teamPrime.sm.SafeLaunchActivity;
+import com.teamPrime.sml.SafeLaunchActivity;
 
 /**
  * DateWaitTask allows SafeLaunchActivity to wait
