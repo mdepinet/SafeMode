@@ -7,7 +7,7 @@
  * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package com.teamPrime.sm;
+package com.teamPrime.sml;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,9 +21,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.teamPrime.sm.util.MathUtils;
-import com.teamPrime.sm.util.MathUtils.MathUtilException;
-import com.teamPrime.sm.util.Solvable;
+import com.teamPrime.sml.R;
+import com.teamPrime.sml.util.MathUtils;
+import com.teamPrime.sml.util.Solvable;
+import com.teamPrime.sml.util.MathUtils.MathUtilException;
 
 
 public class MathStopActivity extends Activity{

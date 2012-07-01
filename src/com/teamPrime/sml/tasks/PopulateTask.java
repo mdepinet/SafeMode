@@ -7,26 +7,35 @@
  * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package com.teamPrime.sm.tasks;
+package com.teamPrime.sml.tasks;
 
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 
-import com.teamPrime.sm.FindMeActivity;
-import com.teamPrime.sm.R;
+import com.teamPrime.sml.BlackListActivity;
+import com.teamPrime.sml.R;
 
-public class PopulateTaskFindMe extends AsyncTask<Void, Integer, Void> {
-	private FindMeActivity mActivity;
+/**
+ * PopulateTask populates the auto complete behind
+ * the scenes for the BlackListActivity
+ * 
+ * @author Boris Treskunov
+ * @version 1.0
+ */
+public class PopulateTask extends AsyncTask<Void, Integer, Void> {
+	private BlackListActivity mActivity;
 	ProgressDialog loading;
 
-    public PopulateTaskFindMe(FindMeActivity activity) {
+    public PopulateTask(BlackListActivity activity) {
         mActivity = activity;
     }
 
     // Can change activity this task points to.
     // e.g. when activity recreated after orientation change.
-    public void setActivity(FindMeActivity activity) {
+    public void setActivity(BlackListActivity activity) {
         mActivity = activity;
     }
 
@@ -44,7 +53,10 @@ public class PopulateTaskFindMe extends AsyncTask<Void, Integer, Void> {
     // Runs on main thread.
     @Override
     protected void onPostExecute(Void result) {
-    	mActivity.populateList();
+    	mActivity.setArrayAdapter(new ArrayAdapter<String>(mActivity,android.R.layout.simple_dropdown_item_1line,mActivity.getContactNames()));
+    	mActivity.setAutoComplete((AutoCompleteTextView)mActivity.findViewById(R.id.blacklist_text));
+        mActivity.getAutoComplete().setAdapter(mActivity.getArrayAdapter());
+        mActivity.getAutoComplete().setThreshold(2);
         try{
         	loading.dismiss();
         }
