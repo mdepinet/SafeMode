@@ -1,6 +1,6 @@
-package com.teamPrime.sm.util;
+package com.teamPrime.sml.util;
 
-import com.teamPrime.sm.util.MathUtils.MathUtilException;
+import com.teamPrime.sml.util.MathUtils.MathUtilException;
 
 public interface Solvable{
 	String getHumanReadableEquation() throws MathUtilException;

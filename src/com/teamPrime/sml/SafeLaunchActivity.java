@@ -7,7 +7,7 @@
  * which can be found in full at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package com.teamPrime.sm;
+package com.teamPrime.sml;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -38,9 +38,8 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.teamPrime.sm.history.SafeModeOnOffItem;
-import com.teamPrime.sm.tasks.BlackListIOTask;
-import com.teamPrime.sm.tasks.DateWaitTask;
+import com.teamPrime.sml.tasks.BlackListIOTask;
+import com.teamPrime.sml.tasks.DateWaitTask;
 
 /**
  * This is our main activity.  It allows the user to start and stop the app, as well as 
@@ -49,7 +48,7 @@ import com.teamPrime.sm.tasks.DateWaitTask;
  * @version 2.0
  */
 public class SafeLaunchActivity extends Activity{	
-	public static final boolean FULL_VERSION = true;
+	public static final boolean FULL_VERSION = false;
 	
 	private boolean applicationOnState = false;
 	private boolean privateOnState = false;
@@ -282,14 +281,12 @@ public class SafeLaunchActivity extends Activity{
             	break;
             case R.id.dashboard_history:
             	if (FULL_VERSION) {
-            		startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
             	} else {
             		Toast.makeText(this, getString(R.string.sm_only), Toast.LENGTH_SHORT).show();
             	}
             	break;
             case R.id.dashboard_find_me:
             	if (FULL_VERSION) {
-            		startActivity(new Intent(getApplicationContext(), FindMeActivity.class));
             	} else {
             		Toast.makeText(this, getString(R.string.sm_only), Toast.LENGTH_SHORT).show();
             	}
@@ -360,8 +357,6 @@ public class SafeLaunchActivity extends Activity{
     	timer = new SimpleTimer(timeLeft,1000);
         timer.start();
         timeUpdated = dateUpdated = false;
-		
-		HistoryActivity.addItem(getApplicationContext(), new SafeModeOnOffItem(true, null, null));
     }
     
     private void turnOff(){
@@ -383,8 +378,6 @@ public class SafeLaunchActivity extends Activity{
 		SharedPreferences.Editor editor = getSharedPreferences("SAFEMODE",MODE_PRIVATE).edit();
 		editor.putInt("failedAttempts", 0);
 		editor.commit();
-		
-		HistoryActivity.addItem(getApplicationContext(), new SafeModeOnOffItem(false, null, null));
     }
     
     private void showIcon(){

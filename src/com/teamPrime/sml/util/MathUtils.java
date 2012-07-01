@@ -1,4 +1,4 @@
-package com.teamPrime.sm.util;
+package com.teamPrime.sml.util;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
