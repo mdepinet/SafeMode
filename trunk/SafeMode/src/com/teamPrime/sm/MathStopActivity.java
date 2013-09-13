@@ -34,24 +34,31 @@ public class MathStopActivity extends Activity{
 	private long corAnswer;
 	private boolean onState;
 	private int numAttempts;
+	private long lastFailure;
 
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.math_stop);
+  public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.math_stop);
  
-        question = (TextView) findViewById(R.id.questionStopText);
-        answer = (TextView) findViewById(R.id.answerScreenStop);
-        SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
-        onState = data.getBoolean("onState", true);
-        numAttempts = data.getInt("failedAttempts", 0);
-        if (!onState) finish(); //Don't even run if SAFEMODE is off.  This should return the user to the main screen
-        if (numAttempts >= MAX_ATTEMPTS){
-        	Toast.makeText(getBaseContext(), getString(R.string.stop_attemptsExceeded), Toast.LENGTH_SHORT).show();
-        	finish();
-        }
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-    }
+      question = (TextView) findViewById(R.id.questionStopText);
+      answer = (TextView) findViewById(R.id.answerScreenStop);
+      SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
+      onState = data.getBoolean("onState", true);
+      lastFailure = data.getLong("lastFailure", -1L);
+      numAttempts = data.getInt("failedAttempts", 0);
+      if (lastFailure < 0) {
+      	numAttempts = 0;
+      } else {
+      	numAttempts = Math.max(0, (int) (numAttempts - (System.currentTimeMillis() - lastFailure) / 3600000));
+      }
+      if (!onState) finish(); //Don't even run if SAFEMODE is off.  This should return the user to the main screen
+      if (numAttempts >= MAX_ATTEMPTS){
+      	Toast.makeText(getBaseContext(), getString(R.string.stop_attemptsExceeded), Toast.LENGTH_SHORT).show();
+      	finish();
+      }
+      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+  }
 
     
     @Override
@@ -87,12 +94,13 @@ public class MathStopActivity extends Activity{
 					onState = false;
 					editor.commit();
 					
-					Toast.makeText(getApplicationContext(), getString(R.string.turn_off), Toast.LENGTH_SHORT).show();
+    				Toast.makeText(getApplicationContext(), getString(R.string.turn_off), Toast.LENGTH_SHORT).show();
 					finish();
     			}
     			else {
     				SharedPreferences.Editor editor = getSharedPreferences("SAFEMODE", MODE_PRIVATE).edit();
     				editor.putInt("failedAttempts", ++numAttempts);
+					  editor.putLong("lastFailure", System.currentTimeMillis());
     				editor.commit();
     				Toast.makeText(getApplicationContext(), getString(R.string.wrong_ans) + "\n"+(MAX_ATTEMPTS-numAttempts)+" attempt"+(MAX_ATTEMPTS-numAttempts != 1 ? "s" : "")+" remaining", Toast.LENGTH_SHORT).show();
     				finish();
@@ -100,8 +108,9 @@ public class MathStopActivity extends Activity{
     		}
     		catch (NumberFormatException e) {
     			SharedPreferences.Editor editor = getSharedPreferences("SAFEMODE", MODE_PRIVATE).edit();
-				editor.putInt("failedAttempts", ++numAttempts);
-				editor.commit();
+    			editor.putInt("failedAttempts", ++numAttempts);
+				  editor.putLong("lastFailure", System.currentTimeMillis());
+				  editor.commit();
     			Toast.makeText(getApplicationContext(), getString(R.string.wrong_ans) + "\n"+(MAX_ATTEMPTS-numAttempts)+" attempt"+(MAX_ATTEMPTS-numAttempts != 1 ? "s" : "")+" remaining", Toast.LENGTH_SHORT).show();
     			finish();
     			
