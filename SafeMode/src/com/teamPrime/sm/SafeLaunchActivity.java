@@ -267,7 +267,14 @@ public class SafeLaunchActivity extends Activity{
             case R.id.dashboard_onOff:
             	if (!applicationOnState) turnOn();
             	else{
-            		int numAttempts = getSharedPreferences("SAFEMODE",MODE_PRIVATE).getInt("failedAttempts", 0);
+								SharedPreferences data = getSharedPreferences("SAFEMODE", MODE_PRIVATE);
+								long lastFailure = data.getLong("lastFailure", -1L);
+								int numAttempts = data.getInt("failedAttempts", 0);
+								if (lastFailure < 0) {
+									numAttempts = 0;
+								} else {
+									numAttempts = Math.max(0, (int) (numAttempts - (System.currentTimeMillis() - lastFailure) / 3600000));
+								}
             		if (numAttempts > MathStopActivity.MAX_ATTEMPTS) Toast.makeText(getApplicationContext(), R.string.stop_attemptsExceeded, Toast.LENGTH_SHORT).show();
             		else{
             			Intent i = new Intent(getApplicationContext(), MathStopActivity.class);
